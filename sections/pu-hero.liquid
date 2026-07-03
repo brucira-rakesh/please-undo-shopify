@@ -1,0 +1,221 @@
+<section class="pu-hero" data-pu-hero>
+  <div class="pu-hero__texture pu-texture-overlay"></div>
+  <div class="pu-hero__content">
+    <div class="pu-hero__typography">
+      <div class="pu-hero__sticker pu-hero__sticker--for" style="--rotate: 14.53deg;">
+        <span>For every</span>
+      </div>
+      <h1 class="pu-hero__title pu-hero__title--dark">SILLY THING</h1>
+      <div class="pu-hero__sticker pu-hero__sticker--theres" style="--rotate: -12.36deg;">
+        <span>There's a</span>
+      </div>
+      <h1 class="pu-hero__title pu-hero__title--yellow">Please Undo</h1>
+      <div class="pu-hero__sticker pu-hero__sticker--youdo" style="--rotate: -8.34deg;">
+        <span>you do</span>
+      </div>
+
+      <img class="pu-hero__figure pu-hero__figure--1" src="{{ 'pu-stick-figure-1.png' | asset_url }}" alt="" width="104" height="105" loading="eager">
+      <img class="pu-hero__figure pu-hero__figure--2" src="{{ 'pu-brand-sprites.png' | asset_url }}" alt="" width="138" height="140" loading="eager">
+      <img class="pu-hero__figure pu-hero__figure--3" src="{{ 'pu-brand-sprites.png' | asset_url }}" alt="" width="149" height="135" loading="eager">
+      {% if section.settings.product_image != blank %}
+        {{ section.settings.product_image | image_url: width: 200 | image_tag: class: 'pu-hero__product', alt: 'Please Undo product', loading: 'eager' }}
+      {% else %}
+        <img class="pu-hero__product" src="{{ 'pu-product-mockup.png' | asset_url }}" alt="Please Undo product" width="78" height="139" loading="eager">
+      {% endif %}
+    </div>
+
+    {% if section.settings.button_label != blank %}
+      <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="pu-btn pu-btn--yellow pu-hero__cta">
+        {{ section.settings.button_label }}
+      </a>
+    {% endif %}
+  </div>
+
+  <div class="pu-hero__tickers">
+    <div class="pu-hero__ticker pu-hero__ticker--white">
+      <div class="pu-ticker">
+        <div class="pu-ticker__track">
+          {% for i in (1..8) %}
+            <span>{{ section.settings.ticker_1_text | default: "it's human to mess up" }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="pu-hero__ticker pu-hero__ticker--orange">
+      <div class="pu-ticker pu-ticker--reverse">
+        <div class="pu-ticker__track">
+          {% for i in (1..8) %}
+            <span>{{ section.settings.ticker_2_text | default: 'your right to a quick reset' }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .pu-hero {
+    position: relative;
+    min-height: 851px;
+    background: var(--pu-blue-bright);
+    padding-top: 88px;
+    overflow: hidden;
+  }
+
+  .pu-hero__content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 32px 200px;
+    text-align: center;
+  }
+
+  .pu-hero__typography {
+    position: relative;
+    min-height: 480px;
+    margin-bottom: 24px;
+  }
+
+  .pu-hero__title {
+    margin: 0;
+    font-family: var(--pu-font-display);
+    font-weight: 800;
+    font-size: clamp(64px, 14vw, 202px);
+    line-height: 0.76;
+    letter-spacing: -4px;
+    text-transform: uppercase;
+  }
+
+  .pu-hero__title--dark {
+    color: var(--pu-navy-text);
+    position: relative;
+    z-index: 2;
+  }
+
+  .pu-hero__title--yellow {
+    color: var(--pu-yellow);
+    margin-top: -20px;
+  }
+
+  .pu-hero__sticker {
+    position: absolute;
+    transform: rotate(var(--rotate, 0deg));
+    font-size: clamp(20px, 2.5vw, 32px);
+    z-index: 3;
+  }
+
+  .pu-hero__sticker--for { top: 8%; left: 38%; }
+  .pu-hero__sticker--theres { top: 58%; left: 8%; }
+  .pu-hero__sticker--youdo { top: 38%; right: 8%; }
+
+  .pu-hero__figure {
+    position: absolute;
+    object-fit: contain;
+  }
+
+  .pu-hero__figure--1 { top: 52%; left: 12%; width: 104px; transform: rotate(30deg); }
+  .pu-hero__figure--2 { top: 8%; left: 30%; width: 120px; transform: rotate(-18deg); }
+  .pu-hero__figure--3 { top: 42%; right: 12%; width: 130px; transform: rotate(10deg); }
+
+  .pu-hero__product {
+    position: absolute;
+    top: 42%;
+    right: 18%;
+    width: 78px;
+    transform: rotate(12deg);
+    z-index: 4;
+  }
+
+  .pu-hero__cta {
+    position: relative;
+    z-index: 3;
+  }
+
+  .pu-hero__tickers {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+  }
+
+  .pu-hero__ticker {
+    padding: 14.64px 20px;
+    border: 1.8px solid var(--pu-navy-text);
+    border-radius: 13px;
+    box-shadow: var(--pu-shadow);
+    transform: skewX(-2deg);
+    margin: 0 -20px;
+  }
+
+  .pu-hero__ticker span {
+    font-family: var(--pu-font-display);
+    font-size: clamp(18px, 2vw, 28px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.56px;
+    white-space: nowrap;
+  }
+
+  .pu-hero__ticker--white {
+    background: var(--pu-white);
+    color: var(--pu-navy-text);
+    transform: rotate(-6.43deg) skewX(-2deg);
+    margin-bottom: -12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pu-hero__ticker--orange {
+    background: var(--pu-orange);
+    color: var(--pu-navy-text);
+    transform: rotate(1.13deg) skewX(-2deg);
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 749px) {
+    .pu-hero__typography { min-height: 360px; }
+    .pu-hero__figure, .pu-hero__product { display: none; }
+    .pu-hero__sticker { position: static; display: inline-block; margin: 8px; transform: none !important; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PU Hero",
+  "class": "pu-hero-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "text",
+      "id": "ticker_1_text",
+      "label": "Ticker 1 text",
+      "default": "it's human to mess up"
+    },
+    {
+      "type": "text",
+      "id": "ticker_2_text",
+      "label": "Ticker 2 text",
+      "default": "your right to a quick reset"
+    }
+  ],
+  "presets": [{ "name": "PU Hero" }]
+}
+{% endschema %}

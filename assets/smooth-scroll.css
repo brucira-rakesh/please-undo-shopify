@@ -1,0 +1,33 @@
+/* Lenis smooth scroll — site-wide */
+html.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+html.lenis-smooth .page-wrapper {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent],
+.lenis.lenis-smooth [data-lenis-prevent-wheel],
+.lenis.lenis-smooth [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Modals / drawers should use native scroll inside */
+cart-drawer-component,
+search-modal,
+.theme-drawer,
+dialog[open],
+.overflow-auto,
+[style*='overflow: auto'],
+[style*='overflow: scroll'] {
+  overscroll-behavior: contain;
+}

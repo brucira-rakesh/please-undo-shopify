@@ -1,0 +1,95 @@
+{
+  "sections": {
+    "pu_hero": {
+      "type": "pu-hero",
+      "settings": {
+        "button_label": "SHOP NOW",
+        "button_link": "shopify://collections/all",
+        "ticker_1_text": "it's human to mess up",
+        "ticker_2_text": "your right to a quick reset"
+      }
+    },
+    "pu_image_scroll": {
+      "type": "pu-image-scroll",
+      "blocks": {
+        "img_1": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "Lifestyle",
+            "overlay_text": "I have a 9 am meeting\nShould I have the 5th drink?",
+            "overlay_position": "bottom-left"
+          }
+        },
+        "img_2": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-3.png",
+            "alt": "Skateboard"
+          }
+        },
+        "img_3": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-2.png",
+            "alt": "Concert",
+            "overlay_text": "The concert ended.\nThe ache got an encore.",
+            "overlay_position": "top-right"
+          }
+        }
+      },
+      "block_order": ["img_1", "img_2", "img_3"],
+      "settings": {
+        "curve_text_1": "Every morning",
+        "curve_text_2": "comes with a fresh start"
+      }
+    },
+    "pu_scramble": {
+      "type": "pu-scramble-text",
+      "settings": {
+        "full_text": "Life isn't ALL FUN and frolic. It has many annoying pains. Good thing we have a HACK TO UNDO THEM."
+      }
+    },
+    "pu_product_slider": {
+      "type": "pu-product-slider",
+      "settings": {
+        "title": "Pick your Undo.",
+        "collection": "all",
+        "max_products": 6,
+        "feature_1": "Low smell",
+        "feature_2": "0 Stain",
+        "feature_3": "Daily use"
+      }
+    },
+    "pu_svg_grid": {
+      "type": "pu-svg-grid",
+      "settings": {
+        "title_line_1": "we are the OFFICIAL SPONSORS for those"
+      }
+    },
+    "pu_green_ticker": {
+      "type": "pu-green-ticker",
+      "settings": {
+        "phrase_1": "you do you",
+        "phrase_2": "we JUST UNDO"
+      }
+    },
+    "pu_footer": {
+      "type": "pu-footer",
+      "settings": {
+        "email": "hello@pleaseundo.com",
+        "form_title": "Need an Undo?",
+        "form_description": "Whether it's a question, feedback, or your latest questionable life choice, we're all ears."
+      }
+    }
+  },
+  "order": [
+    "pu_hero",
+    "pu_image_scroll",
+    "pu_scramble",
+    "pu_product_slider",
+    "pu_svg_grid",
+    "pu_green_ticker",
+    "pu_footer"
+  ]
+}

@@ -1,0 +1,357 @@
+{% liquid
+  assign collection = collections[section.settings.collection]
+  assign has_products = false
+  if collection != blank and collection.products_count > 0
+    assign has_products = true
+  endif
+%}
+
+<section class="pu-product-slider" data-pu-product-slider>
+  <div class="pu-product-slider__hang" data-pu-hanging-title>
+    <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
+    <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
+    <div class="pu-product-slider__sign">
+      <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
+    </div>
+  </div>
+
+  <div class="pu-product-slider__texture pu-texture-overlay"></div>
+
+  <div class="pu-product-slider__content">
+    <div class="pu-product-slider__info" data-pu-product-info>
+      {% if has_products %}
+        {% assign first_product = collection.products.first %}
+        <p class="pu-product-slider__category" data-pu-product-category>{{ first_product.vendor | default: 'LAPTOP NECK' }}</p>
+        <h3 class="pu-product-slider__product-title" data-pu-product-title>{{ first_product.title }}</h3>
+        <div class="pu-product-slider__features">
+          <div class="pu-product-slider__feature-nums">
+            <span>1</span><span>2</span><span>3</span>
+          </div>
+          <div class="pu-product-slider__feature-text" data-pu-product-features>
+            {% if section.settings.feature_1 != blank %}<p>{{ section.settings.feature_1 }}</p>{% endif %}
+            {% if section.settings.feature_2 != blank %}<p>{{ section.settings.feature_2 }}</p>{% endif %}
+            {% if section.settings.feature_3 != blank %}<p>{{ section.settings.feature_3 }}</p>{% endif %}
+          </div>
+        </div>
+        <a href="{{ first_product.url }}" class="pu-btn pu-btn--yellow" data-pu-product-link>SHOP NOW</a>
+      {% else %}
+        <p class="pu-product-slider__category">LAPTOP NECK</p>
+        <h3 class="pu-product-slider__product-title">Pain-relief Roll On</h3>
+        <div class="pu-product-slider__features">
+          <div class="pu-product-slider__feature-nums"><span>1</span><span>2</span><span>3</span></div>
+          <div class="pu-product-slider__feature-text">
+            <p>Low smell</p><p>0 Stain</p><p>Daily use</p>
+          </div>
+        </div>
+        <a href="{{ routes.all_products_collection_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
+      {% endif %}
+    </div>
+
+    <div class="pu-product-slider__stage">
+      <div class="pu-product-slider__track" data-pu-product-track>
+        {% if has_products %}
+          {% for product in collection.products limit: section.settings.max_products %}
+            <div
+              class="pu-product-slider__slide{% if forloop.first %} is-active{% endif %}"
+              data-pu-product-slide
+              data-index="{{ forloop.index0 }}"
+              data-title="{{ product.title | escape }}"
+              data-vendor="{{ product.vendor | escape }}"
+              data-url="{{ product.url }}"
+            >
+              {% if product.featured_image %}
+                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'pu-product-slider__product-img', loading: 'lazy' }}
+              {% else %}
+                <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="{{ product.title }}" class="pu-product-slider__product-img" width="291" height="744" loading="lazy">
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="pu-product-slider__slide is-active" data-pu-product-slide data-index="0">
+            <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="Product" class="pu-product-slider__product-img" width="291" height="744" loading="lazy">
+          </div>
+        {% endif %}
+      </div>
+      <img class="pu-product-slider__figure" src="{{ 'pu-brand-assets.png' | asset_url }}" alt="" width="274" height="332" loading="lazy">
+    </div>
+  </div>
+
+  <div class="pu-product-slider__progress" data-pu-product-progress>
+    {% if has_products %}
+      {% assign total = collection.products_count %}
+      {% if total > section.settings.max_products %}
+        {% assign total = section.settings.max_products %}
+      {% endif %}
+    {% else %}
+      {% assign total = 1 %}
+    {% endif %}
+    {% if total < 1 %}{% assign total = 1 %}{% endif %}
+    {% for i in (1..total) %}
+      <span class="pu-product-slider__progress-segment{% if forloop.first %} is-active{% endif %}" data-pu-progress-segment></span>
+    {% endfor %}
+    {% if total == 1 %}
+      {% for i in (2..33) %}
+        <span class="pu-product-slider__progress-segment" data-pu-progress-segment></span>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <script type="application/json" data-pu-products-json>
+    {% if has_products %}
+    [
+      {% for product in collection.products limit: section.settings.max_products %}
+        {
+          "title": {{ product.title | json }},
+          "vendor": {{ product.vendor | json }},
+          "url": {{ product.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+    {% else %}
+    []
+    {% endif %}
+  </script>
+</section>
+
+{% stylesheet %}
+  .pu-product-slider {
+    position: relative;
+    background: var(--pu-blue);
+    min-height: 1310px;
+    overflow: hidden;
+    padding-bottom: 80px;
+  }
+
+  .pu-product-slider__hang {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    width: min(710px, 90vw);
+    height: 200px;
+    pointer-events: none;
+  }
+
+  .pu-product-slider__rope {
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 112px;
+    background: var(--pu-navy);
+  }
+
+  .pu-product-slider__rope--left { left: 0; }
+  .pu-product-slider__rope--right { right: 0; height: 182px; top: -35px; transform: rotate(2.73deg); }
+
+  .pu-product-slider__sign {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) rotate(2.99deg);
+    background: var(--pu-navy);
+    padding: 24px 48px;
+    min-width: min(610px, 85vw);
+    text-align: center;
+  }
+
+  .pu-product-slider__title {
+    margin: 0;
+    font-family: var(--pu-font-display);
+    font-size: clamp(48px, 8vw, 100px);
+    font-weight: 700;
+    color: var(--pu-white);
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    line-height: 0.9;
+    opacity: 0.9;
+  }
+
+  .pu-product-slider__content {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 280px 46px 120px;
+    align-items: center;
+  }
+
+  .pu-product-slider__category {
+    margin: 0 0 12px;
+    font-family: var(--pu-font-display);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 2.88px;
+    color: var(--pu-white);
+    text-transform: uppercase;
+  }
+
+  .pu-product-slider__product-title {
+    margin: 0 0 72px;
+    font-family: var(--pu-font-display);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 500;
+    color: var(--pu-white);
+    text-transform: uppercase;
+    letter-spacing: -1.28px;
+    line-height: 0.97;
+  }
+
+  .pu-product-slider__features {
+    display: flex;
+    gap: 9px;
+    align-items: flex-start;
+    margin-bottom: 72px;
+  }
+
+  .pu-product-slider__feature-nums {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pu-product-slider__feature-nums span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 29px;
+    height: 26px;
+    background: #262626;
+    border-radius: 65px;
+    color: var(--pu-white);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .pu-product-slider__feature-text p {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--pu-white);
+    line-height: 1.4;
+  }
+
+  .pu-product-slider__stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+  }
+
+  .pu-product-slider__track {
+    position: relative;
+    width: 291px;
+    height: 744px;
+  }
+
+  .pu-product-slider__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    pointer-events: none;
+  }
+
+  .pu-product-slider__slide.is-active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  .pu-product-slider__product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .pu-product-slider__figure {
+    position: absolute;
+    right: -60px;
+    bottom: 0;
+    width: 274px;
+    height: auto;
+    opacity: 0.9;
+  }
+
+  .pu-product-slider__progress {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    padding: 0 32px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .pu-product-slider__progress-segment {
+    width: 13px;
+    height: 20px;
+    background: rgba(217, 217, 217, 0.36);
+    transition: background 0.3s ease, opacity 0.3s ease;
+  }
+
+  .pu-product-slider__progress-segment.is-active {
+    background: var(--pu-white);
+    opacity: 1;
+  }
+
+  @media (max-width: 989px) {
+    .pu-product-slider__content {
+      grid-template-columns: 1fr;
+      padding-top: 240px;
+    }
+    .pu-product-slider__figure { display: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PU Product Slider",
+  "class": "pu-product-slider-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section title",
+      "default": "Pick your Undo."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Product collection"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Max products",
+      "min": 1,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "text",
+      "id": "feature_1",
+      "label": "Feature 1",
+      "default": "Low smell"
+    },
+    {
+      "type": "text",
+      "id": "feature_2",
+      "label": "Feature 2",
+      "default": "0 Stain"
+    },
+    {
+      "type": "text",
+      "id": "feature_3",
+      "label": "Feature 3",
+      "default": "Daily use"
+    }
+  ],
+  "presets": [{ "name": "PU Product Slider" }]
+}
+{% endschema %}

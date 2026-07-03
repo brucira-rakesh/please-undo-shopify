@@ -1,0 +1,17 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "pu_header": {
+      "type": "pu-header",
+      "settings": {
+        "shop_label": "Shop",
+        "about_label": "About",
+        "about_link": "/pages/about"
+      }
+    }
+  },
+  "order": [
+    "pu_header"
+  ]
+}

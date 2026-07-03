@@ -1,0 +1,64 @@
+{% doc %}
+  Renders stick-figure SVG illustrations for the PU SVG grid section.
+
+  @param {number} variant - Figure variant (1-8)
+{% enddoc %}
+
+{% liquid
+  assign v = variant | default: 1 | plus: 0
+%}
+
+<svg viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" class="pu-svg-figure">
+  <circle cx="60" cy="24" r="16" fill="#000020"/>
+  {% case v %}
+    {% when 1 %}
+      <line x1="60" y1="40" x2="60" y2="100" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="30" y2="85" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="95" y2="70" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="100" x2="35" y2="145" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="100" x2="90" y2="130" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% when 2 %}
+      <line x1="60" y1="40" x2="60" y2="95" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="40" y2="45" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="80" y2="45" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <path d="M45 95 Q60 110 75 95" stroke="#000020" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <line x1="60" y1="95" x2="45" y2="140" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="95" x2="75" y2="140" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% when 3 %}
+      <line x1="60" y1="40" x2="60" y2="100" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="35" y2="70" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="85" y2="65" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="100" x2="40" y2="130" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="100" x2="85" y2="125" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% when 4 %}
+      <line x1="60" y1="40" x2="60" y2="90" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="30" y2="40" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="90" y2="40" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="90" x2="45" y2="135" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="90" x2="75" y2="135" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% when 5 %}
+      <line x1="60" y1="40" x2="60" y2="95" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="50" x2="25" y2="35" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="50" x2="95" y2="35" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="95" x2="45" y2="140" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="95" x2="75" y2="140" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% when 6 %}
+      <line x1="60" y1="40" x2="60" y2="110" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="60" x2="35" y2="80" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="60" x2="85" y2="80" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="110" x2="50" y2="150" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="110" x2="70" y2="150" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% when 7 %}
+      <line x1="60" y1="40" x2="60" y2="100" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="30" y2="30" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="90" y2="75" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="100" x2="45" y2="145" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="100" x2="80" y2="145" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+    {% else %}
+      <line x1="60" y1="40" x2="60" y2="90" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="40" y2="45" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="55" x2="80" y2="45" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="90" x2="35" y2="120" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+      <line x1="60" y1="90" x2="85" y2="115" stroke="#000020" stroke-width="6" stroke-linecap="round"/>
+  {% endcase %}
+</svg>

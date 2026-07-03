@@ -1,0 +1,339 @@
+<section class="pu-image-scroll" data-pu-image-scroll>
+  <div class="pu-image-scroll__purple" data-pu-scroll-purple>
+    <img class="pu-image-scroll__rays" src="{{ 'pu-purple-rays.png' | asset_url }}" alt="" width="1441" height="927" loading="lazy">
+    <div class="pu-image-scroll__texture pu-texture-overlay"></div>
+    <div class="pu-image-scroll__curved-text">
+      <svg viewBox="0 0 1440 400" class="pu-image-scroll__text-svg" aria-hidden="true">
+        <defs>
+          <path id="pu-curve-top-{{ section.id }}" d="M-200,280 Q720,40 1640,280" fill="none"/>
+          <path id="pu-curve-bottom-{{ section.id }}" d="M-100,320 Q720,80 1540,320" fill="none"/>
+        </defs>
+        <text class="pu-image-scroll__svg-text">
+          <textPath href="#pu-curve-top-{{ section.id }}" startOffset="50%" text-anchor="middle">
+            {{ section.settings.curve_text_1 | default: 'Every morning' }}
+          </textPath>
+        </text>
+        <text class="pu-image-scroll__svg-text pu-image-scroll__svg-text--lower">
+          <textPath href="#pu-curve-bottom-{{ section.id }}" startOffset="50%" text-anchor="middle">
+            {{ section.settings.curve_text_2 | default: 'comes with a fresh start' }}
+          </textPath>
+        </text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="pu-image-scroll__orange" data-pu-scroll-orange>
+    <div class="pu-image-scroll__pin" data-pu-scroll-pin>
+      <img class="pu-image-scroll__arc" src="{{ 'pu-orange-arc.png' | asset_url }}" alt="" width="1440" height="629" loading="lazy">
+      <div class="pu-image-scroll__texture pu-texture-overlay"></div>
+
+      <div class="pu-image-scroll__viewport">
+        <div class="pu-image-scroll__track" data-pu-scroll-track>
+          {% for block in section.blocks %}
+            <div class="pu-image-scroll__slide" data-pu-scroll-image {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', class: 'pu-image-scroll__image' }}
+              {% else %}
+                <img
+                  class="pu-image-scroll__image"
+                  src="{{ block.settings.fallback_asset | default: 'pu-scroll-img-1.png' | asset_url }}"
+                  alt="{{ block.settings.alt | escape }}"
+                  loading="lazy"
+                  width="485"
+                  height="531"
+                >
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .pu-image-scroll {
+    position: relative;
+  }
+
+  .pu-image-scroll__purple {
+    position: relative;
+    min-height: 800px;
+    background: #4a1a8a;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .pu-image-scroll__rays {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pu-image-scroll__curved-text {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 60px 0 120px;
+  }
+
+  .pu-image-scroll__text-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .pu-image-scroll__svg-text {
+    fill: var(--pu-white);
+    font-family: var(--pu-font-display);
+    font-size: 72px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+  }
+
+  .pu-image-scroll__svg-text--lower {
+    font-size: 64px;
+  }
+
+  .pu-image-scroll__orange {
+    position: relative;
+    background: var(--pu-orange);
+  }
+
+  .pu-image-scroll__pin {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .pu-image-scroll__arc {
+    position: absolute;
+    top: 150px;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .pu-image-scroll__viewport {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow: hidden;
+    padding: 180px 0 80px;
+  }
+
+  .pu-image-scroll__track {
+    display: flex;
+    gap: 32px;
+    align-items: flex-end;
+    padding: 0 10vw;
+    will-change: transform;
+  }
+
+  .pu-image-scroll__slide {
+    flex: 0 0 clamp(240px, 34vw, 485px);
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
+  }
+
+  .pu-image-scroll__slide:nth-child(odd) {
+    transform: translateY(24px) rotate(-2deg);
+  }
+
+  .pu-image-scroll__slide:nth-child(even) {
+    transform: translateY(0) rotate(2deg);
+  }
+
+  .pu-image-scroll__slide:nth-child(3n) {
+    transform: translateY(40px) rotate(-1deg);
+  }
+
+  .pu-image-scroll__frame {
+    position: relative;
+  }
+
+  .pu-image-scroll__overlay {
+    position: absolute;
+    z-index: 3;
+    margin: 0;
+    max-width: 75%;
+    font-family: 'Caveat', cursive;
+    font-size: clamp(22px, 2.8vw, 36px);
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--pu-white);
+    text-shadow:
+      0 0 12px rgba(255, 255, 255, 0.35),
+      0 1px 3px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+    white-space: pre-line;
+  }
+
+  .pu-image-scroll__overlay--bottom-left {
+    bottom: 8%;
+    left: 5%;
+    transform: rotate(calc(-4deg + var(--overlay-rotate, 0deg)));
+    text-align: left;
+  }
+
+  .pu-image-scroll__overlay--top-right {
+    top: 6%;
+    right: 4%;
+    transform: rotate(calc(5deg + var(--overlay-rotate, 0deg)));
+    text-align: right;
+  }
+
+  .pu-image-scroll__overlay--bottom-right {
+    bottom: 8%;
+    right: 5%;
+    transform: rotate(calc(3deg + var(--overlay-rotate, 0deg)));
+    text-align: right;
+  }
+
+  .pu-image-scroll__overlay--top-left {
+    top: 6%;
+    left: 5%;
+    transform: rotate(calc(-3deg + var(--overlay-rotate, 0deg)));
+    text-align: left;
+  }
+
+  .pu-image-scroll__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    clip-path: polygon(2% 0%, 98% 2%, 100% 95%, 5% 100%, 0% 50%);
+    border: 6px solid var(--pu-green);
+    background: var(--pu-green);
+  }
+
+  @media (max-width: 749px) {
+    .pu-image-scroll__svg-text { font-size: 36px; }
+    .pu-image-scroll__svg-text--lower { font-size: 28px; }
+    .pu-image-scroll__track {
+      flex-direction: column;
+      align-items: center;
+      padding: 0 24px;
+    }
+    .pu-image-scroll__slide {
+      transform: none !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PU Image Scroll",
+  "class": "pu-image-scroll-section",
+  "max_blocks": 8,
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Scroll image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback_asset",
+          "label": "Fallback asset filename",
+          "default": "pu-scroll-img-1.png"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
+        },
+        {
+          "type": "header",
+          "content": "Handwritten overlay"
+        },
+        {
+          "type": "textarea",
+          "id": "overlay_text",
+          "label": "Overlay text",
+          "info": "Optional script-style caption on the image. Use line breaks for multiple lines."
+        },
+        {
+          "type": "select",
+          "id": "overlay_position",
+          "label": "Text position",
+          "options": [
+            { "value": "bottom-left", "label": "Bottom left" },
+            { "value": "top-right", "label": "Top right" },
+            { "value": "bottom-right", "label": "Bottom right" },
+            { "value": "top-left", "label": "Top left" }
+          ],
+          "default": "bottom-left"
+        },
+        {
+          "type": "range",
+          "id": "overlay_rotation",
+          "label": "Extra rotation",
+          "min": -20,
+          "max": 20,
+          "step": 1,
+          "unit": "deg",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "curve_text_1",
+      "label": "Curved text line 1",
+      "default": "Every morning"
+    },
+    {
+      "type": "text",
+      "id": "curve_text_2",
+      "label": "Curved text line 2",
+      "default": "comes with a fresh start"
+    }
+  ],
+  "presets": [
+    {
+      "name": "PU Image Scroll",
+      "blocks": [
+        {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "Lifestyle",
+            "overlay_text": "I have a 9 am meeting\nShould I have the 5th drink?",
+            "overlay_position": "bottom-left"
+          }
+        },
+        {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-3.png",
+            "alt": "Skateboard"
+          }
+        },
+        {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-2.png",
+            "alt": "Concert",
+            "overlay_text": "The concert ended.\nThe ache got an encore.",
+            "overlay_position": "top-right"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

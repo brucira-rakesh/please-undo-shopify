@@ -1,0 +1,202 @@
+<section class="pu-scramble" data-pu-scramble>
+  <div class="pu-scramble__inner">
+    <div class="pu-scramble__text-wrap">
+      <p class="pu-scramble__text" data-pu-scramble-text data-final-text="{{ section.settings.full_text | escape }}">
+        {{ section.settings.full_text }}
+      </p>
+
+      <div class="pu-scramble__highlights">
+        <div class="pu-scramble__highlight pu-scramble__highlight--1" style="--rotate: -13.91deg;">
+          <img src="{{ 'pu-stick-figure-2.png' | asset_url }}" alt="" width="64" height="71">
+        </div>
+        <div class="pu-scramble__sticker pu-scramble__sticker--little" style="--rotate: 9.31deg;">
+          <span>LITTLE</span>
+        </div>
+        <div class="pu-scramble__sticker pu-scramble__sticker--have" style="--rotate: 10.42deg;">
+          <span>have</span>
+        </div>
+        <div class="pu-scramble__highlight pu-scramble__highlight--2">
+          <img src="{{ 'pu-brand-assets.png' | asset_url }}" alt="" class="pu-scramble__brand-icon" width="146" height="147">
+        </div>
+      </div>
+    </div>
+
+    <div class="pu-scramble__ticker" data-pu-product-ticker>
+      <div class="pu-scramble__ticker-track" data-pu-ticker-track>
+        {% assign ticker_images = section.blocks | where: 'type', 'product_image' %}
+        {% if ticker_images.size == 0 %}
+          {% for i in (1..17) %}
+            <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="" class="pu-scramble__ticker-img" width="37" height="94" loading="lazy">
+          {% endfor %}
+        {% else %}
+          {% for block in section.blocks %}
+            {% if block.type == 'product_image' %}
+              <div {{ block.shopify_attributes }}>
+                {% if block.settings.image != blank %}
+                  {{ block.settings.image | image_url: width: 80 | image_tag: class: 'pu-scramble__ticker-img', loading: 'lazy' }}
+                {% else %}
+                  <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="" class="pu-scramble__ticker-img" width="37" height="94" loading="lazy">
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .pu-scramble {
+    background: var(--pu-navy);
+    min-height: 1310px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pu-scramble__inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 120px 32px 200px;
+    position: relative;
+  }
+
+  .pu-scramble__text {
+    font-family: var(--pu-font-display);
+    font-size: clamp(48px, 10vw, 142px);
+    font-weight: 800;
+    line-height: 0.76;
+    letter-spacing: -2.8px;
+    text-transform: uppercase;
+    color: var(--pu-gray);
+    margin: 0;
+    text-align: center;
+    min-height: 600px;
+  }
+
+  .pu-scramble__text .pu-scramble__char {
+    display: inline;
+  }
+
+  .pu-scramble__highlights {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .pu-scramble__highlight {
+    position: absolute;
+    background: var(--pu-yellow);
+    border-radius: 12px;
+    padding: 8px;
+  }
+
+  .pu-scramble__highlight--1 {
+    top: 12%;
+    right: 5%;
+    width: 312px;
+    height: 93px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .pu-scramble__highlight--2 {
+    top: 38%;
+    left: 12%;
+    width: 344px;
+    height: 93px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .pu-scramble__brand-icon {
+    width: 120px;
+    height: auto;
+    transform: rotate(-40deg);
+    object-fit: contain;
+  }
+
+  .pu-scramble__sticker {
+    position: absolute;
+    transform: rotate(var(--rotate));
+    font-size: 42px;
+    font-family: var(--pu-font-display);
+    font-weight: 800;
+    background: var(--pu-gray);
+    border: 1.8px solid #060623;
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: var(--pu-shadow);
+    color: #060623;
+  }
+
+  .pu-scramble__sticker--little { top: 42%; left: 18%; }
+  .pu-scramble__sticker--have { top: 58%; left: 30%; }
+
+  .pu-scramble__ticker {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(711px, 90vw);
+    height: 130px;
+    background: #0064e7;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  .pu-scramble__ticker-track {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0 20px;
+    will-change: transform;
+  }
+
+  .pu-scramble__ticker-img {
+    flex: 0 0 auto;
+    height: 94px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  @media (max-width: 749px) {
+    .pu-scramble__highlights { display: none; }
+    .pu-scramble__text { min-height: auto; font-size: 36px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PU Scramble Text",
+  "class": "pu-scramble-section",
+  "blocks": [
+    {
+      "type": "product_image",
+      "name": "Ticker product image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product image"
+        }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "full_text",
+      "label": "Full text",
+      "default": "Life isn't ALL FUN and frolic. It has many annoying pains. Good thing we have a HACK TO UNDO THEM."
+    }
+  ],
+  "presets": [{ "name": "PU Scramble Text" }]
+}
+{% endschema %}

@@ -1,0 +1,133 @@
+/* Please Undo — Homepage design tokens */
+:root {
+  --pu-blue: #0069f3;
+  --pu-blue-bright: #006eff;
+  --pu-orange: #ff6800;
+  --pu-yellow: #fceb00;
+  --pu-green: #00973a;
+  --pu-navy: #000020;
+  --pu-navy-text: #060622;
+  --pu-gray: #e5e5e9;
+  --pu-white: #ffffff;
+  --pu-font-display: 'Bricolage Grotesque', sans-serif;
+  --pu-font-body: 'Onest', sans-serif;
+  --pu-border: 1.5px solid #000;
+  --pu-shadow: 1px 2px 2px rgba(19, 57, 40, 0.25);
+}
+
+.pu-page {
+  font-family: var(--pu-font-body);
+  color: var(--pu-navy);
+  overflow-x: hidden;
+}
+
+.pu-page *,
+.pu-page *::before,
+.pu-page *::after {
+  box-sizing: border-box;
+}
+
+.pu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  min-height: 56px;
+  border-radius: 8px;
+  font-family: var(--pu-font-display);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease;
+}
+
+.pu-btn:hover {
+  transform: translateY(-2px);
+}
+
+.pu-btn--yellow {
+  background: var(--pu-yellow);
+  color: var(--pu-navy);
+  border-bottom: 5px solid #000;
+  border-right: 5px solid #000;
+}
+
+.pu-btn--navy {
+  background: var(--pu-navy);
+  color: var(--pu-white);
+  border-bottom: 5px solid var(--pu-orange);
+  border-right: 5px solid var(--pu-orange);
+}
+
+.pu-sticker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14.64px 20px;
+  background: var(--pu-white);
+  border: 1.8px solid var(--pu-navy-text);
+  border-radius: 12px;
+  box-shadow: var(--pu-shadow);
+  font-family: var(--pu-font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--pu-navy-text);
+}
+
+.pu-ticker {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pu-ticker__track {
+  display: inline-flex;
+  gap: 20px;
+  animation: pu-ticker-scroll 25s linear infinite;
+}
+
+.pu-ticker--reverse .pu-ticker__track {
+  animation-direction: reverse;
+}
+
+@keyframes pu-ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Homepage layout — header floats over hero */
+.pu-page .content-for-layout {
+  max-width: none;
+  padding: 0;
+}
+
+.pu-page footer:empty {
+  display: none;
+}
+
+.pu-page #header-group {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.pu-page #header-group .shopify-section {
+  pointer-events: auto;
+}
+
+.pu-texture-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url('pu-texture.png');
+  background-size: cover;
+  background-position: center;
+  mix-blend-mode: multiply;
+  opacity: 0.36;
+  pointer-events: none;
+}

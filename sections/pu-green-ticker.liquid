@@ -1,0 +1,66 @@
+<section class="pu-green-ticker">
+  <div class="pu-green-ticker__inner">
+    <div class="pu-ticker">
+      <div class="pu-ticker__track">
+        {% for i in (1..10) %}
+          <span>{{ section.settings.phrase_1 | default: 'you do you' }}</span>
+          <span class="pu-green-ticker__accent">{{ section.settings.phrase_2 | default: 'we JUST UNDO' }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .pu-green-ticker {
+    background: var(--pu-white);
+    padding: 0 32px 0;
+    overflow: hidden;
+  }
+
+  .pu-green-ticker__inner {
+    background: var(--pu-green);
+    border: 1.8px solid #000;
+    border-radius: 13px;
+    box-shadow: var(--pu-shadow);
+    transform: skewX(-2deg);
+    margin: 0 -8px;
+    padding: 14.64px 20px;
+  }
+
+  .pu-green-ticker__inner span {
+    font-family: var(--pu-font-display);
+    font-size: clamp(18px, 2vw, 28px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: -0.56px;
+    color: var(--pu-white);
+    white-space: nowrap;
+  }
+
+  .pu-green-ticker__accent {
+    color: var(--pu-white);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "PU Green Ticker",
+  "class": "pu-green-ticker-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "phrase_1",
+      "label": "Phrase 1",
+      "default": "you do you"
+    },
+    {
+      "type": "text",
+      "id": "phrase_2",
+      "label": "Phrase 2",
+      "default": "we JUST UNDO"
+    }
+  ],
+  "presets": [{ "name": "PU Green Ticker" }]
+}
+{% endschema %}
