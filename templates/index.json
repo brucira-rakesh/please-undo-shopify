@@ -17,6 +17,7 @@
           "settings": {
             "content_type": "text",
             "text": "For every",
+            "html": "",
             "position_top": 8,
             "position_left": 38,
             "position_right": 0,
@@ -30,6 +31,7 @@
           "settings": {
             "content_type": "text",
             "text": "There's a",
+            "html": "",
             "position_top": 58,
             "position_left": 8,
             "position_right": 0,
@@ -43,6 +45,7 @@
           "settings": {
             "content_type": "text",
             "text": "you do",
+            "html": "",
             "position_top": 38,
             "position_left": 0,
             "position_right": 8,
@@ -52,7 +55,11 @@
           }
         }
       },
-      "block_order": ["patch_for", "patch_theres", "patch_youdo"],
+      "block_order": [
+        "patch_for",
+        "patch_theres",
+        "patch_youdo"
+      ],
       "settings": {
         "title_line_1": "SILLY THING",
         "title_line_2": "Please Undo",
@@ -71,14 +78,18 @@
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "Lifestyle",
             "overlay_text": "I have a 9 am meeting\nShould I have the 5th drink?",
-            "overlay_position": "bottom-left"
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
           }
         },
         "img_2": {
           "type": "image",
           "settings": {
             "fallback_asset": "pu-scroll-img-3.png",
-            "alt": "Skateboard"
+            "alt": "Skateboard",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
           }
         },
         "img_3": {
@@ -87,11 +98,16 @@
             "fallback_asset": "pu-scroll-img-2.png",
             "alt": "Concert",
             "overlay_text": "The concert ended.\nThe ache got an encore.",
-            "overlay_position": "top-right"
+            "overlay_position": "top-right",
+            "overlay_rotation": 0
           }
         }
       },
-      "block_order": ["img_1", "img_2", "img_3"],
+      "block_order": [
+        "img_1",
+        "img_2",
+        "img_3"
+      ],
       "settings": {
         "curve_text_1": "Every morning",
         "curve_text_2": "comes with a fresh start"
@@ -109,8 +125,11 @@
         "video_1": {
           "type": "scramble_video",
           "settings": {
+            "video": "shopify://files/videos/02.mp4",
+            "alt": "",
             "align": "right",
-            "rotation": -4
+            "rotation": -4,
+            "offset_y": 0
           }
         },
         "text_2": {
@@ -122,6 +141,8 @@
         "video_2": {
           "type": "scramble_video",
           "settings": {
+            "video": "shopify://files/videos/01.mp4",
+            "alt": "",
             "align": "left",
             "rotation": 3,
             "offset_y": 8
@@ -134,8 +155,16 @@
           }
         }
       },
-      "block_order": ["text_1", "video_1", "text_2", "video_2", "text_3"],
-      "settings": {}
+      "block_order": [
+        "text_1",
+        "video_1",
+        "text_2",
+        "video_2",
+        "text_3"
+      ],
+      "settings": {
+        "full_text": "Life isn't ALL FUN and frolic. It has many annoying pains. Good thing we have a HACK TO UNDO THEM."
+      }
     },
     "pu_product_slider": {
       "type": "pu-product-slider",
@@ -145,11 +174,14 @@
           "settings": {
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
-            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
+            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
+            "shop_now_url": ""
           }
         }
       },
-      "block_order": ["product_1"],
+      "block_order": [
+        "product_1"
+      ],
       "settings": {
         "title": "Pick your Undo."
       }
@@ -157,7 +189,9 @@
     "pu_svg_grid": {
       "type": "pu-svg-grid",
       "settings": {
-        "title_line_1": "we are the OFFICIAL SPONSORS for those"
+        "title_line_1": "we are the OFFICIAL SPONSORS for those",
+        "title_line_2": "SPONSORS for those",
+        "title_line_3": "who never learn"
       }
     },
     "pu_green_ticker": {
@@ -171,8 +205,13 @@
       "type": "pu-footer",
       "settings": {
         "email": "hello@pleaseundo.com",
+        "instagram_url": "",
+        "linkedin_url": "",
         "form_title": "Need an Undo?",
-        "form_description": "Whether it's a question, feedback, or your latest questionable life choice, we're all ears."
+        "form_description": "Whether it's a question, feedback, or your latest questionable life choice, we're all ears.",
+        "brand_text": "PLEASE UNDO",
+        "privacy_url": "",
+        "terms_url": ""
       }
     }
   },
