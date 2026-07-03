@@ -1,11 +1,15 @@
 <section class="pu-green-ticker">
-  <div class="pu-green-ticker__inner">
-    <div class="pu-ticker">
-      <div class="pu-ticker__track">
-        {% for i in (1..10) %}
-          <span>{{ section.settings.phrase_1 | default: 'you do you' }}</span>
-          <span class="pu-green-ticker__accent">{{ section.settings.phrase_2 | default: 'we JUST UNDO' }}</span>
-        {% endfor %}
+  <div class="pu-green-ticker__skew">
+    <div class="pu-green-ticker__bar">
+      <div class="pu-green-ticker__marquee" aria-hidden="true">
+        <div class="pu-green-ticker__track">
+          {% for i in (1..2) %}
+            {% for j in (1..6) %}
+              <span>{{ section.settings.phrase_1 | default: 'you do you' }}</span>
+              <span>{{ section.settings.phrase_2 | default: 'we JUST UNDO' }}</span>
+            {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
@@ -14,32 +18,63 @@
 {% stylesheet %}
   .pu-green-ticker {
     background: var(--pu-white);
-    padding: 0 32px 0;
+    padding: 24px 0 0;
     overflow: hidden;
   }
 
-  .pu-green-ticker__inner {
+  .pu-green-ticker__skew {
+    transform: skewX(-2deg);
+    margin: 0 -24px;
+  }
+
+  .pu-green-ticker__bar {
     background: var(--pu-green);
     border: 1.8px solid #000;
     border-radius: 13px;
+    margin-bottom: -1px;
     box-shadow: var(--pu-shadow);
-    transform: skewX(-2deg);
-    margin: 0 -8px;
-    padding: 14.64px 20px;
+    overflow: hidden;
   }
 
-  .pu-green-ticker__inner span {
+  .pu-green-ticker__marquee {
+    overflow: hidden;
+    padding: 14.64px 0;
+  }
+
+  .pu-green-ticker__track {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    width: max-content;
+    animation: pu-green-ticker-scroll 28s linear infinite;
+    will-change: transform;
+  }
+
+  .pu-green-ticker__track span {
+    flex-shrink: 0;
     font-family: var(--pu-font-display);
-    font-size: clamp(18px, 2vw, 28px);
+    font-size: clamp(18px, 1.94vw, 28px);
     font-weight: 600;
+    line-height: 0.73;
     text-transform: uppercase;
     letter-spacing: -0.56px;
     color: var(--pu-white);
     white-space: nowrap;
   }
 
-  .pu-green-ticker__accent {
-    color: var(--pu-white);
+  @keyframes pu-green-ticker-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pu-green-ticker__track {
+      animation: none;
+    }
   }
 {% endstylesheet %}
 

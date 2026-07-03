@@ -25,7 +25,10 @@
             <div class="pu-footer__form-header">
               <h3 class="pu-footer__form-title">{{ section.settings.form_title | default: 'Need an Undo?' }}</h3>
               <p class="pu-footer__form-desc">
-                {{ section.settings.form_description | default: "Whether it's a question, feedback, or your latest questionable life choice, we're all ears." }}
+                {{
+                  section.settings.form_description
+                  | default: "Whether it's a question, feedback, or your latest questionable life choice, we're all ears."
+                }}
               </p>
             </div>
 
@@ -61,7 +64,7 @@
 
           <img
             class="pu-footer__figure"
-            src="{{ 'pu-stick-figure-footer.png' | asset_url }}"
+            src="{{ 'pu-stick-figure-footer.svg' | asset_url }}"
             alt=""
             width="254"
             height="269"
@@ -106,9 +109,9 @@
   }
 
   .pu-footer__inner {
-    max-width: 1440px;
+    max-width: 100%;
     margin: 0 auto;
-    padding: 84px 56px 0;
+    padding: 84px 0 0;
   }
 
   .pu-footer__top {
@@ -116,6 +119,7 @@
     grid-template-columns: 262px minmax(0, 1fr);
     gap: 40px;
     align-items: start;
+    padding: 0 0 0 40px;
   }
 
   .pu-footer__social {
@@ -192,7 +196,7 @@
     flex-direction: column;
     gap: 16px;
     max-width: 376px;
-    margin-bottom: 24px;
+    margin: 24px 0;
   }
 
   .pu-footer__input {
@@ -251,8 +255,8 @@
   .pu-footer__figure {
     position: absolute;
     right: 32px;
-    top: 114px;
-    width: 254px;
+    top: 110px;
+    width: 300px;
     height: auto;
     pointer-events: none;
     object-fit: contain;
@@ -260,6 +264,7 @@
 
   .pu-footer__meta {
     margin-top: 42px;
+    margin-right: 40px;
   }
 
   .pu-footer__divider {
@@ -300,12 +305,12 @@
   }
 
   .pu-footer__brand {
-    --brand-size: clamp(140px, 18.9vw, 272px);
+    --brand-size: clamp(140px, 18.9vw, 208px);
     display: flex;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
-    height: calc(var(--brand-size) * 0.6);
+    height: calc(var(--brand-size) * 0.66);
     margin-top: 8px;
     overflow: hidden;
     pointer-events: none;

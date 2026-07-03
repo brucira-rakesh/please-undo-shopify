@@ -4,9 +4,19 @@
 
 <link rel="stylesheet" href="{{ 'pu-home.css' | asset_url }}">
 
-<header class="pu-header" data-pu-header>
-  <div class="pu-header__inner">
-  <nav class="pu-header__nav" aria-label="Primary">
+<header-component
+  id="header-component"
+  class="pu-header-component"
+  transparent="always"
+  data-skip-node-update
+>
+  <div ref="headerDrawerContainer" hidden aria-hidden="true"></div>
+  <div ref="headerMenu" hidden aria-hidden="true"></div>
+
+  <div ref="headerRowTop" class="pu-header__row">
+    <header class="pu-header" data-pu-header>
+      <div class="pu-header__inner">
+      <nav class="pu-header__nav" aria-label="Primary">
     <div class="pu-header__nav-item pu-header__nav-item--dropdown">
       <a href="{{ section.settings.shop_link | default: routes.collections_url }}" class="pu-header__link">
         {{ section.settings.shop_label | default: 'Shop' }}
@@ -50,9 +60,30 @@
     </a>
   </div>
   </div>
-</header>
+    </header>
+  </div>
+</header-component>
 
 {% stylesheet %}
+  .pu-header-section.shopify-section,
+  #header-group:has(.pu-header-section) {
+    background: transparent !important;
+  }
+
+  #header-component.pu-header-component {
+    display: block;
+    background: transparent !important;
+    opacity: 1 !important;
+  }
+
+  #header-component.pu-header-component[transparent] {
+    --transparent-header-offset-boolean: 1;
+  }
+
+  .pu-header__row {
+    display: block;
+  }
+
   .pu-header {
     position: relative;
     top: 0;
@@ -234,7 +265,7 @@
 {% schema %}
 {
   "name": "PU Header",
-  "class": "pu-header-section",
+  "class": "header-section pu-header-section",
   "settings": [
     {
       "type": "image_picker",

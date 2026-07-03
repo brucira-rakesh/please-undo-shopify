@@ -2,8 +2,6 @@
  * Please Undo Homepage — GSAP scroll animations (uses global Lenis from smooth-scroll.js)
  */
 
-const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%';
-
 /** @type {typeof import('gsap') | null} */
 let gsap = null;
 
@@ -104,81 +102,23 @@ function initImageScroll() {
     return amount > 0 ? -amount : 0;
   };
 
-  const scrollAmount = getScrollAmount();
-  if (scrollAmount === 0) return;
-
-  gsap.to(track, {
-    x: scrollAmount,
+  const tween = gsap.to(track, {
+    x: () => getScrollAmount(),
     ease: 'none',
     scrollTrigger: scrollTriggerConfig(orange, {
       start: 'top top',
-      end: () => `+=${Math.abs(getScrollAmount()) || 1}`,
+      end: () => `+=${Math.max(Math.abs(getScrollAmount()), 1)}`,
       pin: pin,
       scrub: 1,
       invalidateOnRefresh: true,
+      anticipatePin: 1,
     }),
   });
-}
 
-function initScrambleText() {
-  const el = document.querySelector('[data-pu-scramble-text]');
-  if (!el || !gsap) return;
-
-  const finalText = el.dataset.finalText || el.textContent || '';
-  let revealed = false;
-
-  const scramble = () => {
-    if (revealed) return;
-    revealed = true;
-    const length = finalText.length;
-    const state = Array.from({ length }, () => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]);
-    let frame = 0;
-    const totalFrames = 50;
-
-    const tick = () => {
-      frame++;
-      const progress = frame / totalFrames;
-      const resolved = Math.floor(progress * length);
-
-      for (let i = 0; i < length; i++) {
-        if (finalText[i] === ' ') {
-          state[i] = ' ';
-        } else if (i < resolved) {
-          state[i] = finalText[i];
-        } else {
-          state[i] = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-        }
-      }
-      el.textContent = state.join('');
-
-      if (frame < totalFrames) {
-        requestAnimationFrame(tick);
-      } else {
-        el.textContent = finalText;
-      }
-    };
-    tick();
-  };
-
-  ScrollTrigger.create(
-    scrollTriggerConfig(el, {
-      start: 'top 75%',
-      once: true,
-      onEnter: scramble,
-    })
-  );
-
-  const ticker = document.querySelector('[data-pu-ticker-track]');
-  if (ticker && gsap) {
-    const width = ticker.scrollWidth / 2;
-    if (width > 0) {
-      gsap.to(ticker, {
-        x: -width,
-        duration: 20,
-        ease: 'none',
-        repeat: -1,
-      });
-    }
+  if (Math.abs(getScrollAmount()) < 1) {
+    tween.scrollTrigger?.kill();
+    tween.kill();
+    gsap.set(track, { x: 0 });
   }
 }
 
@@ -187,51 +127,146 @@ function initProductSlider() {
   if (!section || !gsap || !ScrollTrigger) return;
 
   const hang = section.querySelector('[data-pu-hanging-title]');
+  const pin = section.querySelector('[data-pu-product-pin]');
+  const track = section.querySelector('[data-pu-product-track]');
   const slides = section.querySelectorAll('[data-pu-product-slide]');
   const segments = section.querySelectorAll('[data-pu-progress-segment]');
-  const titleEl = section.querySelector('[data-pu-product-title]');
-  const categoryEl = section.querySelector('[data-pu-product-category]');
-  const linkEl = section.querySelector('[data-pu-product-link]');
 
-  if (hang) {
-    gsap.fromTo(
-      hang,
-      { y: -200, rotation: -5 },
-      {
-        y: 0,
-        rotation: 0,
-        ease: 'bounce.out',
-        duration: 1.2,
-        scrollTrigger: scrollTriggerConfig(section, {
-          start: 'top 80%',
-          toggleActions: 'play none none reverse',
-        }),
-      }
-    );
-  }
+  const setSlidePositions = (rawIndex) => {
+    const activeIndex = Math.round(rawIndex);
+    slides.forEach((slide, i) => {
+      const offset = i - rawIndex;
+      gsap.set(slide, {
+        xPercent: offset * 100,
+        opacity: Math.abs(offset) <= 1 ? 1 : 0,
+        zIndex: i === activeIndex ? 2 : 1,
+      });
+      slide.classList.toggle('is-active', i === activeIndex);
+    });
+  };
+
+  if (!pin || !track || slides.length === 0) return;
+
+  setSlidePositions(0);
 
   if (slides.length <= 1) return;
 
   const total = slides.length;
+  const scrollPerProduct = 500;
+  const snapStep = 1 / (total - 1);
+  const hangOffset = hang ? hang.offsetHeight : 0;
 
   ScrollTrigger.create(
-    scrollTriggerConfig(section, {
-      start: 'top top',
-      end: `+=${total * 400}`,
-      pin: true,
-      scrub: 0.5,
+    scrollTriggerConfig(pin, {
+      start: () => `top ${hangOffset}px`,
+      end: () => `+=${Math.max((total - 1) * scrollPerProduct, 1)}`,
+      pin: pin,
+      scrub: 0.6,
+      snap: {
+        snapTo: snapStep,
+        duration: { min: 0.25, max: 0.55 },
+        ease: 'power2.inOut',
+      },
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
       onUpdate: (self) => {
-        const index = Math.min(total - 1, Math.floor(self.progress * total));
-        slides.forEach((slide, i) => slide.classList.toggle('is-active', i === index));
-        segments.forEach((seg, i) => seg.classList.toggle('is-active', i <= index));
+        const rawIndex = self.progress * (total - 1);
+        const index = Math.min(total - 1, Math.round(rawIndex));
 
-        const active = slides[index];
-        if (active && titleEl) titleEl.textContent = active.dataset.title || '';
-        if (active && categoryEl) categoryEl.textContent = active.dataset.vendor || '';
-        if (active && linkEl) linkEl.href = active.dataset.url || linkEl.href;
+        setSlidePositions(rawIndex);
+        segments.forEach((seg, i) => seg.classList.toggle('is-active', i <= index));
       },
     })
   );
+}
+
+function initHeroParallax() {
+  const hero = document.querySelector('[data-pu-hero]');
+  if (!hero || !gsap || !ScrollTrigger) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(max-width: 749px)').matches) return;
+
+  const elements = hero.querySelectorAll('[data-pu-parallax]');
+
+  elements.forEach((el) => {
+    const y = parseFloat(el.dataset.parallaxY || '30');
+    const x = parseFloat(el.dataset.parallaxX || '0');
+
+    gsap.fromTo(
+      el,
+      { y: 0, x: 0 },
+      {
+        y,
+        x,
+        ease: 'none',
+        scrollTrigger: scrollTriggerConfig(hero, {
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.6,
+        }),
+      }
+    );
+  });
+}
+
+function animateScrambleReveal(el) {
+  gsap.from(el, {
+    skewX: -30,
+    x: 100,
+    opacity: 0,
+    duration: 0.55,
+    ease: 'power3.out',
+    scrollTrigger: scrollTriggerConfig(el, {
+      start: 'top 88%',
+      toggleActions: 'play none none reverse',
+    }),
+  });
+}
+
+function splitTextIntoWords(el) {
+  if (el.dataset.puSplit) return [...el.querySelectorAll('.pu-scramble__word')];
+
+  const text = el.textContent.trim();
+  if (!text) return [];
+
+  el.textContent = '';
+  el.dataset.puSplit = 'true';
+
+  const words = text.split(/\s+/);
+  const spans = [];
+
+  words.forEach((word, i) => {
+    const span = document.createElement('span');
+    span.className = 'pu-scramble__word';
+    span.textContent = word;
+    el.appendChild(span);
+    spans.push(span);
+    if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+  });
+
+  return spans;
+}
+
+function initScrambleText() {
+  const section = document.querySelector('[data-pu-scramble]');
+  if (!section || !gsap || !ScrollTrigger) return;
+
+  const textEl = section.querySelector('[data-pu-scramble-text]');
+  if (!textEl) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const segments = textEl.querySelectorAll('[data-pu-scramble-segment]');
+  const targets = segments.length ? segments : [textEl];
+
+  targets.forEach((segment) => {
+    splitTextIntoWords(segment).forEach((word) => animateScrambleReveal(word));
+  });
+
+  section.querySelectorAll('[data-pu-scramble-video]').forEach((video) => {
+    animateScrambleReveal(video);
+  });
 }
 
 function initSvgGrid() {
@@ -281,14 +316,15 @@ function destroyAnimations() {
 }
 
 async function init() {
-  if (!document.querySelector('[data-pu-hero], [data-pu-image-scroll]')) return;
+  if (!document.querySelector('[data-pu-hero], [data-pu-image-scroll], [data-pu-product-slider], [data-pu-scramble]')) return;
 
   try {
     await window.PleaseUndoScroll?.ready;
     await loadGsap();
     initImageScroll();
-    initScrambleText();
+    initHeroParallax();
     initProductSlider();
+    initScrambleText();
     initSvgGrid();
     initSearchOpen();
     ScrollTrigger?.refresh();

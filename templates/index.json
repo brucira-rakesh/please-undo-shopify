@@ -1,8 +1,61 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "pu_hero": {
       "type": "pu-hero",
+      "blocks": {
+        "patch_for": {
+          "type": "patch",
+          "settings": {
+            "content_type": "text",
+            "text": "For every",
+            "position_top": 8,
+            "position_left": 38,
+            "position_right": 0,
+            "rotation": 15,
+            "parallax_y": 28,
+            "parallax_x": -6
+          }
+        },
+        "patch_theres": {
+          "type": "patch",
+          "settings": {
+            "content_type": "text",
+            "text": "There's a",
+            "position_top": 58,
+            "position_left": 8,
+            "position_right": 0,
+            "rotation": -12,
+            "parallax_y": 42,
+            "parallax_x": 8
+          }
+        },
+        "patch_youdo": {
+          "type": "patch",
+          "settings": {
+            "content_type": "text",
+            "text": "you do",
+            "position_top": 38,
+            "position_left": 0,
+            "position_right": 8,
+            "rotation": -8,
+            "parallax_y": 36,
+            "parallax_x": -10
+          }
+        }
+      },
+      "block_order": ["patch_for", "patch_theres", "patch_youdo"],
       "settings": {
+        "title_line_1": "SILLY THING",
+        "title_line_2": "Please Undo",
         "button_label": "SHOP NOW",
         "button_link": "shopify://collections/all",
         "ticker_1_text": "it's human to mess up",
@@ -46,19 +99,59 @@
     },
     "pu_scramble": {
       "type": "pu-scramble-text",
-      "settings": {
-        "full_text": "Life isn't ALL FUN and frolic. It has many annoying pains. Good thing we have a HACK TO UNDO THEM."
-      }
+      "blocks": {
+        "text_1": {
+          "type": "scramble_text",
+          "settings": {
+            "text": "Life isn't ALL FUN"
+          }
+        },
+        "video_1": {
+          "type": "scramble_video",
+          "settings": {
+            "align": "right",
+            "rotation": -4
+          }
+        },
+        "text_2": {
+          "type": "scramble_text",
+          "settings": {
+            "text": "and frolic. It has many annoying"
+          }
+        },
+        "video_2": {
+          "type": "scramble_video",
+          "settings": {
+            "align": "left",
+            "rotation": 3,
+            "offset_y": 8
+          }
+        },
+        "text_3": {
+          "type": "scramble_text",
+          "settings": {
+            "text": "pains. Good thing we have a HACK TO UNDO THEM."
+          }
+        }
+      },
+      "block_order": ["text_1", "video_1", "text_2", "video_2", "text_3"],
+      "settings": {}
     },
     "pu_product_slider": {
       "type": "pu-product-slider",
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "subtext": "LAPTOP NECK",
+            "title": "Pain-relief Roll On",
+            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
+          }
+        }
+      },
+      "block_order": ["product_1"],
       "settings": {
-        "title": "Pick your Undo.",
-        "collection": "all",
-        "max_products": 6,
-        "feature_1": "Low smell",
-        "feature_2": "0 Stain",
-        "feature_3": "Daily use"
+        "title": "Pick your Undo."
       }
     },
     "pu_svg_grid": {

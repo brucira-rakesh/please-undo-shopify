@@ -1,6 +1,13 @@
 <section class="pu-image-scroll" data-pu-image-scroll>
   <div class="pu-image-scroll__purple" data-pu-scroll-purple>
-    <img class="pu-image-scroll__rays" src="{{ 'pu-purple-rays.png' | asset_url }}" alt="" width="1441" height="927" loading="lazy">
+    <img
+      class="pu-image-scroll__rays"
+      src="{{ 'pu-purple-rays.png' | asset_url }}"
+      alt=""
+      width="1441"
+      height="927"
+      loading="lazy"
+    >
     <div class="pu-image-scroll__texture pu-texture-overlay"></div>
     <div class="pu-image-scroll__curved-text">
       <svg viewBox="0 0 1440 400" class="pu-image-scroll__text-svg" aria-hidden="true">
@@ -24,25 +31,58 @@
 
   <div class="pu-image-scroll__orange" data-pu-scroll-orange>
     <div class="pu-image-scroll__pin" data-pu-scroll-pin>
-      <img class="pu-image-scroll__arc" src="{{ 'pu-orange-arc.png' | asset_url }}" alt="" width="1440" height="629" loading="lazy">
-      <div class="pu-image-scroll__texture pu-texture-overlay"></div>
+      <div class="pu-image-scroll__bg" aria-hidden="true">
+        <div class="pu-image-scroll__bg-orange"></div>
+        <img
+          class="pu-image-scroll__arc"
+          src="{{ 'pu-orange-arc.png' | asset_url }}"
+          alt=""
+          width="1440"
+          height="629"
+          loading="lazy"
+        >
+        <div class="pu-image-scroll__bg-green"></div>
+        <img
+          class="pu-image-scroll__green-arc"
+          src="{{ 'pu-green-arc.png' | asset_url }}"
+          alt=""
+          width="1440"
+          height="629"
+          loading="lazy"
+        >
+        <div class="pu-image-scroll__texture pu-texture-overlay"></div>
+      </div>
 
       <div class="pu-image-scroll__viewport">
         <div class="pu-image-scroll__track" data-pu-scroll-track>
           {% for block in section.blocks %}
             <div class="pu-image-scroll__slide" data-pu-scroll-image {{ block.shopify_attributes }}>
-              {% if block.settings.image != blank %}
-                {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', class: 'pu-image-scroll__image' }}
-              {% else %}
-                <img
-                  class="pu-image-scroll__image"
-                  src="{{ block.settings.fallback_asset | default: 'pu-scroll-img-1.png' | asset_url }}"
-                  alt="{{ block.settings.alt | escape }}"
-                  loading="lazy"
-                  width="485"
-                  height="531"
-                >
-              {% endif %}
+              <div class="pu-image-scroll__frame">
+                {% if block.settings.image != blank %}
+                  {{
+                    block.settings.image
+                    | image_url: width: 1000
+                    | image_tag: loading: 'lazy', class: 'pu-image-scroll__image', alt: block.settings.alt
+                  }}
+                {% else %}
+                  <img
+                    class="pu-image-scroll__image"
+                    src="{{ block.settings.fallback_asset | default: 'pu-scroll-img-1.png' | asset_url }}"
+                    alt="{{ block.settings.alt | escape }}"
+                    loading="lazy"
+                    width="485"
+                    height="531"
+                  >
+                {% endif %}
+                {% if block.settings.overlay_text != blank %}
+                  <p
+                    class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}"
+                    style="--overlay-rotate: {{ block.settings.overlay_rotation | default: 0 }}deg"
+                  >
+                    {{- block.settings.overlay_text -}}
+                  </p>
+                {% endif %}
+              </div>
             </div>
           {% endfor %}
         </div>
@@ -54,10 +94,16 @@
 {% stylesheet %}
   .pu-image-scroll {
     position: relative;
+    overflow: hidden;
+  }
+
+  .pu-image-scroll img {
+    max-width: none !important;
   }
 
   .pu-image-scroll__purple {
     position: relative;
+    z-index: 1;
     min-height: 800px;
     background: #4a1a8a;
     overflow: hidden;
@@ -72,13 +118,18 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center bottom;
+  }
+
+  .pu-image-scroll__purple > .pu-image-scroll__texture {
+    z-index: 1;
   }
 
   .pu-image-scroll__curved-text {
     position: relative;
     z-index: 2;
     width: 100%;
-    padding: 60px 0 120px;
+    padding: 60px 0 140px;
   }
 
   .pu-image-scroll__text-svg {
@@ -90,45 +141,81 @@
   .pu-image-scroll__svg-text {
     fill: var(--pu-white);
     font-family: var(--pu-font-display);
-    font-size: 72px;
+    font-size: clamp(48px, 6.5vw, 72px);
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: -2px;
   }
 
   .pu-image-scroll__svg-text--lower {
-    font-size: 64px;
+    font-size: clamp(44px, 5.5vw, 64px);
   }
 
   .pu-image-scroll__orange {
     position: relative;
-    background: var(--pu-orange);
+    z-index: 2;
+    margin-top: -120px;
+    overflow: hidden;
   }
 
   .pu-image-scroll__pin {
     position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-end;
+    min-height: 904px;
     overflow: hidden;
+  }
+
+  .pu-image-scroll__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .pu-image-scroll__bg-orange {
+    position: absolute;
+    inset: 0;
+    background: var(--pu-orange);
   }
 
   .pu-image-scroll__arc {
     position: absolute;
-    top: 150px;
+    top: 0;
     left: 0;
     width: 100%;
     height: auto;
-    pointer-events: none;
+    z-index: 2;
+  }
+
+  .pu-image-scroll__bg-green {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 46%;
+    bottom: 0;
+    background: var(--pu-orange);
     z-index: 1;
+  }
+
+  .pu-image-scroll__green-arc {
+    position: absolute;
+    top: 46%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    transform: translateY(-58%);
+    z-index: 3;
+  }
+
+  .pu-image-scroll__bg .pu-image-scroll__texture {
+    z-index: 4;
   }
 
   .pu-image-scroll__viewport {
     position: relative;
-    z-index: 2;
+    z-index: 5;
     width: 100%;
     overflow: hidden;
-    padding: 180px 0 80px;
+    padding: 72px 0;
   }
 
   .pu-image-scroll__track {
@@ -144,25 +231,35 @@
     filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
   }
 
-  .pu-image-scroll__slide:nth-child(odd) {
-    transform: translateY(24px) rotate(-2deg);
+  .pu-image-scroll__slide:nth-child(3n + 1) {
+    transform: translateY(24px) rotate(4deg);
   }
 
-  .pu-image-scroll__slide:nth-child(even) {
-    transform: translateY(0) rotate(2deg);
+  .pu-image-scroll__slide:nth-child(3n + 2) {
+    transform: translateY(48px) rotate(-5deg);
   }
 
   .pu-image-scroll__slide:nth-child(3n) {
-    transform: translateY(40px) rotate(-1deg);
+    transform: translateY(8px) rotate(-3deg);
   }
 
   .pu-image-scroll__frame {
     position: relative;
   }
 
+  .pu-image-scroll__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    clip-path: polygon(2% 0%, 98% 2%, 100% 95%, 5% 100%, 0% 50%);
+    /* border: 6px solid var(--pu-green);
+    background: var(--pu-green); */
+  }
+
   .pu-image-scroll__overlay {
     position: absolute;
-    z-index: 3;
+    z-index: 2;
     margin: 0;
     max-width: 75%;
     font-family: 'Caveat', cursive;
@@ -170,9 +267,7 @@
     font-weight: 600;
     line-height: 1.15;
     color: var(--pu-white);
-    text-shadow:
-      0 0 12px rgba(255, 255, 255, 0.35),
-      0 1px 3px rgba(0, 0, 0, 0.45);
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.45);
     pointer-events: none;
     white-space: pre-line;
   }
@@ -205,24 +300,35 @@
     text-align: left;
   }
 
-  .pu-image-scroll__image {
-    width: 100%;
-    height: auto;
-    display: block;
-    clip-path: polygon(2% 0%, 98% 2%, 100% 95%, 5% 100%, 0% 50%);
-    border: 6px solid var(--pu-green);
-    background: var(--pu-green);
-  }
-
   @media (max-width: 749px) {
-    .pu-image-scroll__svg-text { font-size: 36px; }
-    .pu-image-scroll__svg-text--lower { font-size: 28px; }
+    .pu-image-scroll__purple {
+      min-height: 520px;
+    }
+
+    .pu-image-scroll__curved-text {
+      padding: 40px 0 100px;
+    }
+
+    .pu-image-scroll__orange {
+      margin-top: -60px;
+    }
+
+    .pu-image-scroll__pin {
+      min-height: auto;
+    }
+
+    .pu-image-scroll__viewport {
+      padding: 140px 0 60px;
+    }
+
     .pu-image-scroll__track {
       flex-direction: column;
       align-items: center;
       padding: 0 24px;
     }
-    .pu-image-scroll__slide {
+
+    .pu-image-scroll__slide,
+    .pu-image-scroll__slide:nth-child(n) {
       transform: none !important;
     }
   }
@@ -320,7 +426,7 @@
           "type": "image",
           "settings": {
             "fallback_asset": "pu-scroll-img-3.png",
-            "alt": "Skateboard"
+            "alt": "Dogs"
           }
         },
         {

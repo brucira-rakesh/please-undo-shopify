@@ -2,181 +2,125 @@
   <div class="pu-svg-grid__inner">
     <header class="pu-svg-grid__header">
       <h2 class="pu-svg-grid__title">
-        <span class="pu-svg-grid__title-line">{{ section.settings.title_line_1 | default: 'we are the OFFICIAL SPONSORS for those' }}</span>
         <span class="pu-svg-grid__title-line">
-          <span class="pu-svg-grid__title-accent">who</span>
-          <span class="pu-svg-grid__title-accent">never learn</span>
+          {{- section.settings.title_line_1 | default: 'we are the OFFICIAL' -}}
+        </span>
+        <span class="pu-svg-grid__title-line">{{ section.settings.title_line_2 | default: 'SPONSORS for those' }}</span>
+        <span class="pu-svg-grid__title-line pu-svg-grid__title-line--accent">
+          {{ section.settings.title_line_3 | default: 'who never learn' }}
         </span>
       </h2>
     </header>
 
     <div class="pu-svg-grid__stage">
-      {% comment %} Orange tile {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--orange-tile">
-        <div class="pu-svg-grid__tile pu-svg-grid__tile--orange"></div>
-      </div>
-
-      {% comment %} Orange figure {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--orange-figure" data-pu-svg-card data-card-index="0">
-        <div class="pu-svg-grid__crop pu-svg-grid__crop--orange">
-          <img
-            class="pu-svg-grid__sprite"
-            data-pu-svg-default
-            src="{{ 'pu-grid-brand-sprites.png' | asset_url }}"
-            alt=""
-            width="296"
-            height="312"
-            loading="lazy"
-          >
-          <img
-            class="pu-svg-grid__sprite pu-svg-grid__sprite--alt"
-            data-pu-svg-alt
-            src="{{ 'pu-stick-figure-1.png' | asset_url }}"
-            alt=""
-            width="296"
-            height="312"
-            loading="lazy"
-            hidden
-          >
-        </div>
-      </div>
-
-      {% comment %} Yellow tile {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--yellow-tile">
-        <div class="pu-svg-grid__tile pu-svg-grid__tile--yellow"></div>
-      </div>
-
-      {% comment %} Yellow figure {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--yellow-figure" data-pu-svg-card data-card-index="1">
-        <div class="pu-svg-grid__crop pu-svg-grid__crop--yellow">
-          <img
-            class="pu-svg-grid__sprite"
-            data-pu-svg-default
-            src="{{ 'pu-grid-figure-yellow.png' | asset_url }}"
-            alt=""
-            width="239"
-            height="275"
-            loading="lazy"
-          >
-          <img
-            class="pu-svg-grid__sprite pu-svg-grid__sprite--alt"
-            data-pu-svg-alt
-            src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-            alt=""
-            width="239"
-            height="275"
-            loading="lazy"
-            hidden
-          >
-        </div>
-      </div>
-
-      {% comment %} Blue tile {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--blue-tile">
-        <div class="pu-svg-grid__tile pu-svg-grid__tile--blue"></div>
-      </div>
-
-      {% comment %} Blue figure {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--blue-figure" data-pu-svg-card data-card-index="2">
-        <div class="pu-svg-grid__crop pu-svg-grid__crop--blue">
-          <img
-            class="pu-svg-grid__sprite"
-            data-pu-svg-default
-            src="{{ 'pu-grid-sprites.png' | asset_url }}"
-            alt=""
-            width="270"
-            height="427"
-            loading="lazy"
-          >
-          <img
-            class="pu-svg-grid__sprite pu-svg-grid__sprite--alt"
-            data-pu-svg-alt
-            src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-            alt=""
-            width="270"
-            height="427"
-            loading="lazy"
-            hidden
-          >
-        </div>
-      </div>
-
-      {% comment %} Green tile {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--green-tile">
-        <div class="pu-svg-grid__tile pu-svg-grid__tile--green"></div>
-      </div>
-
-      {% comment %} Green figure {% endcomment %}
-      <div class="pu-svg-grid__rotate pu-svg-grid__rotate--green-figure" data-pu-svg-card data-card-index="3">
-        <div class="pu-svg-grid__crop pu-svg-grid__crop--green">
-          <img
-            class="pu-svg-grid__sprite"
-            data-pu-svg-default
-            src="{{ 'pu-grid-sprites.png' | asset_url }}"
-            alt=""
-            width="374"
-            height="385"
-            loading="lazy"
-          >
-          <img
-            class="pu-svg-grid__sprite pu-svg-grid__sprite--alt"
-            data-pu-svg-alt
-            src="{{ 'pu-stick-figure-1.png' | asset_url }}"
-            alt=""
-            width="374"
-            height="385"
-            loading="lazy"
-            hidden
-          >
-        </div>
-      </div>
-
-      {% comment %} Sparks + center key {% endcomment %}
-      <img
-        class="pu-svg-grid__spark pu-svg-grid__spark--left"
-        src="{{ 'pu-grid-spark-left.png' | asset_url }}"
-        alt=""
-        width="36"
-        height="90"
+      <div
+        class="pu-svg-grid__card pu-svg-grid__card--orange"
+        data-pu-svg-card
+        data-card-index="0"
+        style="--card-rotate: -16deg;"
       >
-      <img
-        class="pu-svg-grid__spark pu-svg-grid__spark--right"
-        src="{{ 'pu-grid-spark-right.png' | asset_url }}"
-        alt=""
-        width="36"
-        height="90"
-      >
+        <div class="pu-svg-grid__card-inner pu-svg-grid__card-orange">
+          <div class="pu-svg-grid__tile pu-svg-grid__tile--orange"></div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure-top-left" data-pu-svg-default>
+            <img src="{{ 'sponsor-top-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
+            <img src="{{ 'sponsor-top-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+        </div>
+      </div>
 
-      <button type="button" class="pu-svg-grid__center-btn" data-pu-svg-toggle aria-label="Toggle illustrations">
+      <div
+        class="pu-svg-grid__card pu-svg-grid__card--yellow"
+        data-pu-svg-card
+        data-card-index="1"
+        style="--card-rotate: 11deg;"
+      >
+        <div class="pu-svg-grid__card-inner pu-svg-grid__card-yellow">
+          <div class="pu-svg-grid__tile pu-svg-grid__tile--yellow "></div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure-top-right" data-pu-svg-default>
+            <img src="{{ 'sponsor-top-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
+            <img src="{{ 'sponsor-bottom-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="pu-svg-grid__card pu-svg-grid__card--blue"
+        data-pu-svg-card
+        data-card-index="2"
+        style="--card-rotate: 9deg;"
+      >
+        <div class="pu-svg-grid__card-inner pu-svg-grid__card-blue">
+          <div class="pu-svg-grid__tile pu-svg-grid__tile--blue"></div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure-bottom-left" data-pu-svg-default>
+            <img src="{{ 'sponsor-bottom-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
+            <img src="{{ 'sponsor-bottom-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="pu-svg-grid__card pu-svg-grid__card--green"
+        data-pu-svg-card
+        data-card-index="3"
+        style="--card-rotate: -11deg;"
+      >
+        <div class="pu-svg-grid__card-inner pu-svg-grid__card-green">
+          <div class="pu-svg-grid__tile pu-svg-grid__tile--green"></div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure-bottom-right" data-pu-svg-default>
+            <img src="{{ 'sponsor-bottom-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
+            <img src="{{ 'sponsor-bottom-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </div>
+        </div>
+      </div>
+
+      <div class="pu-svg-grid__center">
         <img
-          class="pu-svg-grid__center-btn-img"
-          src="{{ 'pu-grid-center-btn.png' | asset_url }}"
-          alt="Please Undo"
-          width="242"
-          height="199"
+          class="pu-svg-grid__spark pu-svg-grid__spark--left"
+          src="{{ 'pu-grid-spark-left.png' | asset_url }}"
+          alt=""
+          width="36"
+          height="90"
+          loading="lazy"
         >
-      </button>
+        <button type="button" class="pu-svg-grid__key" data-pu-svg-toggle aria-label="Toggle illustrations">
+          <img src="{{ 'please-undo-btn.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+        </button>
+        <img
+          class="pu-svg-grid__spark pu-svg-grid__spark--right"
+          src="{{ 'pu-grid-spark-right.png' | asset_url }}"
+          alt=""
+          width="36"
+          height="90"
+          loading="lazy"
+        >
+      </div>
     </div>
   </div>
 </section>
 
 {% stylesheet %}
   .pu-svg-grid {
-    --stage-w: 1440;
-    --stage-h: 1120;
     background: var(--pu-white);
-    padding: 0;
     overflow: hidden;
   }
 
   .pu-svg-grid__inner {
     max-width: 1440px;
     margin: 0 auto;
+    padding: 0 16px 64px;
   }
 
   .pu-svg-grid__header {
     text-align: center;
-    padding: 91px 32px 0;
+    padding: clamp(48px, 6.3vw, 91px) 16px clamp(24px, 4vw, 48px);
   }
 
   .pu-svg-grid__title {
@@ -184,7 +128,7 @@
     max-width: 795px;
     font-family: var(--pu-font-display);
     font-weight: 700;
-    font-size: clamp(40px, 6.67vw, 96px);
+    font-size: clamp(36px, 6.67vw, 96px);
     line-height: 0.8;
     letter-spacing: -0.04em;
     text-transform: uppercase;
@@ -195,367 +139,229 @@
     display: block;
   }
 
-  .pu-svg-grid__title-accent {
+  .pu-svg-grid__title-line--accent {
     color: #ff6800;
-  }
-
-  .pu-svg-grid__title-line .pu-svg-grid__title-accent + .pu-svg-grid__title-accent::before {
-    content: ' ';
   }
 
   .pu-svg-grid__stage {
     position: relative;
     width: 100%;
-    aspect-ratio: 1440 / 1120;
     margin: 0 auto;
+    aspect-ratio: 1100 / 620;
+    min-height: 420px;
   }
 
-  .pu-svg-grid img {
-    width: auto;
-    max-width: none;
-    height: auto;
-    display: block;
-  }
-
-  .pu-svg-grid__rotate {
+  .pu-svg-grid__card {
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
+    width: clamp(120px, 21%, 234px);
+    aspect-ratio: 233 / 270;
     z-index: 1;
   }
 
-  .pu-svg-grid__rotate--orange-figure,
-  .pu-svg-grid__rotate--yellow-figure,
-  .pu-svg-grid__rotate--blue-figure,
-  .pu-svg-grid__rotate--green-figure {
-    z-index: 2;
+  .pu-svg-grid__card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform: rotate(var(--card-rotate, 0deg));
+    transform-origin: center center;
+  }
+
+  .pu-svg-grid__tile--orange,
+  .pu-svg-grid__card-yellow {
+    min-width: 235px;
+    min-height: 275px;
+  }
+
+  .pu-svg-grid__card-blue,
+  .pu-svg-grid__card-green {
+    min-width: 285px;
+    min-height: 330px;
   }
 
   .pu-svg-grid__tile {
-    flex-shrink: 0;
-  }
-
-  .pu-svg-grid__crop {
-    position: relative;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .pu-svg-grid__sprite {
     position: absolute;
-    max-width: none;
-    transition: opacity 0.35s ease;
-  }
-
-  .pu-svg-grid__sprite--alt {
     inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    opacity: 0;
-  }
-
-  [data-pu-svg-card].is-swapped .pu-svg-grid__sprite[data-pu-svg-default] {
-    opacity: 0;
-  }
-
-  [data-pu-svg-card].is-swapped .pu-svg-grid__sprite[data-pu-svg-alt] {
-    opacity: 1;
-  }
-
-  .pu-svg-grid__sprite[data-pu-svg-alt][hidden] {
-    display: block !important;
-  }
-
-  /* Orange tile */
-  .pu-svg-grid__rotate--orange-tile {
-    left: calc(181.6 / var(--stage-w) * 100%);
-    top: calc(376.48 / var(--stage-h) * 100%);
-    width: calc(299.65 / var(--stage-w) * 100%);
-    height: calc(324.982 / var(--stage-h) * 100%);
-  }
-
-  .pu-svg-grid__rotate--orange-tile > .pu-svg-grid__tile {
-    width: calc(233.124 / 299.65 * 100%);
-    aspect-ratio: 233.124 / 270.424;
-    transform: rotate(-16.3deg);
+    border-radius: 2px;
   }
 
   .pu-svg-grid__tile--orange {
     background: #f66400;
   }
-
-  /* Orange figure */
-  .pu-svg-grid__rotate--orange-figure {
-    left: calc((720 - 433.2) / var(--stage-w) * 100%);
-    top: calc((560 - 58.76) / var(--stage-h) * 100%);
-    width: calc(374.766 / var(--stage-w) * 100%);
-    height: calc(385.452 / var(--stage-h) * 100%);
-    transform: translate(-50%, -50%);
-    pointer-events: auto;
-  }
-
-  .pu-svg-grid__rotate--orange-figure .pu-svg-grid__crop {
-    width: calc(296.38 / 374.766 * 100%);
-    aspect-ratio: 296.38 / 312.473;
-    transform: rotate(-16.99deg);
-  }
-
-  .pu-svg-grid__crop--orange .pu-svg-grid__sprite[data-pu-svg-default] {
-    width: 827.92%;
-    height: 548.13%;
-    left: -606.72%;
-    top: -434.92%;
-  }
-
-  /* Yellow tile */
-  .pu-svg-grid__rotate--yellow-tile {
-    left: calc(952.67 / var(--stage-w) * 100%);
-    top: calc(376.48 / var(--stage-h) * 100%);
-    width: calc(280.212 / var(--stage-w) * 100%);
-    height: calc(309.755 / var(--stage-h) * 100%);
-  }
-
-  .pu-svg-grid__rotate--yellow-tile > .pu-svg-grid__tile {
-    width: calc(233.124 / 280.212 * 100%);
-    aspect-ratio: 233.124 / 270.424;
-    transform: rotate(10.94deg);
-  }
-
   .pu-svg-grid__tile--yellow {
     background: #fceb00;
   }
-
-  /* Yellow figure */
-  .pu-svg-grid__rotate--yellow-figure {
-    left: calc(974.12 / var(--stage-w) * 100%);
-    top: calc(366.58 / var(--stage-h) * 100%);
-    width: calc(286.52 / var(--stage-w) * 100%);
-    height: calc(315.473 / var(--stage-h) * 100%);
-    pointer-events: auto;
-  }
-
-  .pu-svg-grid__rotate--yellow-figure .pu-svg-grid__crop {
-    width: calc(238.629 / 286.52 * 100%);
-    aspect-ratio: 238.629 / 275.184;
-    transform: rotate(10.94deg);
-  }
-
-  .pu-svg-grid__crop--yellow .pu-svg-grid__sprite[data-pu-svg-default] {
-    width: 172.4%;
-    height: 122.8%;
-    left: -32.38%;
-    top: -11.87%;
-  }
-
-  /* Blue tile */
-  .pu-svg-grid__rotate--blue-tile {
-    left: calc(50.32 / var(--stage-w) * 100%);
-    top: calc(716.3 / var(--stage-h) * 100%);
-    width: calc(332.535 / var(--stage-w) * 100%);
-    height: calc(370.692 / var(--stage-h) * 100%);
-  }
-
-  .pu-svg-grid__rotate--blue-tile > .pu-svg-grid__tile {
-    width: calc(285.367 / 332.535 * 100%);
-    aspect-ratio: 285.367 / 331.026;
-    transform: rotate(8.78deg);
-  }
-
   .pu-svg-grid__tile--blue {
     background: #0067ef;
   }
-
-  /* Blue figure */
-  .pu-svg-grid__rotate--blue-figure {
-    left: calc(82.04 / var(--stage-w) * 100%);
-    top: calc(675.17 / var(--stage-h) * 100%);
-    width: calc(331.585 / var(--stage-w) * 100%);
-    height: calc(463.068 / var(--stage-h) * 100%);
-    pointer-events: auto;
-  }
-
-  .pu-svg-grid__rotate--blue-figure .pu-svg-grid__crop {
-    width: calc(269.599 / 331.585 * 100%);
-    aspect-ratio: 269.599 / 426.931;
-    transform: rotate(8.78deg);
-  }
-
-  .pu-svg-grid__crop--blue .pu-svg-grid__sprite[data-pu-svg-default] {
-    width: 813.62%;
-    height: 267.79%;
-    left: -99.28%;
-    top: -50.57%;
-  }
-
-  /* Green tile */
-  .pu-svg-grid__rotate--green-tile {
-    left: calc(1008.27 / var(--stage-w) * 100%);
-    top: calc(722.84 / var(--stage-h) * 100%);
-    width: calc(342.715 / var(--stage-w) * 100%);
-    height: calc(378.936 / var(--stage-h) * 100%);
-  }
-
-  .pu-svg-grid__rotate--green-tile > .pu-svg-grid__tile {
-    width: calc(285.367 / 342.715 * 100%);
-    aspect-ratio: 285.367 / 331.026;
-    transform: rotate(-10.88deg);
-  }
-
   .pu-svg-grid__tile--green {
     background: #00973a;
   }
 
-  /* Green figure */
-  .pu-svg-grid__rotate--green-figure {
-    left: calc(894.11 / var(--stage-w) * 100%);
-    top: calc(671.56 / var(--stage-h) * 100%);
-    width: calc(531.688 / var(--stage-w) * 100%);
-    height: calc(529.367 / var(--stage-h) * 100%);
-    pointer-events: auto;
-  }
-
-  .pu-svg-grid__rotate--green-figure .pu-svg-grid__crop {
-    width: calc(373.387 / 531.688 * 100%);
-    aspect-ratio: 373.387 / 384.788;
-    transform: rotate(-126.72deg) scaleY(-1);
-  }
-
-  .pu-svg-grid__crop--green .pu-svg-grid__sprite[data-pu-svg-default] {
-    width: 558.02%;
-    height: 282.22%;
-    left: -161.07%;
-    top: -64.07%;
-  }
-
-  /* Sparks */
-  .pu-svg-grid__spark {
+  .pu-svg-grid__figure {
     position: absolute;
-    width: calc(36 / var(--stage-w) * 100%);
-    height: calc(90 / var(--stage-h) * 100%);
+    /* inset: 8% 6% 4%; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     pointer-events: none;
-    z-index: 5;
+    transition: opacity 0.35s ease;
   }
 
-  .pu-svg-grid__spark--left {
-    left: calc(555.34 / var(--stage-w) * 100%);
-    top: calc(614.77 / var(--stage-h) * 100%);
+  .pu-svg-grid__figure-top-left {
+    top: -39%;
+    left: -45%;
+    transform: rotate(16deg);
   }
 
-  .pu-svg-grid__spark--right {
-    left: calc(867.6 / var(--stage-w) * 100%);
-    top: calc(614.77 / var(--stage-h) * 100%);
+  .pu-svg-grid__figure-bottom-left {
+    bottom: -14%;
+    transform: rotate(-10deg);
+    right: -18%;
   }
 
-  /* Center PLEASE UNDO key */
-  .pu-svg-grid__center-btn {
+  .pu-svg-grid__figure-top-right {
+    top: -12%;
+    right: -21%;
+    transform: rotate(-8deg);
+  }
+
+  .pu-svg-grid__figure-bottom-right {
+    left: -53%;
+    top: -21%;
+  }
+
+  .pu-svg-grid__figure--alt {
+    opacity: 0;
+  }
+
+  .pu-svg-grid__figure .pu-svg-figure {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+  }
+
+  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-default] {
+    opacity: 0;
+  }
+
+  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-alt] {
+    opacity: 1;
+  }
+
+  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-alt][hidden] {
+    display: flex !important;
+  }
+
+  .pu-svg-grid__card--orange {
+    left: 10%;
+    top: 2%;
+  }
+
+  .pu-svg-grid__card--yellow {
+    right: 10%;
+    top: 0;
+  }
+
+  .pu-svg-grid__card--blue {
+    left: 2%;
+    bottom: 6%;
+  }
+
+  .pu-svg-grid__card--green {
+    right: 2%;
+    bottom: 4%;
+  }
+
+  .pu-svg-grid__center {
     position: absolute;
-    left: calc((720 + 9.47) / var(--stage-w) * 100%);
-    top: calc((560 + 154.27) / var(--stage-h) * 100%);
-    z-index: 10;
+    left: 50%;
+    top: 54%;
     transform: translate(-50%, -50%);
-    width: calc(242.255 / var(--stage-w) * 100%);
-    padding: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: clamp(8px, 2vw, 20px);
+  }
+
+  .pu-svg-grid__spark {
+    width: clamp(20px, 3.2vw, 36px) !important;
+    height: auto !important;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  .pu-svg-grid__key {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    width: clamp(120px, 17vw, 200px);
+    aspect-ratio: 242 / 199;
+    padding: 12px 16px;
     border: none;
+    border-radius: 10px;
     background: transparent;
+    box-shadow: none;
     cursor: pointer;
     transition: transform 0.2s ease;
+    font-family: var(--pu-font-display);
+    font-weight: 800;
+    font-size: clamp(18px, 2.4vw, 28px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: var(--pu-navy-text);
   }
 
-  .pu-svg-grid__center-btn:hover {
-    transform: translate(-50%, -50%) scale(1.02);
+  .pu-svg-grid__key:hover {
+    transform: translateY(-2px);
   }
 
-  .pu-svg-grid__center-btn.is-active {
-    transform: translate(-50%, -50%) scale(0.97);
+  .pu-svg-grid__key.is-active {
+    transform: translateY(2px);
+    /* box-shadow: 0 2px 0 #b8b8b8, 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 #fff; */
   }
 
-  .pu-svg-grid__center-btn-img {
-    width: 100%;
-    height: auto;
+  .pu-svg-grid__key-line {
+    display: block;
   }
 
-  @media (max-width: 989px) {
-    .pu-svg-grid__header {
-      padding-top: 64px;
-    }
-
+  @media (max-width: 749px) {
     .pu-svg-grid__stage {
-      aspect-ratio: 1440 / 1400;
+      aspect-ratio: auto;
+      min-height: 680px;
+      max-width: 400px;
     }
 
-    .pu-svg-grid__rotate--orange-tile,
-    .pu-svg-grid__rotate--orange-figure {
-      left: 5%;
-      top: 18%;
+    .pu-svg-grid__card {
+      width: 38%;
     }
 
-    .pu-svg-grid__rotate--yellow-tile,
-    .pu-svg-grid__rotate--yellow-figure {
-      left: auto;
-      right: 5%;
-      top: 16%;
+    .pu-svg-grid__card--orange {
+      left: 4%;
+      top: 0;
+    }
+    .pu-svg-grid__card--yellow {
+      right: 4%;
+      top: 0;
+    }
+    .pu-svg-grid__card--blue {
+      left: 4%;
+      bottom: 28%;
+    }
+    .pu-svg-grid__card--green {
+      right: 4%;
+      bottom: 28%;
     }
 
-    .pu-svg-grid__rotate--blue-tile,
-    .pu-svg-grid__rotate--blue-figure {
-      left: 3%;
-      top: auto;
-      bottom: 22%;
-    }
-
-    .pu-svg-grid__rotate--green-tile,
-    .pu-svg-grid__rotate--green-figure {
-      left: auto;
-      right: 3%;
-      top: auto;
-      bottom: 20%;
-    }
-
-    .pu-svg-grid__center-btn {
-      top: 52%;
+    .pu-svg-grid__center {
+      top: 62%;
+      gap: 6px;
     }
 
     .pu-svg-grid__spark {
-      display: none;
-    }
-  }
-
-  @media (max-width: 549px) {
-    .pu-svg-grid__stage {
-      aspect-ratio: auto;
-      min-height: 900px;
-      margin-bottom: 48px;
-    }
-
-    .pu-svg-grid__rotate--orange-tile,
-    .pu-svg-grid__rotate--orange-figure,
-    .pu-svg-grid__rotate--yellow-tile,
-    .pu-svg-grid__rotate--yellow-figure,
-    .pu-svg-grid__rotate--blue-tile,
-    .pu-svg-grid__rotate--blue-figure,
-    .pu-svg-grid__rotate--green-tile,
-    .pu-svg-grid__rotate--green-figure {
-      left: 50% !important;
-      right: auto !important;
-      transform: translateX(-50%);
-      width: 70%;
-      height: auto;
-    }
-
-    .pu-svg-grid__rotate--orange-tile,
-    .pu-svg-grid__rotate--orange-figure { top: 8%; }
-    .pu-svg-grid__rotate--yellow-tile,
-    .pu-svg-grid__rotate--yellow-figure { top: 26%; }
-    .pu-svg-grid__rotate--blue-tile,
-    .pu-svg-grid__rotate--blue-figure { top: 44%; bottom: auto; }
-    .pu-svg-grid__rotate--green-tile,
-    .pu-svg-grid__rotate--green-figure { top: 62%; bottom: auto; }
-
-    .pu-svg-grid__center-btn {
-      top: 82%;
+      width: 18px !important;
     }
   }
 {% endstylesheet %}
@@ -569,7 +375,19 @@
       "type": "text",
       "id": "title_line_1",
       "label": "Title line 1",
-      "default": "we are the OFFICIAL SPONSORS for those"
+      "default": "we are the OFFICIAL"
+    },
+    {
+      "type": "text",
+      "id": "title_line_2",
+      "label": "Title line 2",
+      "default": "SPONSORS for those"
+    },
+    {
+      "type": "text",
+      "id": "title_line_3",
+      "label": "Title line 3 (accent)",
+      "default": "who never learn"
     }
   ],
   "presets": [{ "name": "PU SVG Grid" }]

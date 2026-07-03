@@ -1,157 +1,257 @@
 {% liquid
-  assign collection = collections[section.settings.collection]
+  assign product_blocks = section.blocks | where: 'type', 'product'
   assign has_products = false
-  if collection != blank and collection.products_count > 0
+  if product_blocks.size > 0
     assign has_products = true
   endif
 %}
 
 <section class="pu-product-slider" data-pu-product-slider>
+  <div class="pu-product-slider__texture pu-texture-overlay"></div>
+
   <div class="pu-product-slider__hang" data-pu-hanging-title>
-    <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
-    <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
-    <div class="pu-product-slider__sign">
-      <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
+    <div class="pu-product-slider__swing" data-pu-hang-swing>
+      <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
+      <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
+      <div class="pu-product-slider__sign">
+        <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
+      </div>
     </div>
   </div>
 
-  <div class="pu-product-slider__texture pu-texture-overlay"></div>
-
-  <div class="pu-product-slider__content">
-    <div class="pu-product-slider__info" data-pu-product-info>
-      {% if has_products %}
-        {% assign first_product = collection.products.first %}
-        <p class="pu-product-slider__category" data-pu-product-category>{{ first_product.vendor | default: 'LAPTOP NECK' }}</p>
-        <h3 class="pu-product-slider__product-title" data-pu-product-title>{{ first_product.title }}</h3>
-        <div class="pu-product-slider__features">
-          <div class="pu-product-slider__feature-nums">
-            <span>1</span><span>2</span><span>3</span>
-          </div>
-          <div class="pu-product-slider__feature-text" data-pu-product-features>
-            {% if section.settings.feature_1 != blank %}<p>{{ section.settings.feature_1 }}</p>{% endif %}
-            {% if section.settings.feature_2 != blank %}<p>{{ section.settings.feature_2 }}</p>{% endif %}
-            {% if section.settings.feature_3 != blank %}<p>{{ section.settings.feature_3 }}</p>{% endif %}
-          </div>
-        </div>
-        <a href="{{ first_product.url }}" class="pu-btn pu-btn--yellow" data-pu-product-link>SHOP NOW</a>
-      {% else %}
-        <p class="pu-product-slider__category">LAPTOP NECK</p>
-        <h3 class="pu-product-slider__product-title">Pain-relief Roll On</h3>
-        <div class="pu-product-slider__features">
-          <div class="pu-product-slider__feature-nums"><span>1</span><span>2</span><span>3</span></div>
-          <div class="pu-product-slider__feature-text">
-            <p>Low smell</p><p>0 Stain</p><p>Daily use</p>
-          </div>
-        </div>
-        <a href="{{ routes.all_products_collection_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
-      {% endif %}
-    </div>
-
-    <div class="pu-product-slider__stage">
+  <div class="pu-product-slider__pin" data-pu-product-pin>
+    <div class="pu-product-slider__viewport" data-pu-product-viewport>
       <div class="pu-product-slider__track" data-pu-product-track>
         {% if has_products %}
-          {% for product in collection.products limit: section.settings.max_products %}
+          {% for block in product_blocks %}
             <div
               class="pu-product-slider__slide{% if forloop.first %} is-active{% endif %}"
               data-pu-product-slide
               data-index="{{ forloop.index0 }}"
-              data-title="{{ product.title | escape }}"
-              data-vendor="{{ product.vendor | escape }}"
-              data-url="{{ product.url }}"
+              {{ block.shopify_attributes }}
             >
-              {% if product.featured_image %}
-                {{ product.featured_image | image_url: width: 600 | image_tag: class: 'pu-product-slider__product-img', loading: 'lazy' }}
-              {% else %}
-                <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="{{ product.title }}" class="pu-product-slider__product-img" width="291" height="744" loading="lazy">
-              {% endif %}
+              <div class="pu-product-slider__content">
+                <div class="pu-product-slider__info">
+                  <p class="pu-product-slider__category">
+                    {{ block.settings.subtext | default: 'LAPTOP NECK' }}
+                  </p>
+                  <h3 class="pu-product-slider__product-title">
+                    {{ block.settings.title | default: 'Pain-relief Roll On' }}
+                  </h3>
+                  <div class="pu-product-slider__features">
+                    <div class="pu-product-slider__feature-nums">
+                      {% assign bullet_count = block.settings.bullet_points
+                        | strip_html
+                        | split: '</p>'
+                        | size
+                        | minus: 1
+                      %}
+                      {% if bullet_count < 1 %}
+                        {% assign bullet_count = 3 %}
+                      {% endif %}
+                      {% for i in (1..bullet_count) %}
+                        <span>{{ i }}</span>
+                      {% endfor %}
+                    </div>
+                    <div class="pu-product-slider__feature-text rte">
+                      {% if block.settings.bullet_points != blank %}
+                        {{ block.settings.bullet_points }}
+                      {% else %}
+                        <p>Low smell</p>
+                        <p>0 Stain</p>
+                        <p>Daily use</p>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <a
+                    href="{{ block.settings.shop_now_url | default: routes.all_products_collection_url }}"
+                    class="pu-btn pu-btn--yellow"
+                  >
+                    SHOP NOW
+                  </a>
+                </div>
+
+                <div class="pu-product-slider__stage">
+                  <div class="pu-product-slider__image-wrap">
+                    {% if block.settings.product_image != blank %}
+                      {{
+                        block.settings.product_image
+                        | image_url: width: 600
+                        | image_tag: class: 'pu-product-slider__product-img', loading: 'lazy', alt: block.settings.title
+                      }}
+                    {% else %}
+                      <img
+                        src="{{ 'pu-product-mockup.png' | asset_url }}"
+                        alt="{{ block.settings.title | escape }}"
+                        class="pu-product-slider__product-img"
+                        width="291"
+                        height="744"
+                        loading="lazy"
+                      >
+                    {% endif %}
+                  </div>
+                  {% if block.settings.svg_icon != blank %}
+                    <img
+                      class="pu-product-slider__figure"
+                      src="{{ block.settings.svg_icon | image_url: width: 400 }}"
+                      alt=""
+                      width="274"
+                      height="332"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <img
+                      class="pu-product-slider__figure"
+                      src="{{ 'pu-brand-assets.png' | asset_url }}"
+                      alt=""
+                      width="274"
+                      height="332"
+                      loading="lazy"
+                    >
+                  {% endif %}
+                </div>
+              </div>
             </div>
           {% endfor %}
         {% else %}
           <div class="pu-product-slider__slide is-active" data-pu-product-slide data-index="0">
-            <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="Product" class="pu-product-slider__product-img" width="291" height="744" loading="lazy">
+            <div class="pu-product-slider__content">
+              <div class="pu-product-slider__info">
+                <p class="pu-product-slider__category">LAPTOP NECK</p>
+                <h3 class="pu-product-slider__product-title">Pain-relief Roll On</h3>
+                <div class="pu-product-slider__features">
+                  <div class="pu-product-slider__feature-nums"><span>1</span><span>2</span><span>3</span></div>
+                  <div class="pu-product-slider__feature-text rte">
+                    <p>Low smell</p>
+                    <p>0 Stain</p>
+                    <p>Daily use</p>
+                  </div>
+                </div>
+                <a href="{{ routes.all_products_collection_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
+              </div>
+              <div class="pu-product-slider__stage">
+                <div class="pu-product-slider__image-wrap">
+                  <img
+                    src="{{ 'pu-product-mockup.png' | asset_url }}"
+                    alt="Product"
+                    class="pu-product-slider__product-img"
+                    width="291"
+                    height="744"
+                    loading="lazy"
+                  >
+                </div>
+                <img
+                  class="pu-product-slider__figure"
+                  src="{{ 'pu-brand-assets.png' | asset_url }}"
+                  alt=""
+                  width="274"
+                  height="332"
+                  loading="lazy"
+                >
+              </div>
+            </div>
           </div>
         {% endif %}
       </div>
-      <img class="pu-product-slider__figure" src="{{ 'pu-brand-assets.png' | asset_url }}" alt="" width="274" height="332" loading="lazy">
+    </div>
+
+    <div class="pu-product-slider__progress" data-pu-product-progress>
+      {% if has_products %}
+        {% assign total = product_blocks.size %}
+      {% else %}
+        {% assign total = 1 %}
+      {% endif %}
+      {% if total < 1 %}{% assign total = 1 %}{% endif %}
+      {% for i in (1..total) %}
+        <span
+          class="pu-product-slider__progress-segment{% if forloop.first %} is-active{% endif %}"
+          data-pu-progress-segment
+        ></span>
+      {% endfor %}
+      {% if total == 1 %}
+        {% for i in (2..33) %}
+          <span class="pu-product-slider__progress-segment" data-pu-progress-segment></span>
+        {% endfor %}
+      {% endif %}
     </div>
   </div>
-
-  <div class="pu-product-slider__progress" data-pu-product-progress>
-    {% if has_products %}
-      {% assign total = collection.products_count %}
-      {% if total > section.settings.max_products %}
-        {% assign total = section.settings.max_products %}
-      {% endif %}
-    {% else %}
-      {% assign total = 1 %}
-    {% endif %}
-    {% if total < 1 %}{% assign total = 1 %}{% endif %}
-    {% for i in (1..total) %}
-      <span class="pu-product-slider__progress-segment{% if forloop.first %} is-active{% endif %}" data-pu-progress-segment></span>
-    {% endfor %}
-    {% if total == 1 %}
-      {% for i in (2..33) %}
-        <span class="pu-product-slider__progress-segment" data-pu-progress-segment></span>
-      {% endfor %}
-    {% endif %}
-  </div>
-
-  <script type="application/json" data-pu-products-json>
-    {% if has_products %}
-    [
-      {% for product in collection.products limit: section.settings.max_products %}
-        {
-          "title": {{ product.title | json }},
-          "vendor": {{ product.vendor | json }},
-          "url": {{ product.url | json }}
-        }{% unless forloop.last %},{% endunless %}
-      {% endfor %}
-    ]
-    {% else %}
-    []
-    {% endif %}
-  </script>
 </section>
 
 {% stylesheet %}
   .pu-product-slider {
     position: relative;
     background: var(--pu-blue);
-    min-height: 1310px;
-    overflow: hidden;
-    padding-bottom: 80px;
+    overflow: visible;
+    padding: 0 0 80px;
   }
 
   .pu-product-slider__hang {
-    position: absolute;
+    position: sticky;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 10;
-    width: min(710px, 90vw);
-    height: 200px;
+    width: min(870px, 90vw);
+    margin: 0 auto 56px;
     pointer-events: none;
+  }
+
+  .pu-product-slider__swing {
+    position: relative;
+    width: 100%;
+    min-height: 220px;
+    transform-origin: 50% 0;
+    will-change: transform;
+    backface-visibility: hidden;
+    animation: pu-product-swing 4s ease-in-out infinite;
+  }
+
+  @keyframes pu-product-swing {
+    0%,
+    100% {
+      transform: rotate(3deg);
+    }
+    50% {
+      transform: rotate(-3deg);
+    }
+  }
+
+  .pu-product-slider__pin {
+    position: relative;
+    z-index: 2;
+    min-height: min(70vh, 760px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-top: 8px;
   }
 
   .pu-product-slider__rope {
     position: absolute;
-    top: 0;
+    top: -32px;
     width: 12px;
-    height: 112px;
+    height: 224px;
     background: var(--pu-navy);
+    transform: rotate(3deg);
   }
 
-  .pu-product-slider__rope--left { left: 0; }
-  .pu-product-slider__rope--right { right: 0; height: 182px; top: -35px; transform: rotate(2.73deg); }
+  .pu-product-slider__rope--left {
+    left: 8px;
+  }
+  .pu-product-slider__rope--right {
+    right: 0;
+    height: 182px;
+    top: -35px;
+    transform: rotate(2.73deg);
+  }
 
   .pu-product-slider__sign {
     position: absolute;
     top: 80px;
     left: 50%;
-    transform: translateX(-50%) rotate(2.99deg);
+    translate: -50% 0;
+    rotate: 3deg;
     background: var(--pu-navy);
     padding: 24px 48px;
-    min-width: min(610px, 85vw);
+    min-width: min(860px, 85vw);
     text-align: center;
   }
 
@@ -167,16 +267,37 @@
     opacity: 0.9;
   }
 
+  .pu-product-slider__viewport {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .pu-product-slider__track {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .pu-product-slider__slide {
+    grid-area: 1 / 1;
+    width: 100%;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  .pu-product-slider__slide.is-active {
+    pointer-events: auto;
+  }
+
   .pu-product-slider__content {
     position: relative;
-    z-index: 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 40px;
-    max-width: 1200px;
     margin: 0 auto;
-    padding: 280px 46px 120px;
+    padding: 40px 46px 80px;
     align-items: center;
+    flex: 1;
   }
 
   .pu-product-slider__category {
@@ -226,12 +347,18 @@
     font-weight: 600;
   }
 
-  .pu-product-slider__feature-text p {
+  .pu-product-slider__feature-text :is(p, li) {
     margin: 0 0 8px;
     font-size: 28px;
     font-weight: 500;
     color: var(--pu-white);
     line-height: 1.4;
+  }
+
+  .pu-product-slider__feature-text ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   .pu-product-slider__stage {
@@ -240,27 +367,13 @@
     justify-content: center;
     align-items: center;
     min-height: 500px;
+    flex-shrink: 0;
   }
 
-  .pu-product-slider__track {
+  .pu-product-slider__image-wrap {
     position: relative;
     width: 291px;
     height: 744px;
-  }
-
-  .pu-product-slider__slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transform: translateX(60px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    pointer-events: none;
-  }
-
-  .pu-product-slider__slide.is-active {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
   }
 
   .pu-product-slider__product-img {
@@ -275,6 +388,8 @@
     bottom: 0;
     width: 274px;
     height: auto;
+    max-width: none !important;
+    object-fit: contain;
     opacity: 0.9;
   }
 
@@ -299,12 +414,21 @@
     opacity: 1;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .pu-product-slider__swing {
+      animation: none;
+      transform: none;
+    }
+  }
+
   @media (max-width: 989px) {
     .pu-product-slider__content {
-      grid-template-columns: 1fr;
-      padding-top: 240px;
+      flex-direction: column;
+      padding-top: 24px;
     }
-    .pu-product-slider__figure { display: none; }
+    .pu-product-slider__figure {
+      display: none;
+    }
   }
 {% endstylesheet %}
 
@@ -312,46 +436,71 @@
 {
   "name": "PU Product Slider",
   "class": "pu-product-slider-section",
+  "max_blocks": 12,
   "settings": [
     {
       "type": "text",
       "id": "title",
       "label": "Section title",
       "default": "Pick your Undo."
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Product collection"
-    },
-    {
-      "type": "range",
-      "id": "max_products",
-      "label": "Max products",
-      "min": 1,
-      "max": 12,
-      "step": 1,
-      "default": 6
-    },
-    {
-      "type": "text",
-      "id": "feature_1",
-      "label": "Feature 1",
-      "default": "Low smell"
-    },
-    {
-      "type": "text",
-      "id": "feature_2",
-      "label": "Feature 2",
-      "default": "0 Stain"
-    },
-    {
-      "type": "text",
-      "id": "feature_3",
-      "label": "Feature 3",
-      "default": "Daily use"
     }
   ],
-  "presets": [{ "name": "PU Product Slider" }]
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "product_image",
+          "label": "Product image"
+        },
+        {
+          "type": "image_picker",
+          "id": "svg_icon",
+          "label": "SVG icon",
+          "info": "Upload an SVG or PNG illustration shown beside the product."
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "LAPTOP NECK"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pain-relief Roll On"
+        },
+        {
+          "type": "richtext",
+          "id": "bullet_points",
+          "label": "Bullet points",
+          "default": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
+        },
+        {
+          "type": "url",
+          "id": "shop_now_url",
+          "label": "Shop now button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PU Product Slider",
+      "blocks": [
+        {
+          "type": "product",
+          "settings": {
+            "subtext": "LAPTOP NECK",
+            "title": "Pain-relief Roll On",
+            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
+          }
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}
