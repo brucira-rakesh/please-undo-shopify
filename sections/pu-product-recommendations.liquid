@@ -1,0 +1,81 @@
+<script
+  src="{{ 'product-recommendations.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% liquid
+  assign limit = section.settings.products_count | default: 4
+  assign intent = section.settings.recommendation_type | default: 'related'
+%}
+
+<section class="pu-product-recs">
+  <div class="pu-product-recs__inner">
+    <h2 class="pu-product-recs__title">{{ section.settings.heading | default: 'More undos' }}</h2>
+
+    <product-recommendations
+      class="pu-product-recs__grid"
+      data-url="{{ routes.product_recommendations_url }}?limit={{ limit }}"
+      data-section-id="{{ section.id }}"
+      data-product-id="{{ product.id }}"
+      data-intent="{{ intent }}"
+      data-recommendations-performed="{{ recommendations.performed }}"
+      {{ section.shopify_attributes }}
+    >
+      {% if recommendations.performed and recommendations.products_count > 0 %}
+        {% for rec_product in recommendations.products limit: limit %}
+          {% render 'pu-product-card', product: rec_product %}
+        {% endfor %}
+      {% elsif section.settings.collection != blank %}
+        {% assign shown = 0 %}
+        {% for rec_product in section.settings.collection.products %}
+          {% if rec_product.id != product.id and shown < limit %}
+            {% render 'pu-product-card', product: rec_product %}
+            {% assign shown = shown | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </product-recommendations>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PU Product Recs",
+  "class": "pu-product-recs-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "More undos"
+    },
+    {
+      "type": "select",
+      "id": "recommendation_type",
+      "label": "Recommendation type",
+      "options": [
+        { "value": "related", "label": "Related" },
+        { "value": "complementary", "label": "Complementary" }
+      ],
+      "default": "related"
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "label": "Products to show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Fallback collection",
+      "info": "Used when Shopify recommendations are unavailable"
+    }
+  ],
+  "presets": [{ "name": "PU Product Recs" }]
+}
+{% endschema %}

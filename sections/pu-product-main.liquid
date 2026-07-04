@@ -1,0 +1,253 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'pu-product-form-' | append: section.id
+  assign category_label = section.settings.category_label
+  if category_label == blank and product.metafields.custom.category != blank
+    assign category_label = product.metafields.custom.category
+  endif
+  if category_label == blank
+    assign category_label = 'LAPTOP NECK'
+  endif
+
+  assign show_compare = false
+  if current_variant.compare_at_price > current_variant.price
+    assign show_compare = true
+  endif
+%}
+
+<section
+  class="pu-product-main"
+  data-pu-product-main
+  id="pu-product-main"
+  data-money-format="{{ shop.money_format | escape }}"
+>
+  <div class="pu-product-main__texture pu-texture-overlay"></div>
+
+  <div class="pu-product-main__inner">
+    {% if section.settings.show_hanging_sign %}
+      <div class="pu-product-main__hang">
+        <div class="pu-product-main__swing">
+          <div class="pu-product-main__rope pu-product-main__rope--left"></div>
+          <div class="pu-product-main__rope pu-product-main__rope--right"></div>
+          <div class="pu-product-main__sign">
+            <h2 class="pu-product-main__sign-title">
+              {{ section.settings.sign_title | default: 'Pick your Undo.' }}
+            </h2>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="pu-product-main__grid">
+      <div class="pu-product-main__info">
+        <div class="pu-product-main__copy">
+          <p class="pu-product-main__category">{{ category_label }}</p>
+          <h1 class="pu-product-main__title">{{ product.title }}</h1>
+          <p class="pu-product-main__price">
+            {% if show_compare %}
+              <s data-pu-product-compare>{{ current_variant.compare_at_price | money }}</s>
+            {% else %}
+              <s data-pu-product-compare hidden></s>
+            {% endif %}
+            <span data-pu-product-price>{{ current_variant.price | money }}</span>
+          </p>
+        </div>
+
+        {% if section.settings.bullet_points != blank %}
+          <div class="pu-product-main__features">
+            <div class="pu-product-main__feature-nums">
+              {% assign bullet_parts = section.settings.bullet_points | split: '<p>' %}
+              {% assign bullet_index = 0 %}
+              {% for part in bullet_parts %}
+                {% assign part_text = part | strip_html | strip %}
+                {% if part_text != blank %}
+                  {% assign bullet_index = bullet_index | plus: 1 %}
+                  <span>{{ bullet_index }}</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <div class="pu-product-main__feature-text rte">
+              {{ section.settings.bullet_points }}
+            </div>
+          </div>
+        {% endif %}
+
+        {% if product.has_only_default_variant == false %}
+          <div class="pu-product-main__variants" role="group" aria-label="Product variants">
+            {% for variant in product.variants %}
+              <button
+                type="button"
+                class="pu-product-main__variant-btn{% if variant.id == current_variant.id %} is-active{% endif %}"
+                data-pu-variant-id="{{ variant.id }}"
+                {% unless variant.available %}disabled{% endunless %}
+              >
+                {{ variant.title }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="pu-product-main__actions">
+          {% if section.settings.features_label != blank %}
+            <a href="#pu-product-details" class="pu-product-main__btn-outline" data-pu-scroll-features>
+              {{ section.settings.features_label }}
+            </a>
+          {% endif %}
+
+          <div class="pu-product-main__form">
+            <product-form-component
+              data-section-id="{{ section.id }}"
+              data-product-id="{{ product.id }}"
+              data-product-url="{{ product.url }}"
+              on:submit="/handleSubmit"
+            >
+              <div
+                class="visually-hidden"
+                aria-live="assertive"
+                role="status"
+                aria-atomic="true"
+                ref="liveRegion"
+              ></div>
+              {%- form 'product', product, id: form_id, data-type: 'add-to-cart-form' -%}
+                <input type="hidden" name="id" ref="variantId" value="{{ current_variant.id }}">
+                <span class="product-form-text__error hidden" ref="addToCartTextError"></span>
+                <button
+                  type="submit"
+                  name="add"
+                  class="pu-btn pu-btn--yellow"
+                  ref="addToCartButton"
+                  data-label-available="{{ section.settings.add_to_cart_label | default: 'SHOP NOW' }}"
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  {% if current_variant.available %}
+                    {{ section.settings.add_to_cart_label | default: 'SHOP NOW' }}
+                  {% else %}
+                    {{ 'products.product.sold_out' | t | default: 'SOLD OUT' }}
+                  {% endif %}
+                </button>
+              {%- endform -%}
+            </product-form-component>
+          </div>
+        </div>
+      </div>
+
+      <div class="pu-product-main__stage">
+        <div class="pu-product-main__media-main">
+          {% if product.featured_media %}
+            <img
+              src="{{ product.featured_media | image_url: width: 800 }}"
+              alt="{{ product.featured_media.alt | default: product.title | escape }}"
+              width="291"
+              height="744"
+              loading="eager"
+              data-pu-product-main-image
+            >
+          {% else %}
+            <img
+              src="{{ 'pu-product-mockup.png' | asset_url }}"
+              alt="{{ product.title | escape }}"
+              width="291"
+              height="744"
+              loading="eager"
+              data-pu-product-main-image
+            >
+          {% endif %}
+        </div>
+        <div class="pu-product-main__media-shadow" aria-hidden="true"></div>
+
+        {% if product.media.size > 1 %}
+          <div class="pu-product-main__thumbs">
+            {% for media in product.media limit: 6 %}
+              <button
+                type="button"
+                class="pu-product-main__thumb{% if forloop.first %} is-active{% endif %}"
+                data-pu-media-id="{{ media.id }}"
+                aria-label="{{ media.alt | default: product.title | escape }}"
+              >
+                {{
+                  media.preview_image
+                  | image_url: width: 120
+                  | image_tag: loading: 'lazy', alt: ''
+                }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="pu-product-main__figure-wrap">
+        {% if section.settings.figure_image != blank %}
+          {{
+            section.settings.figure_image
+            | image_url: width: 600
+            | image_tag: class: 'pu-product-main__figure', loading: 'lazy', alt: ''
+          }}
+        {% else %}
+          <img
+            class="pu-product-main__figure"
+            src="{{ 'pu-stick-figure-2.png' | asset_url }}"
+            alt=""
+            width="274"
+            height="332"
+            loading="lazy"
+          >
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-pu-product-json>{{ product | json }}</script>
+</section>
+
+{% schema %}
+{
+  "name": "PU Product Main",
+  "class": "pu-product-main-section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_hanging_sign",
+      "label": "Show hanging sign",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sign_title",
+      "label": "Sign title",
+      "default": "Pick your Undo."
+    },
+    {
+      "type": "text",
+      "id": "category_label",
+      "label": "Category label",
+      "default": "LAPTOP NECK",
+      "info": "Overrides product category metafield when set"
+    },
+    {
+      "type": "richtext",
+      "id": "bullet_points",
+      "label": "Feature bullets",
+      "default": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
+    },
+    {
+      "type": "text",
+      "id": "features_label",
+      "label": "Features button label",
+      "default": "VIEW FEATURES"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_label",
+      "label": "Add to cart label",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "image_picker",
+      "id": "figure_image",
+      "label": "Side illustration"
+    }
+  ],
+  "presets": [{ "name": "PU Product Main" }]
+}
+{% endschema %}

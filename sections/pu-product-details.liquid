@@ -1,0 +1,95 @@
+<section class="pu-product-details" id="pu-product-details">
+  <div class="pu-product-details__inner">
+    <h2 class="pu-product-details__heading">{{ section.settings.heading | default: 'Product details' }}</h2>
+
+    <div class="pu-product-details__accordion">
+      {% if section.settings.show_description and product.description != blank %}
+        <details class="pu-product-details__item" open>
+          <summary class="pu-product-details__summary">{{ section.settings.description_label | default: 'Description' }}</summary>
+          <div class="pu-product-details__body rte">{{ product.description }}</div>
+        </details>
+      {% endif %}
+
+      {% for block in section.blocks %}
+        <details class="pu-product-details__item"{% if block.settings.open_by_default %} open{% endif %} {{ block.shopify_attributes }}>
+          <summary class="pu-product-details__summary">{{ block.settings.title }}</summary>
+          <div class="pu-product-details__body rte">{{ block.settings.content }}</div>
+        </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PU Product Details",
+  "class": "pu-product-details-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Product details"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show product description",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "description_label",
+      "label": "Description tab label",
+      "default": "Description"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "accordion",
+      "name": "Accordion item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "How to use"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Roll directly onto neck and shoulders. Reapply as needed.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PU Product Details",
+      "blocks": [
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "How to use",
+            "content": "<p>Roll directly onto neck and shoulders. Reapply as needed.</p>"
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients",
+            "content": "<p>See packaging for full ingredient list.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

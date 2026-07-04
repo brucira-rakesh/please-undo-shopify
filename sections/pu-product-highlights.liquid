@@ -1,0 +1,77 @@
+<section class="pu-product-highlights">
+  <div class="pu-product-highlights__inner">
+    {% for block in section.blocks %}
+      <div class="pu-product-highlights__item" {{ block.shopify_attributes }}>
+        {% if block.settings.icon != blank %}
+          <p class="pu-product-highlights__icon">{{ block.settings.icon }}</p>
+        {% endif %}
+        <h3 class="pu-product-highlights__title">{{ block.settings.title }}</h3>
+        <p class="pu-product-highlights__text">{{ block.settings.text }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PU Product Highlights",
+  "class": "pu-product-highlights-section",
+  "blocks": [
+    {
+      "type": "highlight",
+      "name": "Highlight",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon / number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fast relief"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Roll on and get back to your day."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PU Product Highlights",
+      "blocks": [
+        {
+          "type": "highlight",
+          "settings": {
+            "icon": "01",
+            "title": "Fast relief",
+            "text": "Target laptop neck tension in seconds."
+          }
+        },
+        {
+          "type": "highlight",
+          "settings": {
+            "icon": "02",
+            "title": "Zero stain",
+            "text": "Lightweight formula that won't mark your clothes."
+          }
+        },
+        {
+          "type": "highlight",
+          "settings": {
+            "icon": "03",
+            "title": "Daily use",
+            "text": "Low smell and easy to keep at your desk."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

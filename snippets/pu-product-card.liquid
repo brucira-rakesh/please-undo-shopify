@@ -1,0 +1,35 @@
+{% doc %}
+  Product card for PU recommendations grid.
+
+  @param {product} product - Shopify product object
+{% enddoc %}
+
+{% liquid
+  assign card_product = product
+  assign card_variant = card_product.selected_or_first_available_variant
+%}
+
+<a href="{{ card_product.url }}" class="pu-product-card">
+  <div class="pu-product-card__media">
+    {% if card_product.featured_media %}
+      {{
+        card_product.featured_media
+        | image_url: width: 400
+        | image_tag: loading: 'lazy', alt: card_product.title, class: 'pu-product-card__img'
+      }}
+    {% else %}
+      <img
+        src="{{ 'pu-product-mockup.png' | asset_url }}"
+        alt="{{ card_product.title | escape }}"
+        class="pu-product-card__img"
+        width="120"
+        height="200"
+        loading="lazy"
+      >
+    {% endif %}
+  </div>
+  <div class="pu-product-card__body">
+    <p class="pu-product-card__title">{{ card_product.title }}</p>
+    <p class="pu-product-card__price">{{ card_variant.price | money }}</p>
+  </div>
+</a>

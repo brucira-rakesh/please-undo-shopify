@@ -1,0 +1,117 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "pu_product_main": {
+      "type": "pu-product-main",
+      "settings": {
+        "show_hanging_sign": true,
+        "sign_title": "Pick your Undo.",
+        "category_label": "LAPTOP NECK",
+        "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
+        "features_label": "VIEW FEATURES",
+        "add_to_cart_label": "SHOP NOW"
+      }
+    },
+    "pu_product_highlights": {
+      "type": "pu-product-highlights",
+      "blocks": {
+        "highlight_1": {
+          "type": "highlight",
+          "settings": {
+            "icon": "01",
+            "title": "Fast relief",
+            "text": "Target laptop neck tension in seconds."
+          }
+        },
+        "highlight_2": {
+          "type": "highlight",
+          "settings": {
+            "icon": "02",
+            "title": "Zero stain",
+            "text": "Lightweight formula that won't mark your clothes."
+          }
+        },
+        "highlight_3": {
+          "type": "highlight",
+          "settings": {
+            "icon": "03",
+            "title": "Daily use",
+            "text": "Low smell and easy to keep at your desk."
+          }
+        }
+      },
+      "block_order": [
+        "highlight_1",
+        "highlight_2",
+        "highlight_3"
+      ],
+      "settings": {}
+    },
+    "pu_product_details": {
+      "type": "pu-product-details",
+      "blocks": {
+        "accordion_how": {
+          "type": "accordion",
+          "settings": {
+            "title": "How to use",
+            "content": "<p>Roll directly onto neck and shoulders. Reapply as needed.</p>",
+            "open_by_default": false
+          }
+        },
+        "accordion_ingredients": {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients",
+            "content": "<p>See packaging for full ingredient list.</p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "accordion_how",
+        "accordion_ingredients"
+      ],
+      "settings": {
+        "heading": "Product details",
+        "show_description": true,
+        "description_label": "Description"
+      }
+    },
+    "pu_product_recommendations": {
+      "type": "pu-product-recommendations",
+      "settings": {
+        "heading": "More undos",
+        "recommendation_type": "related",
+        "products_count": 4
+      }
+    },
+    "pu_footer": {
+      "type": "pu-footer",
+      "settings": {
+        "email": "hello@pleaseundo.com",
+        "instagram_url": "",
+        "linkedin_url": "",
+        "form_title": "Need an Undo?",
+        "form_description": "Whether it's a question, feedback, or your latest questionable life choice, we're all ears.",
+        "brand_text": "PLEASE UNDO",
+        "privacy_url": "",
+        "terms_url": ""
+      }
+    }
+  },
+  "order": [
+    "pu_product_main",
+    "pu_product_highlights",
+    "pu_product_details",
+    "pu_product_recommendations",
+    "pu_footer"
+  ]
+}
