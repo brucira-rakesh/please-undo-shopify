@@ -12,7 +12,6 @@
     "pu_product_main": {
       "type": "pu-product-main",
       "settings": {
-        "sign_title": "Pick your Undo.",
         "category_label": "LAPTOP NECK",
         "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
         "features_label": "VIEW FEATURES",

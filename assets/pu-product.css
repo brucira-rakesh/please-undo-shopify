@@ -41,66 +41,6 @@
   z-index: 0;
 }
 
-.pu-pdp-hero__sign-wrap {
-  position: relative;
-  z-index: 3;
-  width: min(710px, 92vw);
-  margin: 0 auto 40px;
-  transform: translateY(-120%);
-  opacity: 0;
-  animation: pu-pdp-sign-drop 0.9s cubic-bezier(0.34, 1.4, 0.64, 1) 0.15s forwards;
-}
-
-@keyframes pu-pdp-sign-drop {
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.pu-pdp-hero__ropes {
-  position: relative;
-  height: 0;
-}
-
-.pu-pdp-hero__rope {
-  position: absolute;
-  top: -42px;
-  width: 12px;
-  background: var(--pu-navy);
-}
-
-.pu-pdp-hero__rope--left {
-  left: calc(50% - 180px);
-  height: 112px;
-  transform: rotate(2.66deg);
-}
-
-.pu-pdp-hero__rope--right {
-  right: calc(50% - 180px);
-  height: 182px;
-  transform: rotate(2.73deg);
-}
-
-.pu-pdp-hero__sign {
-  background: var(--pu-navy);
-  padding: 28px 40px;
-  transform: rotate(2.99deg);
-  text-align: center;
-}
-
-.pu-pdp-hero__sign-text {
-  margin: 0;
-  font-family: var(--pu-font-display);
-  font-size: clamp(40px, 7vw, 100px);
-  font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  color: var(--pu-white);
-  opacity: 0.9;
-}
-
 .pu-pdp-hero__layout {
   position: relative;
   z-index: 2;
@@ -1171,14 +1111,6 @@
     padding-bottom: 80px;
   }
 
-  .pu-pdp-hero__rope {
-    display: none;
-  }
-
-  .pu-pdp-hero__sign {
-    padding: 20px 24px;
-  }
-
   .pu-pdp-hero__progress-seg:not(.is-faded):not(.is-active) {
     width: 10px;
     height: 16px;
@@ -1206,12 +1138,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pu-pdp-hero__sign-wrap {
-    animation: none;
-    transform: none;
-    opacity: 1;
-  }
-
   .pu-pdp-marquee__track {
     animation: none;
   }
