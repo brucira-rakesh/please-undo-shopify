@@ -90,7 +90,7 @@
 .pu-ticker__track {
   display: flex;
   width: max-content;
-  animation: pu-ticker-scroll 25s linear infinite;
+  animation: pu-ticker-scroll 45s linear infinite;
   will-change: transform;
 }
 
