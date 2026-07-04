@@ -46,7 +46,7 @@
   z-index: 2;
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(280px, 438px) 1fr;
+  grid-template-columns: 1fr minmax(280px, 438px);
   gap: clamp(24px, 5vw, 64px);
   align-items: center;
   max-width: 1348px;
@@ -212,12 +212,20 @@
 }
 
 .pu-pdp-hero__visual {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 28px;
+  width: 100%;
+}
+
+.pu-pdp-hero__stage {
+  position: relative;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  min-height: 480px;
+  width: 100%;
+  min-height: 420px;
 }
 
 .pu-pdp-hero__product {
@@ -261,34 +269,42 @@
   object-fit: contain;
 }
 
-.pu-pdp-hero__thumbs {
-  display: flex;
-  gap: 8px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
+.pu-pdp-hero__gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: min(420px, 100%);
   z-index: 3;
 }
 
-.pu-pdp-hero__thumb {
-  width: 56px;
-  height: 56px;
+.pu-pdp-hero__gallery-item {
+  position: relative;
+  aspect-ratio: 1;
   padding: 0;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
   cursor: pointer;
   overflow: hidden;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
 }
 
-.pu-pdp-hero__thumb.is-active {
+.pu-pdp-hero__gallery-item:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.pu-pdp-hero__gallery-item.is-active {
   border-color: var(--pu-yellow);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 1px var(--pu-yellow);
 }
 
-.pu-pdp-hero__thumb img {
+.pu-pdp-hero__gallery-img {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover;
+  display: block;
 }
 
 .pu-pdp-hero__progress {
@@ -1092,14 +1108,18 @@
     grid-template-columns: 1fr;
   }
 
-  .pu-pdp-hero__visual {
-    order: -1;
+  .pu-pdp-hero__stage {
     min-height: 360px;
   }
 
   .pu-pdp-hero__figure {
     right: 5%;
     width: min(200px, 40vw);
+  }
+
+  .pu-pdp-hero__gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: min(360px, 100%);
   }
 
   .pu-pdp-story__inner {
@@ -1166,6 +1186,12 @@
 
   .pu-pdp-recs__grid {
     grid-template-columns: 1fr;
+  }
+
+  .pu-pdp-hero__gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    max-width: 320px;
   }
 
   .pu-pdp-sticky__info {

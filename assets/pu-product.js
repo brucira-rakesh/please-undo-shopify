@@ -35,7 +35,7 @@ function initProductPage() {
   const stickyPriceEl = document.querySelector('[data-pu-sticky-price]');
   const mainImage = main.querySelector('[data-pu-product-main-image]');
   const variantButtons = main.querySelectorAll('[data-pu-variant-id]');
-  const thumbs = main.querySelectorAll('[data-pu-media-id]');
+  const galleryItems = main.querySelectorAll('[data-pu-media-id]');
   const featuresBtn = main.querySelector('[data-pu-scroll-features]');
   const stickyBar = document.querySelector('[data-pu-pdp-sticky]');
   const stickyAddBtn = document.querySelector('[data-pu-sticky-add]');
@@ -97,15 +97,21 @@ function initProductPage() {
     btn.addEventListener('click', () => updateVariant(btn.dataset.puVariantId));
   });
 
-  thumbs.forEach((thumb) => {
-    thumb.addEventListener('click', () => {
-      const mediaId = thumb.dataset.puMediaId;
+  galleryItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      const mediaId = item.dataset.puMediaId;
+      if (mediaId === 'fallback' || !mainImage) return;
+
       const media = product.media.find((m) => String(m.id) === String(mediaId));
-      if (!media || !mainImage) return;
+      if (!media) return;
 
       mainImage.src = media.preview_image?.src || media.src;
       mainImage.alt = media.alt || product.title;
-      thumbs.forEach((t) => t.classList.toggle('is-active', t === thumb));
+      galleryItems.forEach((el) => {
+        const isActive = el === item;
+        el.classList.toggle('is-active', isActive);
+        el.setAttribute('aria-current', isActive ? 'true' : 'false');
+      });
     });
   });
 
@@ -164,6 +170,40 @@ function initProductPage() {
   }
 }
 
+function closeAccordionItem(details, reducedMotion, onDone) {
+  const panel = details.querySelector('.pu-pdp-details__panel');
+  if (!details.classList.contains('is-open')) {
+    onDone?.();
+    return;
+  }
+
+  details.classList.remove('is-open');
+
+  if (reducedMotion || !panel) {
+    details.removeAttribute('open');
+    onDone?.();
+    return;
+  }
+
+  const onClose = (ev) => {
+    if (ev.target !== panel || ev.propertyName !== 'grid-template-rows') return;
+    panel.removeEventListener('transitionend', onClose);
+    details.removeAttribute('open');
+    onDone?.();
+  };
+
+  panel.addEventListener('transitionend', onClose);
+}
+
+function openAccordionItem(details, reducedMotion) {
+  details.setAttribute('open', '');
+  if (reducedMotion) {
+    details.classList.add('is-open');
+    return;
+  }
+  requestAnimationFrame(() => details.classList.add('is-open'));
+}
+
 function initPdpAccordion() {
   const items = document.querySelectorAll('[data-pu-accordion]');
   if (!items.length) return;
@@ -172,8 +212,7 @@ function initPdpAccordion() {
 
   items.forEach((details) => {
     const summary = details.querySelector('.pu-pdp-details__summary');
-    const panel = details.querySelector('.pu-pdp-details__panel');
-    if (!summary || !panel) return;
+    if (!summary) return;
 
     if (details.open) {
       details.classList.add('is-open');
@@ -183,28 +222,17 @@ function initPdpAccordion() {
       event.preventDefault();
 
       if (details.classList.contains('is-open')) {
-        details.classList.remove('is-open');
-
-        if (reducedMotion) {
-          details.removeAttribute('open');
-          return;
-        }
-
-        const onClose = (ev) => {
-          if (ev.target !== panel || ev.propertyName !== 'grid-template-rows') return;
-          panel.removeEventListener('transitionend', onClose);
-          details.removeAttribute('open');
-        };
-
-        panel.addEventListener('transitionend', onClose);
-      } else {
-        details.setAttribute('open', '');
-        if (reducedMotion) {
-          details.classList.add('is-open');
-          return;
-        }
-        requestAnimationFrame(() => details.classList.add('is-open'));
+        closeAccordionItem(details, reducedMotion);
+        return;
       }
+
+      items.forEach((other) => {
+        if (other !== details) {
+          closeAccordionItem(other, reducedMotion);
+        }
+      });
+
+      openAccordionItem(details, reducedMotion);
     });
   });
 }
