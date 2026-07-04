@@ -1,0 +1,420 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured_media = current_variant.featured_media | default: product.featured_media
+  assign form_id = 'pu-product-form-' | append: section.id
+
+  assign show_compare = false
+  if current_variant.compare_at_price > current_variant.price
+    assign show_compare = true
+    assign discount_pct = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price
+  endif
+
+  assign rating_value = product.metafields.reviews.rating.value.rating | default: product.metafields.reviews.rating.value | default: nil
+  assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+
+  assign is_bestseller = false
+  if product.tags contains 'best-seller' or product.tags contains 'bestseller' or product.tags contains 'Best Seller'
+    assign is_bestseller = true
+  endif
+
+  assign low_stock = false
+  if current_variant.inventory_management == 'shopify' and current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= 5
+    assign low_stock = true
+  endif
+%}
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+<section class="pu-pdp" data-pu-pdp data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+  <div class="pu-pdp__texture pu-texture-overlay" aria-hidden="true"></div>
+
+  <div class="pu-pdp__inner">
+    <div class="pu-pdp__grid">
+      {%- comment -%} ── Gallery ── {%- endcomment -%}
+      <div class="pu-pdp__gallery pu-pdp-animate" data-pu-gallery>
+        <div class="pu-pdp__gallery-main">
+          <div class="pu-pdp__gallery-viewport">
+            <div class="pu-pdp__gallery-track" data-pu-gallery-track>
+              {% if product.media.size > 0 %}
+                {% for media in product.media %}
+                  <div
+                    class="pu-pdp__gallery-slide"
+                    data-pu-gallery-slide
+                    data-media-id="{{ media.id }}"
+                  >
+                    {% case media.media_type %}
+                      {% when 'video', 'external_video' %}
+                        {% if forloop.first %}
+                          {{ media | video_tag: class: 'pu-pdp__gallery-video', controls: true, muted: true, playsinline: true, loop: true, autoplay: false }}
+                        {% else %}
+                          {{ media | video_tag: class: 'pu-pdp__gallery-video', controls: true, muted: true, playsinline: true, loop: true, autoplay: false, loading: 'lazy' }}
+                        {% endif %}
+                      {% when 'model' %}
+                        {{ media | model_viewer_tag }}
+                      {% else %}
+                        <div class="pu-pdp__gallery-zoom" data-pu-gallery-zoom>
+                          {% if forloop.first %}
+                            {{
+                              media
+                              | image_url: width: 1600
+                              | image_tag:
+                                loading: 'eager',
+                                fetchpriority: 'high',
+                                alt: media.alt | default: product.title,
+                                widths: '600,800,1000,1200,1600'
+                            }}
+                          {% else %}
+                            {{
+                              media
+                              | image_url: width: 1600
+                              | image_tag:
+                                loading: 'lazy',
+                                alt: media.alt | default: product.title,
+                                widths: '600,800,1000,1200,1600'
+                            }}
+                          {% endif %}
+                        </div>
+                    {% endcase %}
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="pu-pdp__gallery-slide" data-pu-gallery-slide>
+                  <img
+                    src="{{ 'pu-product-mockup.png' | asset_url }}"
+                    alt="{{ product.title | escape }}"
+                    width="800"
+                    height="1000"
+                    loading="eager"
+                  >
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          {% if product.media.size > 1 %}
+            <button type="button" class="pu-pdp__gallery-nav pu-pdp__gallery-nav--prev" data-pu-gallery-prev aria-label="Previous image">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <button type="button" class="pu-pdp__gallery-nav pu-pdp__gallery-nav--next" data-pu-gallery-next aria-label="Next image">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+          {% endif %}
+        </div>
+
+        {% if product.media.size > 1 %}
+          <div class="pu-pdp__thumbs" role="tablist" aria-label="Product thumbnails">
+            {% for media in product.media %}
+              <button
+                type="button"
+                class="pu-pdp__thumb{% if forloop.first %} is-active{% endif %}"
+                data-pu-thumb
+                role="tab"
+                aria-label="{{ media.alt | default: product.title | escape }}"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              >
+                {{
+                  media.preview_image
+                  | image_url: width: 144
+                  | image_tag: loading: 'lazy', alt: '', widths: '72,144'
+                }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} ── Product info ── {%- endcomment -%}
+      <div class="pu-pdp__info pu-pdp-animate">
+        <div class="pu-pdp__badges">
+          {% if show_compare %}
+            <span class="pu-pdp__badge pu-pdp__badge--sale" data-pu-discount-badge>-{{ discount_pct }}%</span>
+          {% endif %}
+          {% if is_bestseller %}
+            <span class="pu-pdp__badge pu-pdp__badge--bestseller">Best Seller</span>
+          {% endif %}
+          {% if low_stock and current_variant.available %}
+            <span class="pu-pdp__badge pu-pdp__badge--low">Only {{ current_variant.inventory_quantity }} left</span>
+          {% endif %}
+        </div>
+
+        {% if product.vendor != blank %}
+          <p class="pu-pdp__vendor">{{ product.vendor }}</p>
+        {% endif %}
+
+        <h1 class="pu-pdp__title">{{ product.title }}</h1>
+
+        {% if rating_value != blank and rating_count > 0 %}
+          <div class="pu-pdp__rating">
+            <span class="pu-pdp__stars" aria-label="{{ rating_value }} out of 5 stars">
+              {% assign full_stars = rating_value | floor %}
+              {% assign remainder = rating_value | minus: full_stars %}
+              {% for i in (1..5) %}
+                {% if i <= full_stars %}
+                  <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.35l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                {% else %}
+                  <svg class="is-empty" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5l2.47 5.01 5.53.8-4 3.9.94 5.5L10 14.35l-4.94 2.6.94-5.5-4-3.9 5.53-.8L10 1.5z"/></svg>
+                {% endif %}
+              {% endfor %}
+            </span>
+            <span class="pu-pdp__rating-count">
+              {{ rating_value }} · <a href="#pu-reviews">{{ rating_count }} reviews</a>
+            </span>
+          </div>
+        {% endif %}
+
+        <div class="pu-pdp__price-row">
+          <span class="pu-pdp__price" data-pu-price>{{ current_variant.price | money }}</span>
+          <span class="pu-pdp__compare-price" data-pu-compare-price{% unless show_compare %} hidden{% endunless %}>
+            {{ current_variant.compare_at_price | money }}
+          </span>
+        </div>
+
+        {% if section.settings.show_tax_note %}
+          <p class="pu-pdp__tax-note">{{ section.settings.tax_note | default: 'Tax included. Shipping calculated at checkout.' }}</p>
+        {% endif %}
+
+        {% if product.description != blank %}
+          <p class="pu-pdp__excerpt">{{ product.description | strip_html | truncate: 180 }}</p>
+        {% endif %}
+
+        {%- comment -%} ── Variant picker ── {%- endcomment -%}
+        {% unless product.has_only_default_variant %}
+          {% for option in product.options_with_values %}
+            {% liquid
+              assign option_name_down = option.name | downcase
+              assign is_color = false
+              if option_name_down == 'color' or option_name_down == 'colour'
+                assign is_color = true
+              endif
+              assign swatch_count = option.values | map: 'swatch' | compact | size
+              if swatch_count > 0
+                assign is_color = true
+              endif
+            %}
+            <fieldset class="pu-pdp__option">
+              <legend class="pu-pdp__option-label">{{ option.name }}</legend>
+              <div class="pu-pdp__option-values">
+                {% for value in option.values %}
+                  {% liquid
+                    assign option_index = option.position | minus: 1
+                    assign input_id = section.id | append: '-opt-' | append: option.position | append: '-' | append: forloop.index0
+                  %}
+                  {% if is_color %}
+                    <div class="pu-pdp__swatch{% unless value.available %} is-disabled{% endunless %}">
+                      <input
+                        type="radio"
+                        id="{{ input_id }}"
+                        name="option-{{ option.position }}"
+                        value="{{ value | escape }}"
+                        data-pu-option-input
+                        data-option-index="{{ option_index }}"
+                        {% if value.selected %}checked{% endif %}
+                        {% unless value.available %}disabled{% endunless %}
+                      >
+                      <label for="{{ input_id }}">
+                        {% if value.swatch.color %}
+                          <span class="pu-pdp__swatch-color" style="background-color: {{ value.swatch.color }};"></span>
+                        {% elsif value.swatch.image %}
+                          <span class="pu-pdp__swatch-color" style="background-image: url({{ value.swatch.image | image_url: width: 80 }}); background-size: cover;"></span>
+                        {% else %}
+                          <span class="pu-pdp__swatch-color" style="background-color: {{ value | handle }};"></span>
+                        {% endif %}
+                        <span class="visually-hidden">{{ value }}</span>
+                      </label>
+                    </div>
+                  {% else %}
+                    <div class="pu-pdp__pill-wrap{% unless value.available %} is-disabled{% endunless %}">
+                      <input
+                        type="radio"
+                        id="{{ input_id }}"
+                        name="option-{{ option.position }}"
+                        value="{{ value | escape }}"
+                        data-pu-option-input
+                        data-option-index="{{ option_index }}"
+                        class="visually-hidden"
+                        {% if value.selected %}checked{% endif %}
+                        {% unless value.available %}disabled{% endunless %}
+                      >
+                      <label for="{{ input_id }}" class="pu-pdp__pill{% if value.selected %} is-selected{% endif %}">{{ value }}</label>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endfor %}
+        {% endunless %}
+
+        <p class="pu-pdp__inventory" data-pu-inventory aria-live="polite"></p>
+
+        {%- comment -%} ── Purchase ── {%- endcomment -%}
+        <div class="pu-pdp__purchase" data-pu-purchase>
+          {% form 'product', product, id: form_id %}
+            <input type="hidden" name="id" value="{{ current_variant.id }}" data-pu-variant-id>
+
+            <div class="pu-pdp__qty-row">
+              <span class="pu-pdp__qty-label" id="qty-label-{{ section.id }}">Qty</span>
+              <div class="pu-pdp__qty" role="group" aria-labelledby="qty-label-{{ section.id }}">
+                <button type="button" class="pu-pdp__qty-btn" data-pu-qty-minus aria-label="Decrease quantity">−</button>
+                <input
+                  type="number"
+                  name="quantity"
+                  class="pu-pdp__qty-input"
+                  data-pu-qty-input
+                  value="{{ current_variant.quantity_rule.min | default: 1 }}"
+                  min="{{ current_variant.quantity_rule.min | default: 1 }}"
+                  {% if current_variant.quantity_rule.max %}max="{{ current_variant.quantity_rule.max }}"{% endif %}
+                  step="{{ current_variant.quantity_rule.increment | default: 1 }}"
+                  aria-label="Quantity"
+                >
+                <button type="button" class="pu-pdp__qty-btn" data-pu-qty-plus aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+
+            <div class="pu-pdp__actions">
+              <div class="pu-pdp__actions-row">
+                <button
+                  type="submit"
+                  class="pu-btn pu-btn--yellow"
+                  data-pu-add-to-cart
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  {% if current_variant.available %}
+                    ADD TO CART
+                  {% else %}
+                    SOLD OUT
+                  {% endif %}
+                </button>
+                <button type="button" class="pu-pdp__wishlist" aria-label="Add to wishlist">
+                  <img src="{{ 'pu-icon-heart.png' | asset_url }}" alt="" width="20" height="20">
+                </button>
+              </div>
+
+              {% if section.settings.show_dynamic_checkout %}
+                <div class="pu-pdp__dynamic-checkout" data-pu-buy-now>
+                  {{ form | payment_button }}
+                </div>
+              {% endif %}
+            </div>
+
+            <p class="pu-pdp__form-error" data-pu-form-error hidden role="alert"></p>
+          {% endform %}
+
+          <div class="pu-pdp__trust">
+            {% if section.settings.delivery_text != blank %}
+              <div class="pu-pdp__trust-item">
+                <span class="pu-pdp__trust-icon" aria-hidden="true">✓</span>
+                {{ section.settings.delivery_text }}
+              </div>
+            {% endif %}
+            {% if section.settings.returns_text != blank %}
+              <div class="pu-pdp__trust-item">
+                <span class="pu-pdp__trust-icon" aria-hidden="true">✓</span>
+                {{ section.settings.returns_text }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Product JSON for variant JS {%- endcomment -%}
+  <script type="application/json" data-pu-product-json>
+    {
+      "id": {{ product.id | json }},
+      "title": {{ product.title | json }},
+      "options": [
+        {% for option in product.options_with_values %}
+          {
+            "name": {{ option.name | json }},
+            "position": {{ option.position }},
+            "values": {{ option.values | map: 'name' | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+      "variants": [
+        {% for variant in product.variants %}
+          {
+            "id": {{ variant.id }},
+            "title": {{ variant.title | json }},
+            "price": {{ variant.price }},
+            "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+            "available": {{ variant.available | json }},
+            "options": {{ variant.options | json }},
+            "inventory_management": {{ variant.inventory_management | json }},
+            "inventory_quantity": {{ variant.inventory_quantity | default: 0 }},
+            "featured_image": {% if variant.featured_image %}{
+              "id": {{ variant.featured_image.id }},
+              "src": {{ variant.featured_image | image_url: width: 800 | json }},
+              "alt": {{ variant.featured_image.alt | json }}
+            }{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    }
+  </script>
+</section>
+
+{%- comment -%} Sticky add-to-cart bar {%- endcomment -%}
+<div class="pu-pdp-sticky" data-pu-sticky-bar role="region" aria-label="Quick add to cart">
+  <div class="pu-pdp-sticky__inner">
+    <div class="pu-pdp-sticky__thumb" data-pu-sticky-thumb>
+      {% if featured_media %}
+        {{ featured_media | image_url: width: 96 | image_tag: loading: 'lazy', alt: product.title, widths: '48,96' }}
+      {% endif %}
+    </div>
+    <div class="pu-pdp-sticky__meta">
+      <p class="pu-pdp-sticky__title">{{ product.title }}</p>
+      <p class="pu-pdp-sticky__variant" data-pu-sticky-variant>{{ current_variant.title }}</p>
+    </div>
+    <span class="pu-pdp-sticky__price" data-pu-sticky-price>{{ current_variant.price | money }}</span>
+    <button type="button" class="pu-btn pu-btn--yellow" data-pu-sticky-add{% unless current_variant.available %} disabled{% endunless %}>
+      {% if current_variant.available %}ADD TO CART{% else %}SOLD OUT{% endif %}
+    </button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "PU Product Main",
+  "tag": "section",
+  "class": "pu-pdp-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_tax_note",
+      "label": "Show tax/shipping note",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax/shipping note",
+      "default": "Tax included. Shipping calculated at checkout."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout buttons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "delivery_text",
+      "label": "Delivery estimate",
+      "default": "Free shipping on orders over ₹499 · Delivers in 3–5 days"
+    },
+    {
+      "type": "text",
+      "id": "returns_text",
+      "label": "Return policy",
+      "default": "Easy 30-day returns · No questions asked"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  }
+}
+{% endschema %}
