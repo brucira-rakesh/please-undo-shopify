@@ -125,10 +125,10 @@
         "video_1": {
           "type": "scramble_video",
           "settings": {
-            "video": "shopify://files/videos/02.mp4",
+            "video": "shopify://files/videos/02_a9244aea-6933-4bec-b042-7c8083e5c652.mp4",
             "alt": "",
-            "rotation": -4,
-            "play_delay": 0
+            "play_delay": 0,
+            "rotation": -4
           }
         },
         "text_2": {
@@ -140,10 +140,10 @@
         "video_2": {
           "type": "scramble_video",
           "settings": {
-            "video": "shopify://files/videos/01.mp4",
+            "video": "shopify://files/videos/02_a9244aea-6933-4bec-b042-7c8083e5c652.mp4",
             "alt": "",
-            "rotation": 3,
-            "play_delay": 0
+            "play_delay": 0,
+            "rotation": 3
           }
         },
         "text_3": {
