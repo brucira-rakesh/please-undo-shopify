@@ -88,9 +88,22 @@
 }
 
 .pu-ticker__track {
-  display: inline-flex;
-  gap: 20px;
+  display: flex;
+  width: max-content;
   animation: pu-ticker-scroll 25s linear infinite;
+  will-change: transform;
+}
+
+.pu-ticker__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.pu-ticker__group span {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .pu-ticker--reverse .pu-ticker__track {
@@ -104,6 +117,12 @@
 
   100% {
     transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pu-ticker__track {
+    animation: none;
   }
 }
 
@@ -127,8 +146,8 @@
   display: none;
 }
 
-/* SVG grid — override Horizon img { width: 100% } for sparks only */
-.pu-svg-grid__spark {
+/* SVG grid — override Horizon img { width: 100% } */
+.pu-svg-grid img {
   width: 32px !important;
   height: auto !important;
 }
@@ -141,12 +160,6 @@
   width: 100% !important;
   max-width: 242px !important;
   height: auto !important;
-}
-
-/* Hero — prevent Horizon img { width: 100% } from blowing up sprite crops */
-.pu-hero .pu-hero__fig img,
-.pu-hero .pu-hero__product {
-  max-width: none !important;
 }
 
 .pu-texture-overlay {
