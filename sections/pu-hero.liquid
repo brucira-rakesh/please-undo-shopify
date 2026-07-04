@@ -106,7 +106,7 @@
     --hero-frame-h: 851;
     position: relative;
     background: #006eff;
-    overflow: hidden;
+    overflow-x: clip;
   }
 
   .pu-hero-section {
@@ -316,8 +316,8 @@
     width: 100% !important;
     height: 100% !important;
     max-width: none !important;
-    object-fit: cover;
-    object-position: center top;
+    object-fit: contain;
+    object-position: center bottom;
   }
 
   /* Figma 847:201 */

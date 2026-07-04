@@ -6,30 +6,37 @@
 
 {% liquid
   assign content_type = block.settings.content_type | default: 'text'
-  assign top = block.settings.position_top | default: 50
-  assign left = block.settings.position_left
-  assign right = block.settings.position_right
+  assign patch_text = block.settings.text | downcase
   assign rotation = block.settings.rotation | default: 0
   assign parallax_y = block.settings.parallax_y | default: 30
   assign parallax_x = block.settings.parallax_x | default: 0
+  assign patch_slot = 'custom'
+
+  if patch_text contains 'every'
+    assign patch_slot = 'for-every'
+  elsif patch_text contains 'there'
+    assign patch_slot = 'theres-a'
+  elsif patch_text contains 'you do'
+    assign patch_slot = 'you-do'
+  endif
+
+  assign top = block.settings.position_top | default: 50
+  assign left = block.settings.position_left
+  assign right = block.settings.position_right
 %}
 
 <div
-  class="pu-hero__patch"
-  style="
-    --patch-top: {{ top }}%;
-    {% if right > 0 %}--patch-right: {{ right }}%;{% else %}--patch-left: {{ left }}%;{% endif %}
-    --patch-rotate: {{ rotation }}deg;
-  "
+  class="pu-hero__patch pu-hero__patch--{{ patch_slot }}"
+  {% if patch_slot == 'custom' %}
+    style="
+      --patch-top: {{ top }}%;
+      {% if right > 0 %}--patch-right: {{ right }}%;{% else %}--patch-left: {{ left }}%;{% endif %}
+      --patch-rotate: {{ rotation }}deg;
+    "
+  {% endif %}
   {{ block.shopify_attributes }}
 >
-  <div
-    class="pu-hero__patch-drift"
-    data-pu-parallax
-    data-parallax-y="{{ parallax_y }}"
-    data-parallax-x="{{ parallax_x }}"
-  >
-    <div class="pu-sticker pu-hero__patch-inner">
+  <div class="pu-sticker pu-hero__patch-inner">
     {% case content_type %}
       {% when 'image' %}
         {% if block.settings.image != blank %}
@@ -50,6 +57,5 @@
       {% else %}
         <span>{{ block.settings.text }}</span>
     {% endcase %}
-    </div>
   </div>
 </div>
