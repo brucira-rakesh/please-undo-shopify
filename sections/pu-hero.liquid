@@ -11,7 +11,7 @@
         {% else %}
           <div
             class="pu-hero__patch"
-            style="--patch-top: 8%; --patch-left: 38%; --patch-rotate: 14.53deg;"
+            style="--patch-top: 6%; --patch-left: 38%; --patch-rotate: 12deg;"
           >
             <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="28" data-parallax-x="-6">
               <div class="pu-sticker pu-hero__patch-inner"><span>For every</span></div>
@@ -19,7 +19,7 @@
           </div>
           <div
             class="pu-hero__patch"
-            style="--patch-top: 58%; --patch-left: 8%; --patch-rotate: -12.36deg;"
+            style="--patch-top: 37%; --patch-left: 5%; --patch-rotate: -14deg;"
           >
             <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="42" data-parallax-x="8">
               <div class="pu-sticker pu-hero__patch-inner"><span>There's a</span></div>
@@ -27,7 +27,7 @@
           </div>
           <div
             class="pu-hero__patch"
-            style="--patch-top: 38%; --patch-right: 8%; --patch-rotate: -8.34deg;"
+            style="--patch-top: 20%; --patch-right: 12%; --patch-rotate: -6deg;"
           >
             <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="36" data-parallax-x="-10">
               <div class="pu-sticker pu-hero__patch-inner"><span>you do</span></div>
@@ -41,69 +41,71 @@
         {{ section.settings.title_line_2 | default: 'Please Undo' }}
       </h1>
 
-      <div
-        class="pu-hero__figure-wrap pu-hero__figure-wrap--1"
-        data-pu-parallax
-        data-parallax-y="55"
-        data-parallax-x="12"
-      >
-        <img
-          class="pu-hero__figure pu-hero__figure--1"
-          src="{{ 'pu-stick-figure-1.png' | asset_url }}"
-          alt=""
-          width="104"
-          height="105"
-          loading="eager"
+      {% comment %}
+        <div
+          class="pu-hero__figure-wrap pu-hero__figure-wrap--1"
+          data-pu-parallax
+          data-parallax-y="55"
+          data-parallax-x="12"
         >
-      </div>
-      <div
-        class="pu-hero__figure-wrap pu-hero__figure-wrap--2"
-        data-pu-parallax
-        data-parallax-y="70"
-        data-parallax-x="-8"
-      >
-        <img
-          class="pu-hero__figure pu-hero__figure--2"
-          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-          alt=""
-          width="138"
-          height="140"
-          loading="eager"
-        >
-      </div>
-      <div
-        class="pu-hero__figure-wrap pu-hero__figure-wrap--3"
-        data-pu-parallax
-        data-parallax-y="48"
-        data-parallax-x="-14"
-      >
-        <img
-          class="pu-hero__figure pu-hero__figure--3"
-          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-          alt=""
-          width="149"
-          height="135"
-          loading="eager"
-        >
-      </div>
-      <div class="pu-hero__product-wrap" data-pu-parallax data-parallax-y="62" data-parallax-x="-6">
-        {% if section.settings.product_image != blank %}
-          {{
-            section.settings.product_image
-            | image_url: width: 200
-            | image_tag: class: 'pu-hero__product', alt: 'Please Undo product', loading: 'eager'
-          }}
-        {% else %}
           <img
-            class="pu-hero__product"
-            src="{{ 'pu-product-mockup.png' | asset_url }}"
-            alt="Please Undo product"
-            width="78"
-            height="139"
+            class="pu-hero__figure pu-hero__figure--1"
+            src="{{ 'pu-stick-figure-1.png' | asset_url }}"
+            alt=""
+            width="104"
+            height="105"
             loading="eager"
           >
-        {% endif %}
-      </div>
+        </div>
+        <div
+          class="pu-hero__figure-wrap pu-hero__figure-wrap--2"
+          data-pu-parallax
+          data-parallax-y="70"
+          data-parallax-x="-8"
+        >
+          <img
+            class="pu-hero__figure pu-hero__figure--2"
+            src="{{ 'pu-stick-figure-2.png' | asset_url }}"
+            alt=""
+            width="138"
+            height="140"
+            loading="eager"
+          >
+        </div>
+        <div
+          class="pu-hero__figure-wrap pu-hero__figure-wrap--3"
+          data-pu-parallax
+          data-parallax-y="48"
+          data-parallax-x="-14"
+        >
+          <img
+            class="pu-hero__figure pu-hero__figure--3"
+            src="{{ 'pu-stick-figure-2.png' | asset_url }}"
+            alt=""
+            width="149"
+            height="135"
+            loading="eager"
+          >
+        </div>
+        <div class="pu-hero__product-wrap" data-pu-parallax data-parallax-y="62" data-parallax-x="-6">
+          {% if section.settings.product_image != blank %}
+            {{
+              section.settings.product_image
+              | image_url: width: 200
+              | image_tag: class: 'pu-hero__product', alt: 'Please Undo product', loading: 'eager'
+            }}
+          {% else %}
+            <img
+              class="pu-hero__product"
+              src="{{ 'pu-product-mockup.png' | asset_url }}"
+              alt="Please Undo product"
+              width="78"
+              height="139"
+              loading="eager"
+            >
+          {% endif %}
+        </div>
+      {% endcomment %}
     </div>
 
     {% if section.settings.button_label != blank %}
@@ -162,14 +164,16 @@
     z-index: 2;
     max-width: 100%;
     margin: 0 auto;
-    padding: 40px 32px 200px;
+    padding: 100px 32px 200px;
     text-align: center;
   }
 
   .pu-hero__typography {
-    position: relative;
-    min-height: 480px;
+    min-height: 280px;
     margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .pu-hero__title {
@@ -313,7 +317,7 @@
   }
 
   .pu-hero__ticker {
-    padding: 14.64px 0;
+    padding: 0;
     border: 1.8px solid var(--pu-navy-text);
     border-radius: 13px;
     box-shadow: var(--pu-shadow);
@@ -361,7 +365,7 @@
 
   @media (max-width: 749px) {
     .pu-hero__typography {
-      min-height: 360px;
+      min-height: 280px;
     }
     .pu-hero__figure-wrap,
     .pu-hero__product-wrap {

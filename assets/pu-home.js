@@ -264,7 +264,7 @@ function initScrambleVideoPlayback(section) {
   const ensurePlaying = (item) => {
     item.wrapper.classList.add('is-playing');
     if (item.video.paused) {
-      item.video.play().catch(() => {});
+      item.video.play().catch(() => { });
     }
   };
 

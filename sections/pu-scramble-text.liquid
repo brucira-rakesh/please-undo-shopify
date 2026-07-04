@@ -77,16 +77,38 @@
         {% for pass in (1..2) %}
           {% if ticker_images.size == 0 %}
             {% for i in (1..17) %}
-              <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="" class="pu-scramble__ticker-img" width="37" height="94" loading="lazy">
+              <img
+                src="{{ 'pu-product-mockup.png' | asset_url }}"
+                alt=""
+                class="pu-scramble__ticker-img"
+                width="37"
+                height="94"
+                loading="lazy"
+              >
             {% endfor %}
           {% else %}
             {% for block in section.blocks %}
               {% if block.type == 'product_image' %}
-                <div{% if pass == 1 %} {{ block.shopify_attributes }}{% endif %}>
+                <div
+                  {% if pass == 1 %}
+                    {{ block.shopify_attributes -}}
+                  {% endif %}
+                >
                   {% if block.settings.image != blank %}
-                    {{ block.settings.image | image_url: width: 80 | image_tag: class: 'pu-scramble__ticker-img', loading: 'lazy' }}
+                    {{
+                      block.settings.image
+                      | image_url: width: 80
+                      | image_tag: class: 'pu-scramble__ticker-img', loading: 'lazy'
+                    }}
                   {% else %}
-                    <img src="{{ 'pu-product-mockup.png' | asset_url }}" alt="" class="pu-scramble__ticker-img" width="37" height="94" loading="lazy">
+                    <img
+                      src="{{ 'pu-product-mockup.png' | asset_url }}"
+                      alt=""
+                      class="pu-scramble__ticker-img"
+                      width="37"
+                      height="94"
+                      loading="lazy"
+                    >
                   {% endif %}
                 </div>
               {% endif %}
