@@ -1,0 +1,38 @@
+<section class="pu-pdp-marquee">
+  <div class="pu-pdp-marquee__skew">
+    <div class="pu-pdp-marquee__bar">
+      <div class="pu-pdp-marquee__track" aria-hidden="true">
+        {% for pass in (1..2) %}
+          <div class="pu-pdp-marquee__group">
+            {% for i in (1..6) %}
+              <span>{{ section.settings.phrase_1 | default: product.title }}</span>
+              <span>{{ section.settings.phrase_2 | default: 'we JUST UNDO' }}</span>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PU Product Marquee",
+  "class": "pu-product-marquee-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "phrase_1",
+      "label": "Phrase 1",
+      "info": "Defaults to product title when blank"
+    },
+    {
+      "type": "text",
+      "id": "phrase_2",
+      "label": "Phrase 2",
+      "default": "we JUST UNDO"
+    }
+  ],
+  "presets": [{ "name": "PU Product Marquee" }]
+}
+{% endschema %}

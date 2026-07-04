@@ -9,12 +9,16 @@
   assign intent = section.settings.recommendation_type | default: 'related'
 %}
 
-<section class="pu-product-recs">
-  <div class="pu-product-recs__inner">
-    <h2 class="pu-product-recs__title">{{ section.settings.heading | default: 'More undos' }}</h2>
+<section class="pu-pdp-recs" id="pu-pdp-recs">
+  <div class="pu-pdp-recs__inner">
+    <header class="pu-pdp-recs__header">
+      <img class="pu-pdp-recs__spark" src="{{ 'pu-grid-spark-left.png' | asset_url }}" alt="" width="32" height="32" loading="lazy">
+      <h2 class="pu-pdp-recs__title">{{ section.settings.heading | default: 'More undos' }}</h2>
+      <img class="pu-pdp-recs__spark" src="{{ 'pu-grid-spark-right.png' | asset_url }}" alt="" width="32" height="32" loading="lazy">
+    </header>
 
     <product-recommendations
-      class="pu-product-recs__grid"
+      class="pu-pdp-recs__grid"
       data-url="{{ routes.product_recommendations_url }}?limit={{ limit }}"
       data-section-id="{{ section.id }}"
       data-product-id="{{ product.id }}"
@@ -24,13 +28,13 @@
     >
       {% if recommendations.performed and recommendations.products_count > 0 %}
         {% for rec_product in recommendations.products limit: limit %}
-          {% render 'pu-product-card', product: rec_product %}
+          {% render 'pu-product-card', product: rec_product, tilt: forloop.index %}
         {% endfor %}
       {% elsif section.settings.collection != blank %}
         {% assign shown = 0 %}
         {% for rec_product in section.settings.collection.products %}
           {% if rec_product.id != product.id and shown < limit %}
-            {% render 'pu-product-card', product: rec_product %}
+            {% render 'pu-product-card', product: rec_product, tilt: forloop.index %}
             {% assign shown = shown | plus: 1 %}
           {% endif %}
         {% endfor %}
@@ -72,8 +76,7 @@
     {
       "type": "collection",
       "id": "collection",
-      "label": "Fallback collection",
-      "info": "Used when Shopify recommendations are unavailable"
+      "label": "Fallback collection"
     }
   ],
   "presets": [{ "name": "PU Product Recs" }]

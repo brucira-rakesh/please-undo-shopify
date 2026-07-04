@@ -12,7 +12,6 @@
     "pu_product_main": {
       "type": "pu-product-main",
       "settings": {
-        "show_hanging_sign": true,
         "sign_title": "Pick your Undo.",
         "category_label": "LAPTOP NECK",
         "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -20,69 +19,83 @@
         "add_to_cart_label": "SHOP NOW"
       }
     },
-    "pu_product_highlights": {
-      "type": "pu-product-highlights",
+    "pu_product_story": {
+      "type": "pu-product-story",
+      "settings": {
+        "patch_1": "desk pain",
+        "patch_2": "quick fix",
+        "headline_before": "For every",
+        "headline_accent": "SILLY THING",
+        "headline_after": "you do",
+        "body": "<p>Whether it's laptop neck, concert shoulders, or the aftermath of saying yes to one more drink — Please Undo is your right to a quick reset.</p>"
+      }
+    },
+    "pu_product_use": {
+      "type": "pu-product-use",
       "blocks": {
-        "highlight_1": {
-          "type": "highlight",
+        "step_1": {
+          "type": "step",
           "settings": {
-            "icon": "01",
-            "title": "Fast relief",
-            "text": "Target laptop neck tension in seconds."
+            "title": "Roll it on",
+            "text": "Glide over neck and shoulders where tension lives."
           }
         },
-        "highlight_2": {
-          "type": "highlight",
+        "step_2": {
+          "type": "step",
           "settings": {
-            "icon": "02",
-            "title": "Zero stain",
-            "text": "Lightweight formula that won't mark your clothes."
+            "title": "Wait a beat",
+            "text": "Give it a few seconds — relief kicks in fast."
           }
         },
-        "highlight_3": {
-          "type": "highlight",
+        "step_3": {
+          "type": "step",
           "settings": {
-            "icon": "03",
-            "title": "Daily use",
-            "text": "Low smell and easy to keep at your desk."
+            "title": "Get back to it",
+            "text": "Low smell, zero stain. Keep it at your desk."
           }
         }
       },
-      "block_order": [
-        "highlight_1",
-        "highlight_2",
-        "highlight_3"
-      ],
-      "settings": {}
+      "block_order": ["step_1", "step_2", "step_3"],
+      "settings": {
+        "heading": "How to Undo"
+      }
     },
     "pu_product_details": {
       "type": "pu-product-details",
       "blocks": {
-        "accordion_how": {
-          "type": "accordion",
-          "settings": {
-            "title": "How to use",
-            "content": "<p>Roll directly onto neck and shoulders. Reapply as needed.</p>",
-            "open_by_default": false
-          }
-        },
         "accordion_ingredients": {
           "type": "accordion",
           "settings": {
             "title": "Ingredients",
-            "content": "<p>See packaging for full ingredient list.</p>",
+            "content": "<p>See packaging for the full ingredient list.</p>",
+            "open_by_default": false
+          }
+        },
+        "accordion_shipping": {
+          "type": "accordion",
+          "settings": {
+            "title": "Shipping & returns",
+            "content": "<p>Standard shipping rates apply. Contact us if you need an undo on your order.</p>",
             "open_by_default": false
           }
         }
       },
-      "block_order": [
-        "accordion_how",
-        "accordion_ingredients"
-      ],
+      "block_order": ["accordion_ingredients", "accordion_shipping"],
       "settings": {
-        "heading": "Product details",
+        "heading": "The fine print",
         "show_description": true,
-        "description_label": "Description"
+        "description_label": "Description",
+        "card_label": "Volume",
+        "card_value": "40 ML",
+        "card_label_2": "Use",
+        "card_value_2": "Daily"
+      }
+    },
+    "pu_product_marquee": {
+      "type": "pu-product-marquee",
+      "settings": {
+        "phrase_1": "",
+        "phrase_2": "we JUST UNDO"
       }
     },
     "pu_product_recommendations": {
@@ -109,8 +122,10 @@
   },
   "order": [
     "pu_product_main",
-    "pu_product_highlights",
+    "pu_product_story",
+    "pu_product_use",
     "pu_product_details",
+    "pu_product_marquee",
     "pu_product_recommendations",
     "pu_footer"
   ]
