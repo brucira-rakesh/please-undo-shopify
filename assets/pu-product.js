@@ -162,8 +162,51 @@ function initProductPage() {
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
   }
+}
 
-  initShowcaseCards();
+function initPdpAccordion() {
+  const items = document.querySelectorAll('[data-pu-accordion]');
+  if (!items.length) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  items.forEach((details) => {
+    const summary = details.querySelector('.pu-pdp-details__summary');
+    const panel = details.querySelector('.pu-pdp-details__panel');
+    if (!summary || !panel) return;
+
+    if (details.open) {
+      details.classList.add('is-open');
+    }
+
+    summary.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      if (details.classList.contains('is-open')) {
+        details.classList.remove('is-open');
+
+        if (reducedMotion) {
+          details.removeAttribute('open');
+          return;
+        }
+
+        const onClose = (ev) => {
+          if (ev.target !== panel || ev.propertyName !== 'grid-template-rows') return;
+          panel.removeEventListener('transitionend', onClose);
+          details.removeAttribute('open');
+        };
+
+        panel.addEventListener('transitionend', onClose);
+      } else {
+        details.setAttribute('open', '');
+        if (reducedMotion) {
+          details.classList.add('is-open');
+          return;
+        }
+        requestAnimationFrame(() => details.classList.add('is-open'));
+      }
+    });
+  });
 }
 
 function initShowcaseCards() {
@@ -189,8 +232,14 @@ function initShowcaseCards() {
   });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initProductPage);
-} else {
+function bootProductPage() {
   initProductPage();
+  initPdpAccordion();
+  initShowcaseCards();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bootProductPage);
+} else {
+  bootProductPage();
 }

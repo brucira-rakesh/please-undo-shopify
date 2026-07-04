@@ -7,20 +7,31 @@
     <div class="pu-pdp-details__grid">
       <div class="pu-pdp-details__accordion">
         {% if section.settings.show_description and product.description != blank %}
-          <details class="pu-pdp-details__item" open>
+          <details class="pu-pdp-details__item is-open" open data-pu-accordion>
             <summary class="pu-pdp-details__summary">
               <span>{{ section.settings.description_label | default: 'Description' }}</span>
+              <span class="pu-pdp-details__toggle" aria-hidden="true"></span>
             </summary>
-            <div class="pu-pdp-details__body rte">{{ product.description }}</div>
+            <div class="pu-pdp-details__panel">
+              <div class="pu-pdp-details__body rte">{{ product.description }}</div>
+            </div>
           </details>
         {% endif %}
 
         {% for block in section.blocks %}
-          <details class="pu-pdp-details__item"{% if block.settings.open_by_default %} open{% endif %} {{ block.shopify_attributes }}>
+          <details
+            class="pu-pdp-details__item{% if block.settings.open_by_default %} is-open{% endif %}"
+            {% if block.settings.open_by_default %}open{% endif %}
+            data-pu-accordion
+            {{ block.shopify_attributes }}
+          >
             <summary class="pu-pdp-details__summary">
               <span>{{ block.settings.title }}</span>
+              <span class="pu-pdp-details__toggle" aria-hidden="true"></span>
             </summary>
-            <div class="pu-pdp-details__body rte">{{ block.settings.content }}</div>
+            <div class="pu-pdp-details__panel">
+              <div class="pu-pdp-details__body rte">{{ block.settings.content }}</div>
+            </div>
           </details>
         {% endfor %}
       </div>

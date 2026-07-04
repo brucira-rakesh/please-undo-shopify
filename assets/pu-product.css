@@ -638,6 +638,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 16px;
   padding: 20px 24px;
   font-family: var(--pu-font-display);
   font-size: 20px;
@@ -645,34 +646,70 @@
   text-transform: uppercase;
   cursor: pointer;
   list-style: none;
+  user-select: none;
 }
 
 .pu-pdp-details__summary::-webkit-details-marker {
   display: none;
 }
 
-.pu-pdp-details__summary::after {
-  content: '+';
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.pu-pdp-details__toggle {
+  position: relative;
   width: 32px;
   height: 32px;
   border-radius: 50%;
   background: var(--pu-yellow);
-  font-size: 22px;
-  line-height: 1;
   flex-shrink: 0;
+  transition: transform 0.3s ease;
 }
 
-.pu-pdp-details__item[open] .pu-pdp-details__summary::after {
-  content: '−';
+.pu-pdp-details__toggle::before,
+.pu-pdp-details__toggle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 2px;
+  background: var(--pu-navy);
+  transform: translate(-50%, -50%);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+}
+
+.pu-pdp-details__toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.pu-pdp-details__item.is-open .pu-pdp-details__toggle::after {
+  transform: translate(-50%, -50%) rotate(0deg);
+  opacity: 0;
+}
+
+.pu-pdp-details__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pu-pdp-details__item.is-open .pu-pdp-details__panel {
+  grid-template-rows: 1fr;
 }
 
 .pu-pdp-details__body {
-  padding: 0 24px 24px;
+  overflow: hidden;
+  min-height: 0;
+  padding: 0 24px;
   font-size: 17px;
   line-height: 1.5;
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pu-pdp-details__item.is-open .pu-pdp-details__body {
+  padding: 0 24px 24px;
+  opacity: 1;
 }
 
 .pu-pdp-details__body :is(p, ul, ol) {
@@ -1140,5 +1177,12 @@
 @media (prefers-reduced-motion: reduce) {
   .pu-pdp-marquee__track {
     animation: none;
+  }
+
+  .pu-pdp-details__panel,
+  .pu-pdp-details__body,
+  .pu-pdp-details__toggle::before,
+  .pu-pdp-details__toggle::after {
+    transition: none;
   }
 }
