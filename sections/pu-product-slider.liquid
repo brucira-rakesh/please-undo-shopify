@@ -201,16 +201,36 @@
     transform-origin: 50% 0;
     will-change: transform;
     backface-visibility: hidden;
-    animation: pu-product-swing 4s ease-in-out infinite;
+    animation: pu-product-pendulum 3.2s linear infinite;
   }
 
-  @keyframes pu-product-swing {
-    0%,
-    100% {
-      transform: rotate(3deg);
+  @keyframes pu-product-pendulum {
+    0% {
+      transform: rotate(5deg);
+    }
+    12.5% {
+      transform: rotate(3.2deg);
+    }
+    25% {
+      transform: rotate(0deg);
+    }
+    37.5% {
+      transform: rotate(-3.2deg);
     }
     50% {
-      transform: rotate(-3deg);
+      transform: rotate(-2deg);
+    }
+    62.5% {
+      transform: rotate(-3.24deg);
+    }
+    75% {
+      transform: rotate(0deg);
+    }
+    87.5% {
+      transform: rotate(3.2deg);
+    }
+    100% {
+      transform: rotate(1deg);
     }
   }
 
@@ -417,7 +437,7 @@
   @media (prefers-reduced-motion: reduce) {
     .pu-product-slider__swing {
       animation: none;
-      transform: none;
+      transform: rotate(3deg);
     }
   }
 

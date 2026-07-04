@@ -127,9 +127,8 @@
           "settings": {
             "video": "shopify://files/videos/02.mp4",
             "alt": "",
-            "align": "right",
             "rotation": -4,
-            "offset_y": 0
+            "play_delay": 0
           }
         },
         "text_2": {
@@ -143,9 +142,8 @@
           "settings": {
             "video": "shopify://files/videos/01.mp4",
             "alt": "",
-            "align": "left",
             "rotation": 3,
-            "offset_y": 8
+            "play_delay": 0
           }
         },
         "text_3": {

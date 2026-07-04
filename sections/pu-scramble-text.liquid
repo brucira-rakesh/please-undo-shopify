@@ -12,17 +12,29 @@
     <div class="pu-scramble__text-wrap">
       <p class="pu-scramble__text" data-pu-scramble-text>
         {% if has_content_blocks %}
+          {% assign scramble_prev_content = false %}
+          {% assign scramble_video_index = 0 %}
           {% for block in section.blocks %}
             {% case block.type %}
               {% when 'scramble_text' %}
+                {% if scramble_prev_content %} {% endif %}
                 <span class="pu-scramble__segment" data-pu-scramble-segment {{ block.shopify_attributes }}>
                   {{- block.settings.text -}}
                 </span>
+                {% assign scramble_prev_content = true %}
               {% when 'scramble_video' %}
+                {% assign scramble_video_index = scramble_video_index | plus: 1 %}
+                {% assign scramble_video_autoplay = false %}
+                {% if scramble_video_index == 1 and block.settings.play_delay == 0 %}
+                  {% assign scramble_video_autoplay = true %}
+                {% endif %}
+                {% if scramble_prev_content %} {% endif %}
                 <span
-                  class="pu-scramble__video pu-scramble__video--{{ block.settings.align | default: 'inline' }}"
+                  class="pu-scramble__video"
                   data-pu-scramble-video
-                  style="--video-rotate: {{ block.settings.rotation | default: 0 }}deg; --video-offset-y: {{ block.settings.offset_y | default: 0 }}px;"
+                  data-play-delay="{{ block.settings.play_delay | default: 0 }}"
+                  data-video-index="{{ scramble_video_index }}"
+                  style="--video-rotate: {{ block.settings.rotation | default: 0 }}deg;"
                   {{ block.shopify_attributes }}
                 >
                   {% if block.settings.video != blank %}
@@ -30,11 +42,12 @@
                       block.settings.video
                       | video_tag:
                         image_size: '600x',
-                        autoplay: true,
+                        autoplay: scramble_video_autoplay,
                         loop: true,
                         muted: true,
                         playsinline: true,
                         controls: false,
+                        preload: 'auto',
                         class: 'pu-scramble__video-el'
                     }}
                   {% elsif block.settings.poster != blank %}
@@ -47,6 +60,7 @@
                     <span class="pu-scramble__video-placeholder" aria-hidden="true"></span>
                   {% endif %}
                 </span>
+                {% assign scramble_prev_content = true %}
             {% endcase %}
           {% endfor %}
         {% else %}
@@ -123,33 +137,16 @@
 
   .pu-scramble__video {
     display: inline-block;
-    vertical-align: middle;
-    width: min(312px, 42vw);
-    height: clamp(72px, 11vw, 93px);
-    margin: 0.08em 0.12em;
+    vertical-align: -0.06em;
+    width: 2.35em;
+    height: 0.68em;
+    margin: 0 0.04em;
     background: var(--pu-yellow);
-    border-radius: 12px;
+    border-radius: 0.08em;
     overflow: hidden;
-    transform: rotate(var(--video-rotate)) translateY(var(--video-offset-y));
+    transform: rotate(var(--video-rotate));
     transform-origin: center center;
     will-change: transform, opacity;
-  }
-
-  .pu-scramble__video--left {
-    float: left;
-    clear: left;
-    margin: 0.2em 0.35em 0.2em 0;
-  }
-
-  .pu-scramble__video--right {
-    float: right;
-    clear: right;
-    margin: 0.2em 0 0.2em 0.35em;
-  }
-
-  .pu-scramble__video--inline {
-    float: none;
-    clear: none;
   }
 
   .pu-scramble__video-el,
@@ -158,6 +155,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
   }
 
   .pu-scramble__video-placeholder {
@@ -218,11 +216,8 @@
     }
 
     .pu-scramble__video {
-      width: min(220px, 55vw);
-      height: clamp(56px, 14vw, 72px);
-      float: none;
-      clear: none;
-      margin: 0.15em 0.1em;
+      width: 2.1em;
+      height: 0.62em;
     }
   }
 {% endstylesheet %}
@@ -269,15 +264,15 @@
           "label": "Poster alt text"
         },
         {
-          "type": "select",
-          "id": "align",
-          "label": "Position",
-          "options": [
-            { "value": "inline", "label": "Inline" },
-            { "value": "left", "label": "Left" },
-            { "value": "right", "label": "Right" }
-          ],
-          "default": "right"
+          "type": "range",
+          "id": "play_delay",
+          "label": "Play delay",
+          "info": "Seconds to wait before the first video plays when the section enters view. Does not delay handoffs between videos.",
+          "min": 0,
+          "max": 10,
+          "step": 1,
+          "unit": "s",
+          "default": 0
         },
         {
           "type": "range",
@@ -287,16 +282,6 @@
           "max": 20,
           "step": 1,
           "unit": "deg",
-          "default": 0
-        },
-        {
-          "type": "range",
-          "id": "offset_y",
-          "label": "Vertical offset",
-          "min": -40,
-          "max": 40,
-          "step": 1,
-          "unit": "px",
           "default": 0
         }
       ]
@@ -339,8 +324,8 @@
         {
           "type": "scramble_video",
           "settings": {
-            "align": "right",
-            "rotation": -4
+            "rotation": -4,
+            "play_delay": 0
           }
         },
         {
@@ -352,9 +337,8 @@
         {
           "type": "scramble_video",
           "settings": {
-            "align": "left",
             "rotation": 3,
-            "offset_y": 8
+            "play_delay": 0
           }
         },
         {

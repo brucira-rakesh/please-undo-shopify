@@ -248,12 +248,56 @@ function splitTextIntoWords(el) {
   return spans;
 }
 
+function initScrambleVideoPlayback(section) {
+  const VIDEO2_OFFSET_MS = 3000;
+
+  const queue = [...section.querySelectorAll('[data-pu-scramble-video]')]
+    .map((wrapper) => ({
+      wrapper,
+      video: wrapper.querySelector('video'),
+      entryDelayMs: (parseFloat(wrapper.dataset.playDelay) || 0) * 1000,
+    }))
+    .filter((item) => item.video);
+
+  if (!queue.length) return;
+
+  const ensurePlaying = (item) => {
+    item.wrapper.classList.add('is-playing');
+    if (item.video.paused) {
+      item.video.play().catch(() => {});
+    }
+  };
+
+  queue.forEach((item) => {
+    item.video.loop = true;
+    item.video.muted = true;
+    item.video.playsInline = true;
+    item.video.preload = 'auto';
+  });
+
+  const v1 = queue[0];
+  const startV1 = () => ensurePlaying(v1);
+
+  if (v1.entryDelayMs > 0) {
+    window.setTimeout(startV1, v1.entryDelayMs);
+  } else {
+    startV1();
+  }
+
+  queue.slice(1).forEach((item, offsetIndex) => {
+    const startMs = v1.entryDelayMs + VIDEO2_OFFSET_MS * (offsetIndex + 1);
+    window.setTimeout(() => ensurePlaying(item), startMs);
+  });
+}
+
 function initScrambleText() {
   const section = document.querySelector('[data-pu-scramble]');
   if (!section || !gsap || !ScrollTrigger) return;
 
   const textEl = section.querySelector('[data-pu-scramble-text]');
   if (!textEl) return;
+
+  initScrambleVideoPlayback(section);
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
