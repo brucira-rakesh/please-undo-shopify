@@ -162,6 +162,31 @@ function initProductPage() {
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
   }
+
+  initShowcaseCards();
+}
+
+function initShowcaseCards() {
+  document.querySelectorAll('[data-pu-showcase-card]').forEach((card) => {
+    const select = card.querySelector('[data-pu-showcase-select]');
+    const variantInput = card.querySelector('[data-pu-showcase-variant-input]');
+    const priceEl = card.querySelector('[data-pu-showcase-price]');
+    const addBtn = card.querySelector('[ref="addToCartButton"], .pu-showcase-card__buy-btn');
+
+    if (!select || !variantInput) return;
+
+    select.addEventListener('change', () => {
+      const option = select.options[select.selectedIndex];
+      variantInput.value = select.value;
+      if (priceEl && option.dataset.price) {
+        priceEl.textContent = option.dataset.price;
+      }
+      if (addBtn) {
+        addBtn.disabled = option.disabled;
+        addBtn.textContent = option.disabled ? 'Sold out' : 'Add to cart';
+      }
+    });
+  });
 }
 
 if (document.readyState === 'loading') {

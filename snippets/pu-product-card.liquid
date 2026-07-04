@@ -1,42 +1,140 @@
 {% doc %}
-  Product card for PU PDP recommendations.
+  Collection showcase card — full-bleed panel with hover buy bar.
 
   @param {product} product - Shopify product object
-  @param {number} [tilt] - Card rotation index for staggered layout
+  @param {number} [index] - Card index for tone rotation
+  @param {string} [category] - Optional category override
+  @param {string} section_id - Section ID for product form
 {% enddoc %}
 
 {% liquid
   assign card_product = product
   assign card_variant = card_product.selected_or_first_available_variant
-  assign card_tilt = tilt | default: 1
-  assign tilt_mod = card_tilt | minus: 1 | modulo: 4 | plus: 1
+  assign card_index = index | default: 1
+  assign tone_mod = card_index | minus: 1 | modulo: 3 | plus: 1
+  assign form_id = 'pu-showcase-' | append: section_id | append: '-' | append: card_product.id
+
+  assign card_category = category
+  if card_category == blank and card_product.metafields.custom.category != blank
+    assign card_category = card_product.metafields.custom.category
+  endif
+  if card_category == blank
+    assign card_category = 'Please Undo'
+  endif
+
+  if card_product.price_varies
+    assign from_price = card_product.price_min | money
+  else
+    assign from_price = card_variant.price | money
+  endif
+
+  assign has_variants = false
+  if card_product.has_only_default_variant == false
+    assign has_variants = true
+  endif
 %}
 
-<a
-  href="{{ card_product.url }}"
-  class="pu-pdp-card pu-pdp-card--tilt-{{ tilt_mod }}"
+<article
+  class="pu-showcase-card pu-showcase-card--tone-{{ tone_mod }}"
+  data-pu-showcase-card
+  data-product-id="{{ card_product.id }}"
 >
-  <div class="pu-pdp-card__media">
+  <div class="pu-showcase-card__head">
+    <div class="pu-showcase-card__meta">
+      <p class="pu-showcase-card__category">{{ card_category }}</p>
+      <h3 class="pu-showcase-card__title">
+        <a href="{{ card_product.url }}">{{ card_product.title }}</a>
+      </h3>
+    </div>
+    <p class="pu-showcase-card__from">
+      <span class="pu-showcase-card__from-label">From</span>
+      <span data-pu-showcase-from-price>{{ from_price }}</span>
+    </p>
+  </div>
+
+  <a class="pu-showcase-card__media" href="{{ card_product.url }}" tabindex="-1" aria-hidden="true">
     {% if card_product.featured_media %}
       {{
         card_product.featured_media
-        | image_url: width: 400
-        | image_tag: loading: 'lazy', alt: card_product.title, class: 'pu-pdp-card__img'
+        | image_url: width: 600
+        | image_tag: loading: 'lazy', alt: card_product.title, class: 'pu-showcase-card__img'
       }}
     {% else %}
       <img
         src="{{ 'pu-product-mockup.png' | asset_url }}"
         alt="{{ card_product.title | escape }}"
-        class="pu-pdp-card__img"
-        width="120"
-        height="200"
+        class="pu-showcase-card__img"
+        width="200"
+        height="400"
         loading="lazy"
       >
     {% endif %}
+  </a>
+
+  <div class="pu-showcase-card__bar">
+    {% if has_variants %}
+      <div class="pu-showcase-card__option">
+        <label class="visually-hidden" for="{{ form_id }}-select">Select option</label>
+        <select id="{{ form_id }}-select" class="pu-showcase-card__select" data-pu-showcase-select>
+          {% for variant in card_product.variants %}
+            <option
+              value="{{ variant.id }}"
+              data-price="{{ variant.price | money }}"
+              {% unless variant.available %}disabled{% endunless %}
+            >
+              {{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}
+            </option>
+          {% endfor %}
+        </select>
+        <span class="pu-showcase-card__option-label">Select option</span>
+        <img
+          class="pu-showcase-card__chevron"
+          src="{{ 'pu-icon-chevron.png' | asset_url }}"
+          alt=""
+          width="12"
+          height="12"
+          loading="lazy"
+        >
+      </div>
+    {% else %}
+      <a href="{{ card_product.url }}" class="pu-showcase-card__option pu-showcase-card__option--link">
+        <span class="pu-showcase-card__option-label">View product</span>
+        <img
+          class="pu-showcase-card__chevron"
+          src="{{ 'pu-icon-chevron.png' | asset_url }}"
+          alt=""
+          width="12"
+          height="12"
+          loading="lazy"
+        >
+      </a>
+    {% endif %}
+
+    <product-form-component
+      class="pu-showcase-card__buy"
+      data-section-id="{{ section_id }}"
+      data-product-id="{{ card_product.id }}"
+      data-product-url="{{ card_product.url }}"
+      on:submit="/handleSubmit"
+    >
+      <div class="visually-hidden" aria-live="polite" role="status" aria-atomic="true" ref="liveRegion"></div>
+      {%- form 'product', card_product, id: form_id, class: 'pu-showcase-card__form', data-type: 'add-to-cart-form' -%}
+        <input type="hidden" name="id" ref="variantId" value="{{ card_variant.id }}" data-pu-showcase-variant-input>
+        <span class="pu-showcase-card__buy-price" data-pu-showcase-price>{{ card_variant.price | money }}</span>
+        <button
+          type="submit"
+          name="add"
+          class="pu-showcase-card__buy-btn"
+          ref="addToCartButton"
+          {% unless card_variant.available %}disabled{% endunless %}
+        >
+          {% if card_variant.available %}
+            Add to cart
+          {% else %}
+            Sold out
+          {% endif %}
+        </button>
+      {%- endform -%}
+    </product-form-component>
   </div>
-  <div class="pu-pdp-card__body">
-    <p class="pu-pdp-card__title">{{ card_product.title }}</p>
-    <p class="pu-pdp-card__price">{{ card_variant.price | money }}</p>
-    <span class="pu-pdp-card__cta">View</span>
-  </div>
-</a>
+</article>

@@ -102,8 +102,10 @@
       "type": "pu-product-recommendations",
       "settings": {
         "heading": "More undos",
-        "recommendation_type": "related",
-        "products_count": 4
+        "collection": "all",
+        "products_count": 3,
+        "columns": 3,
+        "hide_current_product": true
       }
     },
     "pu_footer": {
