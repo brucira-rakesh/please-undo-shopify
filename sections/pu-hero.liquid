@@ -1,105 +1,68 @@
+{% liquid
+  assign patch_blocks = section.blocks | where: 'type', 'patch'
+  assign art_w = 1146
+  assign art_h = 599.7
+%}
+
 <section class="pu-hero" data-pu-hero>
   <div class="pu-hero__texture pu-texture-overlay"></div>
-  <div class="pu-hero__content">
-    <div class="pu-hero__typography">
+
+  <div class="pu-hero__inner">
+    <div
+      class="pu-hero__art"
+      style="--art-w: {{ art_w }}; --art-h: {{ art_h }};"
+    >
+      <h1 class="pu-hero__title pu-hero__title--dark">{{ section.settings.title_line_1 | default: 'SILLY THING' }}</h1>
+      <h1 class="pu-hero__title pu-hero__title--yellow">{{ section.settings.title_line_2 | default: 'PLEASE UNDO' }}</h1>
+
       <div class="pu-hero__patches">
-        {% assign patch_blocks = section.blocks | where: 'type', 'patch' %}
         {% if patch_blocks.size > 0 %}
           {% for block in patch_blocks %}
             {% render 'pu-hero-patch', block: block %}
           {% endfor %}
         {% else %}
-          <div
-            class="pu-hero__patch"
-            style="--patch-top: 8%; --patch-left: 38%; --patch-rotate: 14.53deg;"
-          >
-            <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="28" data-parallax-x="-6">
-              <div class="pu-sticker pu-hero__patch-inner"><span>For every</span></div>
-            </div>
+          <div class="pu-hero__patch pu-hero__patch--for-every">
+            <div class="pu-sticker pu-hero__patch-inner"><span>For every</span></div>
           </div>
-          <div
-            class="pu-hero__patch"
-            style="--patch-top: 58%; --patch-left: 8%; --patch-rotate: -12.36deg;"
-          >
-            <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="42" data-parallax-x="8">
-              <div class="pu-sticker pu-hero__patch-inner"><span>There's a</span></div>
-            </div>
+          <div class="pu-hero__patch pu-hero__patch--theres-a">
+            <div class="pu-sticker pu-hero__patch-inner"><span>There's a</span></div>
           </div>
-          <div
-            class="pu-hero__patch"
-            style="--patch-top: 38%; --patch-right: 8%; --patch-rotate: -8.34deg;"
-          >
-            <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="36" data-parallax-x="-10">
-              <div class="pu-sticker pu-hero__patch-inner"><span>you do</span></div>
-            </div>
+          <div class="pu-hero__patch pu-hero__patch--you-do">
+            <div class="pu-sticker pu-hero__patch-inner"><span>you do</span></div>
           </div>
         {% endif %}
       </div>
 
-      <h1 class="pu-hero__title pu-hero__title--dark">{{ section.settings.title_line_1 | default: 'SILLY THING' }}</h1>
-      <h1 class="pu-hero__title pu-hero__title--yellow">
-        {{ section.settings.title_line_2 | default: 'Please Undo' }}
-      </h1>
+      <div class="pu-hero__fig pu-hero__fig--on-s" aria-hidden="true">
+        <img src="{{ 'pu-hero-figure-sprite.png' | asset_url }}" alt="" width="1462" height="762" loading="eager">
+      </div>
 
-      <div
-        class="pu-hero__figure-wrap pu-hero__figure-wrap--1"
-        data-pu-parallax
-        data-parallax-y="55"
-        data-parallax-x="12"
-      >
-        <img
-          class="pu-hero__figure pu-hero__figure--1"
-          src="{{ 'pu-stick-figure-1.png' | asset_url }}"
-          alt=""
-          width="104"
-          height="105"
-          loading="eager"
-        >
+      <div class="pu-hero__fig pu-hero__fig--on-g" aria-hidden="true">
+        <img src="{{ 'pu-hero-figure-sprite.png' | asset_url }}" alt="" width="1462" height="762" loading="eager">
       </div>
-      <div
-        class="pu-hero__figure-wrap pu-hero__figure-wrap--2"
-        data-pu-parallax
-        data-parallax-y="70"
-        data-parallax-x="-8"
-      >
-        <img
-          class="pu-hero__figure pu-hero__figure--2"
-          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-          alt=""
-          width="138"
-          height="140"
-          loading="eager"
-        >
+
+      <div class="pu-hero__fig pu-hero__fig--sitting" aria-hidden="true">
+        <img src="{{ 'pu-hero-figure-sprite.png' | asset_url }}" alt="" width="1462" height="762" loading="eager">
       </div>
-      <div
-        class="pu-hero__figure-wrap pu-hero__figure-wrap--3"
-        data-pu-parallax
-        data-parallax-y="48"
-        data-parallax-x="-14"
-      >
-        <img
-          class="pu-hero__figure pu-hero__figure--3"
-          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-          alt=""
-          width="149"
-          height="135"
-          loading="eager"
-        >
+
+      <div class="pu-hero__fig pu-hero__fig--runner" aria-hidden="true">
+        <img src="{{ 'pu-hero-runner.png' | asset_url }}" alt="" width="104" height="108" loading="eager">
       </div>
-      <div class="pu-hero__product-wrap" data-pu-parallax data-parallax-y="62" data-parallax-x="-6">
+
+      <div class="pu-hero__product-wrap" aria-hidden="true">
         {% if section.settings.product_image != blank %}
           {{
             section.settings.product_image
-            | image_url: width: 200
-            | image_tag: class: 'pu-hero__product', alt: 'Please Undo product', loading: 'eager'
+            | image_url: width: 120
+            | image_tag: class: 'pu-hero__product', alt: 'Please Undo product', loading: 'eager', width: 52, height: 131
           }}
         {% else %}
           <img
             class="pu-hero__product"
-            src="{{ 'pu-product-mockup.png' | asset_url }}"
+            src="{{ 'pu-hero-bottle.png' | asset_url }}"
             alt="Please Undo product"
-            width="78"
-            height="139"
+            width="52"
+            height="131"
             loading="eager"
           >
         {% endif %}
@@ -114,24 +77,24 @@
         {{ section.settings.button_label }}
       </a>
     {% endif %}
-  </div>
 
-  <div class="pu-hero__tickers">
-    <div class="pu-hero__ticker pu-hero__ticker--white">
-      <div class="pu-ticker">
-        <div class="pu-ticker__track">
-          {% for i in (1..8) %}
-            <span>{{ section.settings.ticker_1_text | default: "it's human to mess up" }}</span>
-          {% endfor %}
+    <div class="pu-hero__tickers">
+      <div class="pu-hero__ticker pu-hero__ticker--white">
+        <div class="pu-ticker">
+          <div class="pu-ticker__track">
+            {% for i in (1..8) %}
+              <span>{{ section.settings.ticker_1_text | default: "it's human to mess up" }}</span>
+            {% endfor %}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="pu-hero__ticker pu-hero__ticker--orange">
-      <div class="pu-ticker pu-ticker--reverse">
-        <div class="pu-ticker__track">
-          {% for i in (1..8) %}
-            <span>{{ section.settings.ticker_2_text | default: 'your right to a quick reset' }}</span>
-          {% endfor %}
+      <div class="pu-hero__ticker pu-hero__ticker--orange">
+        <div class="pu-ticker pu-ticker--reverse">
+          <div class="pu-ticker__track">
+            {% for i in (1..8) %}
+              <span>{{ section.settings.ticker_2_text | default: 'your right to a quick reset' }}</span>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
@@ -140,228 +103,343 @@
 
 {% stylesheet %}
   .pu-hero {
+    --hero-frame-h: 851;
     position: relative;
-    min-height: 851px;
-    background: var(--pu-blue-bright);
+    background: #006eff;
+    overflow: hidden;
+  }
+
+  .pu-hero-section {
+    position: relative;
+    z-index: 3;
+  }
+
+  .pu-hero__inner {
+    --scale: min(1, (100vw - 64px) / 1146);
+    position: relative;
     padding-top: calc(40px + var(--header-group-height, 88px));
-    overflow: visible;
+    min-height: calc(885 * var(--scale) * 1px);
   }
 
-  .pu-hero__content {
+  .pu-hero__art {
+    --uw: calc(1146 * var(--scale) * 1px);
+    --uh: calc(599.7 * var(--scale) * 1px);
+    --px: calc(1px * var(--scale));
     position: relative;
-    z-index: 2;
-    max-width: 100%;
+    width: var(--uw);
+    height: var(--uh);
     margin: 0 auto;
-    padding: 40px 32px 200px;
-    text-align: center;
-  }
-
-  .pu-hero__typography {
-    position: relative;
-    min-height: 480px;
-    margin-bottom: 24px;
   }
 
   .pu-hero__title {
-    margin: 0 auto;
-    max-width: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(1004.541 / var(--art-w) * 100%);
+    margin: 0;
     font-family: var(--pu-font-display);
     font-weight: 800;
-    font-size: clamp(48px, 11.5vw, 202px);
-    line-height: 0.76;
-    letter-spacing: -0.02em;
+    font-size: calc(202.163 * var(--px));
     text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
   }
 
+  /* Figma 847:184 */
   .pu-hero__title--dark {
-    color: var(--pu-navy-text);
-    position: relative;
+    top: calc(241.75 / var(--art-h) * 100%);
+    color: #060623;
+    line-height: 0.73;
+    letter-spacing: calc(-4.0433 * var(--px));
     z-index: 2;
   }
 
+  /* Figma 847:183 — bottom 470.75 + translateY(100%) ≈ top 253.5 in art coords */
   .pu-hero__title--yellow {
-    color: var(--pu-yellow);
-    margin-top: -20px;
+    top: calc(253.5 / var(--art-h) * 100%);
+    color: #fceb00;
+    line-height: 0.76;
+    letter-spacing: calc(-4.0433 * var(--px));
+    z-index: 3;
   }
 
   .pu-hero__patches {
     position: absolute;
     inset: 0;
+    z-index: 6;
     pointer-events: none;
-    z-index: 3;
   }
 
   .pu-hero__patch {
     position: absolute;
-    top: var(--patch-top, 50%);
-    left: var(--patch-left, auto);
-    right: var(--patch-right, auto);
-    transform: rotate(var(--patch-rotate, 0deg));
     pointer-events: none;
   }
 
   .pu-hero__patch-inner {
-    font-size: clamp(20px, 2.5vw, 32px);
-    line-height: 1;
+    padding: calc(14.64 * var(--px)) calc(20 * var(--px));
+    border-radius: calc(12 * var(--px));
+    border-width: calc(1.8 * var(--px));
+    line-height: 0.73;
+    letter-spacing: calc(-0.56 * var(--px));
+    font-size: calc(28 * var(--px));
     white-space: nowrap;
   }
 
-  .pu-hero__patch-media {
-    display: block;
-    width: auto !important;
-    max-width: clamp(48px, 8vw, 120px) !important;
-    height: auto !important;
+  /* Figma 847:196 */
+  .pu-hero__patch--for-every {
+    left: calc(604 / var(--art-w) * 100%);
+    top: calc(186 / var(--art-h) * 100%);
+    transform: rotate(14.53deg);
   }
 
-  .pu-hero__patch-html {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
+  .pu-hero__patch--for-every .pu-hero__patch-inner {
+    font-size: calc(32 * var(--px));
+    letter-spacing: calc(-0.64 * var(--px));
   }
 
-  .pu-hero__patch-html svg {
-    width: clamp(32px, 5vw, 64px);
-    height: auto;
-    display: block;
+  /* Figma 847:194 */
+  .pu-hero__patch--theres-a {
+    left: calc(147.16 / var(--art-w) * 100%);
+    top: calc(400 / var(--art-h) * 100%);
+    transform: rotate(-12.36deg) skewX(-2deg);
   }
 
-  .pu-hero__patch-drift {
-    will-change: transform;
+  /* Figma 847:199 */
+  .pu-hero__patch--you-do {
+    left: calc(1126 / var(--art-w) * 100%);
+    top: calc(316 / var(--art-h) * 100%);
+    transform: rotate(-8.34deg);
   }
 
-  .pu-hero__figure-wrap,
-  .pu-hero__product-wrap {
+  .pu-hero__patch--you-do .pu-hero__patch-inner {
+    font-size: calc(32 * var(--px));
+    letter-spacing: calc(-0.64 * var(--px));
+  }
+
+  .pu-hero__fig {
     position: absolute;
-    will-change: transform;
-    z-index: 3;
-  }
-
-  .pu-hero__figure-wrap--1 {
-    top: 52%;
-    left: 12%;
-  }
-  .pu-hero__figure-wrap--2 {
-    top: 8%;
-    left: 30%;
-  }
-  .pu-hero__figure-wrap--3 {
-    top: 42%;
-    right: 12%;
-  }
-
-  .pu-hero__product-wrap {
-    top: 42%;
-    right: 18%;
+    overflow: hidden;
     z-index: 4;
+    pointer-events: none;
   }
 
-  .pu-hero__figure {
-    position: relative;
-    object-fit: contain;
+  .pu-hero__fig img {
+    position: absolute;
     display: block;
     max-width: none !important;
+    width: auto !important;
     height: auto !important;
   }
 
-  .pu-hero__figure--1 {
-    width: 104px !important;
-    transform: rotate(30deg);
-  }
-  .pu-hero__figure--2 {
-    width: 120px !important;
-    transform: rotate(-18deg);
-  }
-  .pu-hero__figure--3 {
-    width: 130px !important;
-    transform: rotate(10deg);
+  /* Figma 847:191 — figure on S */
+  .pu-hero__fig--on-s {
+    left: calc(452.54 / var(--art-w) * 100%);
+    top: calc(161.54 / var(--art-h) * 100%);
+    width: calc(94.367 * var(--px));
+    height: calc(95.389 * var(--px));
+    transform: rotate(6.13deg);
   }
 
-  .pu-hero__product {
-    width: 78px !important;
-    max-width: 78px !important;
-    height: auto !important;
-    transform: rotate(12deg);
-    display: block;
+  .pu-hero__fig--on-s img {
+    width: 527.8% !important;
+    height: 272.14% !important;
+    left: -364.98%;
+    top: -52.14%;
   }
 
-  .pu-hero__cta {
-    position: relative;
-    z-index: 3;
+  /* Figma 847:192 — figure on G */
+  .pu-hero__fig--on-g {
+    left: calc(1031.42 / var(--art-w) * 100%);
+    top: calc(126.75 / var(--art-h) * 100%);
+    width: calc(107.881 * var(--px));
+    height: calc(111.175 * var(--px));
+    transform: rotate(-18.54deg);
   }
 
-  .pu-hero__tickers {
-    --ticker-bleed: 140vw;
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    z-index: 5;
-    width: var(--ticker-bleed);
-    transform: translateX(-50%);
-    pointer-events: none;
+  .pu-hero__fig--on-g img {
+    width: 558.02% !important;
+    height: 282.22% !important;
+    left: -161.07%;
+    top: -64.07%;
+  }
+
+  /* Figma 847:193 — sitting figure */
+  .pu-hero__fig--sitting {
+    left: calc(1078.58 / var(--art-w) * 100%);
+    top: calc(413.53 / var(--art-h) * 100%);
+    width: calc(130.845 * var(--px));
+    height: calc(113.616 * var(--px));
+    transform: rotate(10.06deg);
+  }
+
+  .pu-hero__fig--sitting img {
+    width: 520.28% !important;
+    height: 312.3% !important;
+    left: -247.33%;
+    top: -67.21%;
+  }
+
+  /* Figma 847:185 — running figure */
+  .pu-hero__fig--runner {
+    left: calc(154.48 / var(--art-w) * 100%);
+    top: calc(454.85 / var(--art-h) * 100%);
+    width: calc(103.562 * var(--px));
+    height: calc(107.525 * var(--px));
+    transform: rotate(29.94deg);
     overflow: visible;
   }
 
+  .pu-hero__fig--runner img {
+    position: relative;
+    width: 100% !important;
+    height: 100% !important;
+    left: auto;
+    top: auto;
+    object-fit: contain;
+  }
+
+  /* Figma 847:198 — product bottle */
+  .pu-hero__product-wrap {
+    position: absolute;
+    left: calc((573 + 502.27 - 25.59) / var(--art-w) * 100%);
+    top: calc(406.43 / var(--art-h) * 100%);
+    width: calc(51.18 * var(--px));
+    height: calc(130.775 * var(--px));
+    transform: rotate(12.2deg);
+    z-index: 5;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .pu-hero__product {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  /* Figma 847:201 */
+  .pu-hero__cta {
+    position: absolute;
+    left: 50%;
+    top: calc(592 * var(--scale) * 1px);
+    transform: translateX(-50%);
+    width: calc(174 * var(--scale) * 1px);
+    min-height: calc(56 * var(--scale) * 1px);
+    padding: calc(10 * var(--scale) * 1px) calc(16 * var(--scale) * 1px);
+    font-size: calc(24 * var(--scale) * 1px);
+    z-index: 4;
+  }
+
+  .pu-hero__tickers {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+
   .pu-hero__ticker {
-    padding: 14.64px 0;
-    border: 1.8px solid var(--pu-navy-text);
-    border-radius: 0;
+    position: absolute;
+    left: 50%;
+    border: calc(1.8 * var(--scale) * 1px) solid #060623;
+    border-radius: calc(13 * var(--scale) * 1px);
     box-shadow: var(--pu-shadow);
-    margin: 0;
-    width: 100%;
-    transform-origin: center center;
+    padding: calc(14.64 * var(--scale) * 1px) calc(20 * var(--scale) * 1px);
+    width: calc(1509 * var(--scale) * 1px);
   }
 
   .pu-hero__ticker span {
     font-family: var(--pu-font-display);
-    font-size: clamp(18px, 2vw, 28px);
-    font-weight: 800;
+    font-size: calc(28 * var(--scale) * 1px);
+    font-weight: 600;
+    line-height: 0.73;
+    letter-spacing: calc(-0.56 * var(--scale) * 1px);
     text-transform: uppercase;
-    letter-spacing: -0.56px;
     white-space: nowrap;
   }
 
+  /* Figma 847:167 */
   .pu-hero__ticker--white {
-    background: var(--pu-white);
-    color: var(--pu-navy-text);
-    transform: rotate(-10.5deg) skew(1deg);
-    margin-bottom: -12px;
-    position: relative;
+    top: calc(693 * var(--scale) * 1px);
+    transform: translateX(-50%) rotate(-6.43deg) skewX(-2deg);
+    background: #fff;
+    color: #060623;
     z-index: 2;
-    width: 108%;
-    margin-left: -4%;
   }
 
+  /* Figma 847:175 */
   .pu-hero__ticker--orange {
-    background: var(--pu-orange);
-    color: var(--pu-navy-text);
-    transform: rotate(1.12deg) skewX(-1deg);
-    position: relative;
+    top: calc(806.66 * var(--scale) * 1px);
+    transform: translateX(-50%) rotate(1.13deg) skewX(-2deg);
+    background: #ff6800;
+    color: #060623;
     z-index: 3;
-    width: 106%;
-    margin-left: -3%;
   }
 
   @media (max-width: 749px) {
-    .pu-hero__typography {
-      min-height: 360px;
+    .pu-hero__inner {
+      min-height: auto;
+      padding-bottom: 120px;
     }
-    .pu-hero__figure-wrap,
+
+    .pu-hero__fig,
     .pu-hero__product-wrap {
       display: none;
     }
+
+    .pu-hero__title {
+      white-space: normal;
+      font-size: clamp(40px, 12vw, 72px);
+      width: 100%;
+    }
+
+    .pu-hero__title--dark {
+      top: 8%;
+    }
+
+    .pu-hero__title--yellow {
+      top: 22%;
+    }
+
     .pu-hero__patches {
       position: static;
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 8px;
-      margin-bottom: 16px;
+      margin-top: 140px;
     }
 
     .pu-hero__patch {
       position: static;
-      transform: rotate(var(--patch-rotate, 0deg)) !important;
+      transform: none !important;
+    }
+
+    .pu-hero__cta {
+      position: relative;
+      top: auto;
+      transform: none;
+      margin: 24px auto 0;
+    }
+
+    .pu-hero__tickers {
+      position: relative;
+      width: 100%;
+      left: auto;
+      transform: none;
+      margin-top: 40px;
+    }
+
+    .pu-hero__ticker--white,
+    .pu-hero__ticker--orange {
+      position: relative;
+      top: auto;
+      left: auto;
+      transform: rotate(-4deg);
+      width: 110%;
+      margin-left: -5%;
     }
   }
 {% endstylesheet %}
@@ -381,7 +459,7 @@
       "type": "text",
       "id": "title_line_2",
       "label": "Title line 2",
-      "default": "Please Undo"
+      "default": "PLEASE UNDO"
     },
     {
       "type": "image_picker",
@@ -517,36 +595,21 @@
           "type": "patch",
           "settings": {
             "content_type": "text",
-            "text": "For every",
-            "position_top": 8,
-            "position_left": 38,
-            "rotation": 15,
-            "parallax_y": 28,
-            "parallax_x": -6
+            "text": "For every"
           }
         },
         {
           "type": "patch",
           "settings": {
             "content_type": "text",
-            "text": "There's a",
-            "position_top": 58,
-            "position_left": 8,
-            "rotation": -12,
-            "parallax_y": 42,
-            "parallax_x": 8
+            "text": "There's a"
           }
         },
         {
           "type": "patch",
           "settings": {
             "content_type": "text",
-            "text": "you do",
-            "position_top": 38,
-            "position_right": 8,
-            "rotation": -8,
-            "parallax_y": 36,
-            "parallax_x": -10
+            "text": "you do"
           }
         }
       ]

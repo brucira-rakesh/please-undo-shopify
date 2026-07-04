@@ -98,8 +98,13 @@
 }
 
 @keyframes pu-ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 /* Homepage layout */
@@ -114,7 +119,7 @@
   background: transparent !important;
 }
 
-.pu-page .content-for-layout > .shopify-section:first-child {
+.pu-page .content-for-layout>.shopify-section:first-child {
   margin-top: calc(var(--header-group-height, 88px) * -1);
 }
 
@@ -122,17 +127,26 @@
   display: none;
 }
 
-/* SVG grid — override Horizon img { width: 100% } */
-.pu-svg-grid img {
-  width: auto !important;
-  max-width: none !important;
+/* SVG grid — override Horizon img { width: 100% } for sparks only */
+.pu-svg-grid__spark {
+  width: 32px !important;
   height: auto !important;
+}
+
+.pu-svg-grid__spark:last-child {
+  transform: rotateY(180deg);
 }
 
 .pu-svg-grid__center-btn-img {
   width: 100% !important;
   max-width: 242px !important;
   height: auto !important;
+}
+
+/* Hero — prevent Horizon img { width: 100% } from blowing up sprite crops */
+.pu-hero .pu-hero__fig img,
+.pu-hero .pu-hero__product {
+  max-width: none !important;
 }
 
 .pu-texture-overlay {
