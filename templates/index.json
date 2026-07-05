@@ -57,6 +57,7 @@
         "img_1": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/1.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "Lifestyle",
             "overlay_text": "I have a 9 am meeting\nShould I have the 5th drink?",
@@ -67,6 +68,7 @@
         "img_2": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/2.png",
             "fallback_asset": "pu-scroll-img-3.png",
             "alt": "Skateboard",
             "overlay_text": "",
@@ -77,6 +79,7 @@
         "img_3": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/3.png",
             "fallback_asset": "pu-scroll-img-2.png",
             "alt": "Concert",
             "overlay_text": "The concert ended.\nThe ache got an encore.",
@@ -87,9 +90,32 @@
         "image_HRyCLt": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/4.png",
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "you have become one \nwith laptop",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_zGFWcK": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/5.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_8xz8tn": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/6.png",
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "You don't have back pain. You have calendar pain.",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
@@ -99,7 +125,9 @@
         "img_1",
         "img_2",
         "img_3",
-        "image_HRyCLt"
+        "image_HRyCLt",
+        "image_zGFWcK",
+        "image_8xz8tn"
       ],
       "settings": {
         "curve_text_1": "Every morning",
