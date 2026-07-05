@@ -191,6 +191,7 @@
         "product_1": {
           "type": "product",
           "settings": {
+            "product_image": "shopify://shop_images/Primary-Mockup_12_3.png",
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
