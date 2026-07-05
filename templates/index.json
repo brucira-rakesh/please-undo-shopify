@@ -83,12 +83,23 @@
             "overlay_position": "top-right",
             "overlay_rotation": 0
           }
+        },
+        "image_HRyCLt": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
         }
       },
       "block_order": [
         "img_1",
         "img_2",
-        "img_3"
+        "img_3",
+        "image_HRyCLt"
       ],
       "settings": {
         "curve_text_1": "Every morning",
