@@ -9,7 +9,7 @@
   --pu-navy-text: #060622;
   --pu-gray: #e5e5e9;
   --pu-white: #ffffff;
-  --pu-font-display: 'Bricolage Grotesque', sans-serif;
+  --pu-font-display: 'Bricolage Grotesque Condensed', sans-serif;
   --pu-font-body: 'Onest', sans-serif;
   --pu-border: 1.5px solid #000;
   --pu-shadow: 1px 2px 2px rgba(19, 57, 40, 0.25);
@@ -78,6 +78,8 @@
   box-shadow: var(--pu-shadow);
   font-family: var(--pu-font-display);
   font-weight: 800;
+  letter-spacing: -5%;
+  line-height: 73%;
   text-transform: uppercase;
   color: var(--pu-navy-text);
 }
