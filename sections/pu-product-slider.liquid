@@ -1,178 +1,104 @@
 {% liquid
   assign product_blocks = section.blocks | where: 'type', 'product'
-  assign has_products = false
-  if product_blocks.size > 0
-    assign has_products = true
+  assign slider_collection = section.settings.collection
+  assign products_limit = section.settings.products_limit | default: 6
+  assign default_bullets = section.settings.default_bullets
+  assign slide_count = 0
+  assign use_collection = false
+
+  if slider_collection != blank and slider_collection.products_count > 0
+    assign use_collection = true
+    assign slide_count = slider_collection.products_count
+    if slide_count > products_limit
+      assign slide_count = products_limit
+    endif
+  elsif product_blocks.size > 0
+    assign slide_count = product_blocks.size
+  else
+    assign slide_count = 1
   endif
 %}
 
-<section class="pu-product-slider" data-pu-product-slider>
+<section class="pu-product-slider" data-pu-product-slider data-pu-product-count="{{ slide_count }}">
   <div class="pu-product-slider__texture pu-texture-overlay"></div>
 
-  <div class="pu-product-slider__hang" data-pu-hanging-title>
-    <div class="pu-product-slider__swing" data-pu-hang-swing>
-      <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
-      <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
-      <div class="pu-product-slider__sign">
-        <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
+  <div class="pu-product-slider__pin" data-pu-product-pin>
+    <div class="pu-product-slider__hang" data-pu-hanging-title>
+      <div class="pu-product-slider__swing" data-pu-hang-swing>
+        <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
+        <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
+        <div class="pu-product-slider__sign">
+          <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="pu-product-slider__pin" data-pu-product-pin>
     <div class="pu-product-slider__viewport" data-pu-product-viewport>
       <div class="pu-product-slider__track" data-pu-product-track>
-        {% if has_products %}
+        {% if use_collection %}
+          {% assign slide_index = 0 %}
+          {% for collection_product in slider_collection.products limit: products_limit %}
+            {% liquid
+              assign slide_category = 'LAPTOP NECK'
+              if collection_product.metafields.custom.category != blank
+                assign slide_category = collection_product.metafields.custom.category
+              endif
+              assign slide_bullets = default_bullets
+              if slide_bullets == blank
+                assign slide_bullets = '<p>Low smell</p><p>0 Stain</p><p>Daily use</p>'
+              endif
+            %}
+            {% render 'pu-product-slider-slide',
+              category: slide_category,
+              title: collection_product.title,
+              bullets_html: slide_bullets,
+              product_image: collection_product.featured_media,
+              figure_image: blank,
+              shop_url: collection_product.url,
+              slide_index: slide_index
+            %}
+            {% assign slide_index = slide_index | plus: 1 %}
+          {% endfor %}
+        {% elsif product_blocks.size > 0 %}
           {% for block in product_blocks %}
-            <div
-              class="pu-product-slider__slide{% if forloop.first %} is-active{% endif %}"
-              data-pu-product-slide
-              data-index="{{ forloop.index0 }}"
-              {{ block.shopify_attributes }}
-            >
-              <div class="pu-product-slider__content">
-                <div class="pu-product-slider__info">
-                  <p class="pu-product-slider__category">
-                    {{ block.settings.subtext | default: 'LAPTOP NECK' }}
-                  </p>
-                  <h3 class="pu-product-slider__product-title">
-                    {{ block.settings.title | default: 'Pain-relief Roll On' }}
-                  </h3>
-                  <div class="pu-product-slider__features">
-                    <div class="pu-product-slider__feature-nums">
-                      {% assign bullet_count = block.settings.bullet_points
-                        | strip_html
-                        | split: '</p>'
-                        | size
-                        | minus: 1
-                      %}
-                      {% if bullet_count < 1 %}
-                        {% assign bullet_count = 3 %}
-                      {% endif %}
-                      {% for i in (1..bullet_count) %}
-                        <span>{{ i }}</span>
-                      {% endfor %}
-                    </div>
-                    <div class="pu-product-slider__feature-text rte">
-                      {% if block.settings.bullet_points != blank %}
-                        {{ block.settings.bullet_points }}
-                      {% else %}
-                        <p>Low smell</p>
-                        <p>0 Stain</p>
-                        <p>Daily use</p>
-                      {% endif %}
-                    </div>
-                  </div>
-                  <a
-                    href="{{ block.settings.shop_now_url | default: routes.all_products_collection_url }}"
-                    class="pu-btn pu-btn--yellow"
-                  >
-                    SHOP NOW
-                  </a>
-                </div>
-
-                <div class="pu-product-slider__stage">
-                  <div class="pu-product-slider__image-wrap">
-                    {% if block.settings.product_image != blank %}
-                      {{
-                        block.settings.product_image
-                        | image_url: width: 600
-                        | image_tag: class: 'pu-product-slider__product-img', loading: 'lazy', alt: block.settings.title
-                      }}
-                    {% else %}
-                      <img
-                        src="{{ 'pu-product-mockup.png' | asset_url }}"
-                        alt="{{ block.settings.title | escape }}"
-                        class="pu-product-slider__product-img"
-                        width="291"
-                        height="744"
-                        loading="lazy"
-                      >
-                    {% endif %}
-                  </div>
-                  {% if block.settings.svg_icon != blank %}
-                    <img
-                      class="pu-product-slider__figure"
-                      src="{{ block.settings.svg_icon | image_url: width: 400 }}"
-                      alt=""
-                      width="274"
-                      height="332"
-                      loading="lazy"
-                    >
-                  {% else %}
-                    <img
-                      class="pu-product-slider__figure"
-                      src="{{ 'pu-brand-assets.png' | asset_url }}"
-                      alt=""
-                      width="274"
-                      height="332"
-                      loading="lazy"
-                    >
-                  {% endif %}
-                </div>
-              </div>
-            </div>
+            {% liquid
+              assign block_shop_url = block.settings.shop_now_url
+              if block_shop_url == blank
+                assign block_shop_url = routes.all_products_collection_url
+              endif
+            %}
+            {% render 'pu-product-slider-slide',
+              category: block.settings.subtext,
+              title: block.settings.title,
+              bullets_html: block.settings.bullet_points,
+              product_image: block.settings.product_image,
+              figure_image: block.settings.svg_icon,
+              shop_url: block_shop_url,
+              slide_index: forloop.index0,
+              shopify_attributes: block.shopify_attributes
+            %}
           {% endfor %}
         {% else %}
-          <div class="pu-product-slider__slide is-active" data-pu-product-slide data-index="0">
-            <div class="pu-product-slider__content">
-              <div class="pu-product-slider__info">
-                <p class="pu-product-slider__category">LAPTOP NECK</p>
-                <h3 class="pu-product-slider__product-title">Pain-relief Roll On</h3>
-                <div class="pu-product-slider__features">
-                  <div class="pu-product-slider__feature-nums"><span>1</span><span>2</span><span>3</span></div>
-                  <div class="pu-product-slider__feature-text rte">
-                    <p>Low smell</p>
-                    <p>0 Stain</p>
-                    <p>Daily use</p>
-                  </div>
-                </div>
-                <a href="{{ routes.all_products_collection_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
-              </div>
-              <div class="pu-product-slider__stage">
-                <div class="pu-product-slider__image-wrap">
-                  <img
-                    src="{{ 'pu-product-mockup.png' | asset_url }}"
-                    alt="Product"
-                    class="pu-product-slider__product-img"
-                    width="291"
-                    height="744"
-                    loading="lazy"
-                  >
-                </div>
-                <img
-                  class="pu-product-slider__figure"
-                  src="{{ 'pu-brand-assets.png' | asset_url }}"
-                  alt=""
-                  width="274"
-                  height="332"
-                  loading="lazy"
-                >
-              </div>
-            </div>
-          </div>
+          {% render 'pu-product-slider-slide',
+            category: 'LAPTOP NECK',
+            title: 'Pain-relief Roll On',
+            bullets_html: '<p>Low smell</p><p>0 Stain</p><p>Daily use</p>',
+            product_image: blank,
+            figure_image: blank,
+            shop_url: routes.all_products_collection_url,
+            slide_index: 0
+          %}
         {% endif %}
       </div>
     </div>
 
     <div class="pu-product-slider__progress" data-pu-product-progress>
-      {% if has_products %}
-        {% assign total = product_blocks.size %}
-      {% else %}
-        {% assign total = 1 %}
-      {% endif %}
-      {% if total < 1 %}{% assign total = 1 %}{% endif %}
-      {% for i in (1..total) %}
+      {% for i in (1..33) %}
         <span
           class="pu-product-slider__progress-segment{% if forloop.first %} is-active{% endif %}"
           data-pu-progress-segment
         ></span>
       {% endfor %}
-      {% if total == 1 %}
-        {% for i in (2..33) %}
-          <span class="pu-product-slider__progress-segment" data-pu-progress-segment></span>
-        {% endfor %}
-      {% endif %}
     </div>
   </div>
 </section>
@@ -186,8 +112,7 @@
   }
 
   .pu-product-slider__hang {
-    position: sticky;
-    top: 0;
+    position: relative;
     z-index: 10;
     width: min(870px, 90vw);
     margin: 0 auto 56px;
@@ -397,8 +322,9 @@
   }
 
   .pu-product-slider__product-img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
     object-fit: contain;
   }
 
@@ -463,6 +389,27 @@
       "id": "title",
       "label": "Section title",
       "default": "Pick your Undo."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Products collection",
+      "info": "Pulls slides from collection products. Manual blocks are used when empty."
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Max products from collection",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "richtext",
+      "id": "default_bullets",
+      "label": "Default feature bullets (collection products)",
+      "default": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
     }
   ],
   "blocks": [

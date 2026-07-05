@@ -126,7 +126,6 @@ function initProductSlider() {
   const section = document.querySelector('[data-pu-product-slider]');
   if (!section || !gsap || !ScrollTrigger) return;
 
-  const hang = section.querySelector('[data-pu-hanging-title]');
   const pin = section.querySelector('[data-pu-product-pin]');
   const track = section.querySelector('[data-pu-product-track]');
   const slides = section.querySelectorAll('[data-pu-product-slide]');
@@ -145,26 +144,32 @@ function initProductSlider() {
     });
   };
 
+  const setProgress = (index, total) => {
+    if (!segments.length || total <= 1) return;
+    const segIndex = Math.round((index / (total - 1)) * (segments.length - 1));
+    segments.forEach((seg, i) => seg.classList.toggle('is-active', i === segIndex));
+  };
+
   if (!pin || !track || slides.length === 0) return;
 
   setSlidePositions(0);
+  setProgress(0, slides.length);
 
   if (slides.length <= 1) return;
 
   const total = slides.length;
-  const scrollPerProduct = 500;
-  const snapStep = 1 / (total - 1);
-  const hangOffset = hang ? hang.offsetHeight : 0;
+  const scrollPerProduct = 600;
 
   ScrollTrigger.create(
-    scrollTriggerConfig(pin, {
-      start: () => `top ${hangOffset}px`,
+    scrollTriggerConfig(section, {
+      start: 'top top',
       end: () => `+=${Math.max((total - 1) * scrollPerProduct, 1)}`,
       pin: pin,
-      scrub: 0.6,
+      pinSpacing: true,
+      scrub: 0.65,
       snap: {
-        snapTo: snapStep,
-        duration: { min: 0.25, max: 0.55 },
+        snapTo: 1 / (total - 1),
+        duration: { min: 0.2, max: 0.5 },
         ease: 'power2.inOut',
       },
       anticipatePin: 1,
@@ -172,9 +177,8 @@ function initProductSlider() {
       onUpdate: (self) => {
         const rawIndex = self.progress * (total - 1);
         const index = Math.min(total - 1, Math.round(rawIndex));
-
         setSlidePositions(rawIndex);
-        segments.forEach((seg, i) => seg.classList.toggle('is-active', i <= index));
+        setProgress(index, total);
       },
     })
   );

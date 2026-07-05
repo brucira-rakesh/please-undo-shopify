@@ -22,8 +22,8 @@
             "position_left": 38,
             "position_right": 0,
             "rotation": 15,
-            "parallax_y": 28,
-            "parallax_x": -6
+            "parallax_y": 32,
+            "parallax_x": 10
           }
         },
         "patch_theres": {
@@ -32,10 +32,10 @@
             "content_type": "text",
             "text": "There's a",
             "html": "",
-            "position_top": 58,
-            "position_left": 8,
+            "position_top": 37,
+            "position_left": 5,
             "position_right": 0,
-            "rotation": -12,
+            "rotation": -14,
             "parallax_y": 42,
             "parallax_x": 8
           }
@@ -46,10 +46,10 @@
             "content_type": "text",
             "text": "you do",
             "html": "",
-            "position_top": 38,
+            "position_top": 20,
             "position_left": 0,
-            "position_right": 8,
-            "rotation": -8,
+            "position_right": 12,
+            "rotation": -6,
             "parallax_y": 36,
             "parallax_x": -10
           }
@@ -181,7 +181,10 @@
         "product_1"
       ],
       "settings": {
-        "title": "Pick your Undo."
+        "title": "Pick your Undo.",
+        "collection": "all",
+        "products_limit": 6,
+        "default_bullets": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
       }
     },
     "pu_svg_grid": {

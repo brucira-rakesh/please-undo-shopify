@@ -1,0 +1,92 @@
+{% doc %}
+  Single slide for PU product slider.
+
+  @param {string} category - Category label
+  @param {string} title - Product title
+  @param {string} bullets_html - Feature bullets HTML
+  @param {object} [product_image] - Image object
+  @param {object} [figure_image] - Side illustration
+  @param {string} shop_url - Shop now link
+  @param {number} slide_index - Zero-based slide index
+  @param {string} [shopify_attributes] - Theme editor block attributes
+{% enddoc %}
+
+<div
+  class="pu-product-slider__slide{% if slide_index == 0 %} is-active{% endif %}"
+  data-pu-product-slide
+  data-index="{{ slide_index }}"
+  {{ shopify_attributes }}
+>
+  <div class="pu-product-slider__content">
+    <div class="pu-product-slider__info">
+      <p class="pu-product-slider__category">{{ category }}</p>
+      <h3 class="pu-product-slider__product-title">{{ title }}</h3>
+      <div class="pu-product-slider__features">
+        <div class="pu-product-slider__feature-nums">
+          {% assign bullet_parts = bullets_html | split: '<p>' %}
+          {% assign bullet_count = 0 %}
+          {% for part in bullet_parts %}
+            {% assign part_text = part | strip_html | strip %}
+            {% if part_text != blank %}
+              {% assign bullet_count = bullet_count | plus: 1 %}
+              <span>{{ bullet_count }}</span>
+            {% endif %}
+          {% endfor %}
+          {% if bullet_count == 0 %}
+            <span>1</span><span>2</span><span>3</span>
+          {% endif %}
+        </div>
+        <div class="pu-product-slider__feature-text rte">
+          {% if bullets_html != blank %}
+            {{ bullets_html }}
+          {% else %}
+            <p>Low smell</p>
+            <p>0 Stain</p>
+            <p>Daily use</p>
+          {% endif %}
+        </div>
+      </div>
+      <a href="{{ shop_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
+    </div>
+
+    <div class="pu-product-slider__stage">
+      <div class="pu-product-slider__image-wrap">
+        {% if product_image != blank %}
+          {{
+            product_image
+            | image_url: width: 600
+            | image_tag: class: 'pu-product-slider__product-img', loading: 'lazy', alt: title
+          }}
+        {% else %}
+          <img
+            src="{{ 'pu-product-mockup.png' | asset_url }}"
+            alt="{{ title | escape }}"
+            class="pu-product-slider__product-img"
+            width="291"
+            height="744"
+            loading="lazy"
+          >
+        {% endif %}
+      </div>
+      {% if figure_image != blank %}
+        <img
+          class="pu-product-slider__figure"
+          src="{{ figure_image | image_url: width: 400 }}"
+          alt=""
+          width="274"
+          height="332"
+          loading="lazy"
+        >
+      {% else %}
+        <img
+          class="pu-product-slider__figure"
+          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
+          alt=""
+          width="274"
+          height="332"
+          loading="lazy"
+        >
+      {% endif %}
+    </div>
+  </div>
+</div>
