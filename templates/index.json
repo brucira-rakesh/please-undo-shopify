@@ -276,10 +276,11 @@
         "product_rBqddp": {
           "type": "product",
           "settings": {
+            "product_image": "shopify://shop_images/Primary-Mockup_14_1.png",
             "subtext": "Tired, Achy Everything",
             "title": "Relaxing Body Lotion",
             "bullet_points": "<ol><li>Loaded with actives</li><li>Helps muscles feel lighter</li><li>Cooling refreshes</li><li>Deep hydration without grease</li><li>Fast-absorbing</li><li>For daily use</li></ol>",
-            "shop_now_url": ""
+            "shop_now_url": "shopify://products/tired-achy-everything"
           }
         },
         "product_PC8jBa": {
