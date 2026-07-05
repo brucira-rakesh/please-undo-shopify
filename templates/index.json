@@ -306,7 +306,7 @@
           "type": "card",
           "settings": {
             "default_color": "#f66400",
-            "alt_color": "#fceb00",
+            "alt_color": "#F66400",
             "tile_size": "standard",
             "stage_placement": "top_left",
             "rotation": -16,
@@ -319,7 +319,7 @@
           "type": "card",
           "settings": {
             "default_color": "#fceb00",
-            "alt_color": "#0067ef",
+            "alt_color": "#FCEB00",
             "tile_size": "standard",
             "stage_placement": "top_right",
             "rotation": 11,
@@ -332,7 +332,7 @@
           "type": "card",
           "settings": {
             "default_color": "#0067ef",
-            "alt_color": "#00973a",
+            "alt_color": "#0067EF",
             "tile_size": "large",
             "stage_placement": "bottom_left",
             "rotation": 9,
@@ -345,7 +345,7 @@
           "type": "card",
           "settings": {
             "default_color": "#00973a",
-            "alt_color": "#f66400",
+            "alt_color": "#6E36B9",
             "tile_size": "large",
             "stage_placement": "bottom_right",
             "rotation": -11,
