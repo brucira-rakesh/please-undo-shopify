@@ -571,13 +571,6 @@ function initSvgGrid() {
     cards.forEach((card, i) => {
       card.classList.toggle('is-swapped', swapped);
 
-      const defaultImg = card.querySelector('[data-pu-svg-default]');
-      const altImg = card.querySelector('[data-pu-svg-alt]');
-      if (defaultImg && altImg) {
-        defaultImg.hidden = swapped;
-        altImg.hidden = !swapped;
-      }
-
       if (gsap) {
         gsap.fromTo(
           card,

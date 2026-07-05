@@ -13,73 +13,11 @@
     </header>
 
     <div class="pu-svg-grid__stage">
-      <div
-        class="pu-svg-grid__card pu-svg-grid__card--orange"
-        data-pu-svg-card
-        data-card-index="0"
-        style="--card-rotate: -16deg;"
-      >
-        <div class="pu-svg-grid__card-inner pu-svg-grid__card-orange">
-          <div class="pu-svg-grid__tile pu-svg-grid__tile--orange"></div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure-top-left" data-pu-svg-default>
-            <img src="{{ 'sponsor-top-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
-            <img src="{{ 'sponsor-top-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="pu-svg-grid__card pu-svg-grid__card--yellow"
-        data-pu-svg-card
-        data-card-index="1"
-        style="--card-rotate: 11deg;"
-      >
-        <div class="pu-svg-grid__card-inner pu-svg-grid__card-yellow">
-          <div class="pu-svg-grid__tile pu-svg-grid__tile--yellow "></div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure-top-right" data-pu-svg-default>
-            <img src="{{ 'sponsor-top-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
-            <img src="{{ 'sponsor-bottom-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="pu-svg-grid__card pu-svg-grid__card--blue"
-        data-pu-svg-card
-        data-card-index="2"
-        style="--card-rotate: 9deg;"
-      >
-        <div class="pu-svg-grid__card-inner pu-svg-grid__card-blue">
-          <div class="pu-svg-grid__tile pu-svg-grid__tile--blue"></div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure-bottom-left" data-pu-svg-default>
-            <img src="{{ 'sponsor-bottom-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
-            <img src="{{ 'sponsor-bottom-left.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="pu-svg-grid__card pu-svg-grid__card--green"
-        data-pu-svg-card
-        data-card-index="3"
-        style="--card-rotate: -11deg;"
-      >
-        <div class="pu-svg-grid__card-inner pu-svg-grid__card-green">
-          <div class="pu-svg-grid__tile pu-svg-grid__tile--green"></div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure-bottom-right" data-pu-svg-default>
-            <img src="{{ 'sponsor-bottom-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-          <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt hidden>
-            <img src="{{ 'sponsor-bottom-right.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
-          </div>
-        </div>
-      </div>
+      {% for block in section.blocks %}
+        {% if block.type == 'card' %}
+          {% render 'pu-svg-grid-card', block: block, card_index: forloop.index0 %}
+        {% endif %}
+      {% endfor %}
 
       <div class="pu-svg-grid__center">
         <img
@@ -166,14 +104,14 @@
     transform-origin: center center;
   }
 
-  .pu-svg-grid__tile--orange,
-  .pu-svg-grid__card-yellow {
+  .pu-svg-grid__card-inner--orange,
+  .pu-svg-grid__card-inner--yellow {
     min-width: 235px;
     min-height: 275px;
   }
 
-  .pu-svg-grid__card-blue,
-  .pu-svg-grid__card-green {
+  .pu-svg-grid__card-inner--blue,
+  .pu-svg-grid__card-inner--green {
     min-width: 285px;
     min-height: 330px;
   }
@@ -197,9 +135,13 @@
     background: #00973a;
   }
 
-  .pu-svg-grid__figure {
+  .pu-svg-grid__figure-slot {
     position: absolute;
-    /* inset: 8% 6% 4%; */
+    pointer-events: none;
+  }
+
+  .pu-svg-grid__figure {
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -207,37 +149,43 @@
     transition: opacity 0.35s ease;
   }
 
-  .pu-svg-grid__figure-top-left {
+  .pu-svg-grid__figure[data-pu-svg-default] {
+    position: relative;
+  }
+
+  .pu-svg-grid__figure--alt {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .pu-svg-grid__figure img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+  }
+
+  .pu-svg-grid__figure-slot.pu-svg-grid__figure-top-left {
     top: -39%;
     left: -45%;
     transform: rotate(16deg);
   }
 
-  .pu-svg-grid__figure-bottom-left {
+  .pu-svg-grid__figure-slot.pu-svg-grid__figure-bottom-left {
     bottom: -14%;
     transform: rotate(-10deg);
     right: -18%;
   }
 
-  .pu-svg-grid__figure-top-right {
+  .pu-svg-grid__figure-slot.pu-svg-grid__figure-top-right {
     top: -12%;
     right: -21%;
     transform: rotate(-8deg);
   }
 
-  .pu-svg-grid__figure-bottom-right {
+  .pu-svg-grid__figure-slot.pu-svg-grid__figure-bottom-right {
     left: -53%;
     top: -21%;
-  }
-
-  .pu-svg-grid__figure--alt {
-    opacity: 0;
-  }
-
-  .pu-svg-grid__figure .pu-svg-figure {
-    width: 100%;
-    height: 100%;
-    max-height: 100%;
   }
 
   [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-default] {
@@ -248,26 +196,22 @@
     opacity: 1;
   }
 
-  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-alt][hidden] {
-    display: flex !important;
-  }
-
-  .pu-svg-grid__card--orange {
+  .pu-svg-grid__card[data-stage-placement='top_left'] {
     left: 10%;
     top: 2%;
   }
 
-  .pu-svg-grid__card--yellow {
+  .pu-svg-grid__card[data-stage-placement='top_right'] {
     right: 10%;
     top: 0;
   }
 
-  .pu-svg-grid__card--blue {
+  .pu-svg-grid__card[data-stage-placement='bottom_left'] {
     left: 4%;
     bottom: 6%;
   }
 
-  .pu-svg-grid__card--green {
+  .pu-svg-grid__card[data-stage-placement='bottom_right'] {
     right: 8%;
     bottom: 4%;
   }
@@ -320,11 +264,6 @@
 
   .pu-svg-grid__key.is-active {
     transform: translateY(2px);
-    /* box-shadow: 0 2px 0 #b8b8b8, 0 4px 8px rgba(0, 0, 0, 0.1), inset 0 1px 0 #fff; */
-  }
-
-  .pu-svg-grid__key-line {
-    display: block;
   }
 
   @media (max-width: 749px) {
@@ -338,19 +277,22 @@
       width: 38%;
     }
 
-    .pu-svg-grid__card--orange {
+    .pu-svg-grid__card[data-stage-placement='top_left'] {
       left: 4%;
       top: 0;
     }
-    .pu-svg-grid__card--yellow {
+
+    .pu-svg-grid__card[data-stage-placement='top_right'] {
       right: 4%;
       top: 0;
     }
-    .pu-svg-grid__card--blue {
+
+    .pu-svg-grid__card[data-stage-placement='bottom_left'] {
       left: 4%;
       bottom: 28%;
     }
-    .pu-svg-grid__card--green {
+
+    .pu-svg-grid__card[data-stage-placement='bottom_right'] {
       right: 4%;
       bottom: 28%;
     }
@@ -370,6 +312,7 @@
 {
   "name": "PU SVG Grid",
   "class": "pu-svg-grid-section",
+  "max_blocks": 4,
   "settings": [
     {
       "type": "text",
@@ -390,6 +333,114 @@
       "default": "who never learn"
     }
   ],
-  "presets": [{ "name": "PU SVG Grid" }]
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "select",
+          "id": "tile_color",
+          "label": "Tile color",
+          "options": [
+            { "value": "orange", "label": "Orange" },
+            { "value": "yellow", "label": "Yellow" },
+            { "value": "blue", "label": "Blue" },
+            { "value": "green", "label": "Green" }
+          ],
+          "default": "orange"
+        },
+        {
+          "type": "select",
+          "id": "stage_placement",
+          "label": "Position on stage",
+          "options": [
+            { "value": "top_left", "label": "Top left" },
+            { "value": "top_right", "label": "Top right" },
+            { "value": "bottom_left", "label": "Bottom left" },
+            { "value": "bottom_right", "label": "Bottom right" }
+          ],
+          "default": "top_left"
+        },
+        {
+          "type": "range",
+          "id": "rotation",
+          "label": "Tile rotation",
+          "min": -20,
+          "max": 20,
+          "step": 1,
+          "unit": "deg",
+          "default": -16
+        },
+        {
+          "type": "select",
+          "id": "figure_placement",
+          "label": "Illustration position on tile",
+          "options": [
+            { "value": "top_left", "label": "Top left" },
+            { "value": "top_right", "label": "Top right" },
+            { "value": "bottom_left", "label": "Bottom left" },
+            { "value": "bottom_right", "label": "Bottom right" }
+          ],
+          "default": "top_left"
+        },
+        {
+          "type": "image_picker",
+          "id": "default_image",
+          "label": "Default illustration",
+          "info": "Shown before the center button is clicked."
+        },
+        {
+          "type": "image_picker",
+          "id": "alt_image",
+          "label": "Alternate illustration",
+          "info": "Shown after the center button is clicked."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "PU SVG Grid",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "tile_color": "orange",
+            "stage_placement": "top_left",
+            "figure_placement": "top_left",
+            "rotation": -16
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "tile_color": "yellow",
+            "stage_placement": "top_right",
+            "figure_placement": "top_right",
+            "rotation": 11
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "tile_color": "blue",
+            "stage_placement": "bottom_left",
+            "figure_placement": "bottom_left",
+            "rotation": 9
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "tile_color": "green",
+            "stage_placement": "bottom_right",
+            "figure_placement": "bottom_right",
+            "rotation": -11
+          }
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

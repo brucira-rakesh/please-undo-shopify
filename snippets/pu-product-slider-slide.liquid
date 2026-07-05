@@ -71,6 +71,22 @@
 
     <div class="pu-product-slider__stage">
       <div class="pu-product-slider__image-wrap">
+        {% if figure_image != blank %}
+          {{
+            figure_image
+            | image_url: width: 400
+            | image_tag: class: 'pu-product-slider__figure', loading: 'lazy', alt: '', width: 274, height: 332
+          }}
+        {% else %}
+          <img
+            class="pu-product-slider__figure"
+            src="{{ 'pu-stick-figure-2.png' | asset_url }}"
+            alt=""
+            width="274"
+            height="332"
+            loading="lazy"
+          >
+        {% endif %}
         {% if product_image != blank %}
           {{
             product_image
@@ -88,22 +104,6 @@
           >
         {% endif %}
       </div>
-      {% if figure_image != blank %}
-        {{
-          figure_image
-          | image_url: width: 400
-          | image_tag: class: 'pu-product-slider__figure', loading: 'lazy', alt: ''
-        }}
-      {% else %}
-        <img
-          class="pu-product-slider__figure"
-          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-          alt=""
-          width="274"
-          height="332"
-          loading="lazy"
-        >
-      {% endif %}
     </div>
   </div>
 </div>

@@ -237,7 +237,7 @@
           "type": "product",
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_12_3.png",
-            "svg_icon": "shopify://shop_images/1.svg",
+            "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2.svg",
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -248,7 +248,6 @@
           "type": "product",
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_10_1_5b8b7e17-f709-4ab1-810d-94be833cdbd9.png",
-            "svg_icon": "shopify://shop_images/2.svg",
             "subtext": "Sat For Too Long, Achy Back",
             "title": "Pain-relief Roll On",
             "bullet_points": "<ol><li>Helps relieve stiffness </li><li>Helps ease muscle tension </li><li>Instant cooling relief</li><li>Fast-drying, non-greasy</li><li>Daily use</li></ol>",
@@ -259,7 +258,6 @@
           "type": "product",
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_14_1.png",
-            "svg_icon": "shopify://shop_images/3.svg",
             "subtext": "Tired, Achy Everything",
             "title": "Relaxing Body Lotion",
             "bullet_points": "<ol><li>Loaded with actives</li><li>Helps muscles feel lighter</li><li>Cooling refreshes</li><li>Deep hydration without grease</li><li>Fast-absorbing</li><li>For daily use</li></ol>",
@@ -270,7 +268,6 @@
           "type": "product",
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_16_2.png",
-            "svg_icon": "shopify://shop_images/4.svg",
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -281,7 +278,6 @@
           "type": "product",
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_18_1.png",
-            "svg_icon": "shopify://shop_images/5.svg",
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -298,13 +294,56 @@
       ],
       "settings": {
         "title": "Pick your Undo.",
-        "collection": "",
         "products_limit": 6,
         "default_bullets": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
       }
     },
     "pu_svg_grid": {
       "type": "pu-svg-grid",
+      "blocks": {
+        "card_orange": {
+          "type": "card",
+          "settings": {
+            "tile_color": "orange",
+            "stage_placement": "top_left",
+            "figure_placement": "top_left",
+            "rotation": -16
+          }
+        },
+        "card_yellow": {
+          "type": "card",
+          "settings": {
+            "tile_color": "yellow",
+            "stage_placement": "top_right",
+            "figure_placement": "top_right",
+            "rotation": 11
+          }
+        },
+        "card_blue": {
+          "type": "card",
+          "settings": {
+            "tile_color": "blue",
+            "stage_placement": "bottom_left",
+            "figure_placement": "bottom_left",
+            "rotation": 9
+          }
+        },
+        "card_green": {
+          "type": "card",
+          "settings": {
+            "tile_color": "green",
+            "stage_placement": "bottom_right",
+            "figure_placement": "bottom_right",
+            "rotation": -11
+          }
+        }
+      },
+      "block_order": [
+        "card_orange",
+        "card_yellow",
+        "card_blue",
+        "card_green"
+      ],
       "settings": {
         "title_line_1": "we are the OFFICIAL SPONSORS for those",
         "title_line_2": "SPONSORS for those",

@@ -1,0 +1,66 @@
+{% doc %}
+  Single colored tile card for the PU SVG grid.
+
+  @param {object} block - Section block with card settings
+  @param {number} card_index - Zero-based card index for animation stagger
+{% enddoc %}
+
+{% liquid
+  assign tile_color = block.settings.tile_color | default: 'orange'
+  assign stage_placement = block.settings.stage_placement | default: 'top_left'
+  assign figure_placement = block.settings.figure_placement | default: 'top_left'
+  assign rotation = block.settings.rotation | default: 0
+
+  assign default_asset = 'sponsor-top-left.svg'
+  assign alt_asset = 'sponsor-happy-top-left.svg'
+
+  case figure_placement
+    when 'top_right'
+      assign default_asset = 'sponsor-top-right.svg'
+      assign alt_asset = 'sponsor-happy-top-right.svg'
+    when 'bottom_left'
+      assign default_asset = 'sponsor-bottom-left.svg'
+      assign alt_asset = 'sponsor-happy-bottom-left.svg'
+    when 'bottom_right'
+      assign default_asset = 'sponsor-bottom-right.svg'
+      assign alt_asset = 'sponsor-happy-bottom-right.svg'
+  endcase
+%}
+
+<div
+  class="pu-svg-grid__card"
+  data-pu-svg-card
+  data-card-index="{{ card_index }}"
+  data-stage-placement="{{ stage_placement }}"
+  data-tile-color="{{ tile_color }}"
+  style="--card-rotate: {{ rotation }}deg;"
+  {{ block.shopify_attributes }}
+>
+  <div class="pu-svg-grid__card-inner pu-svg-grid__card-inner--{{ tile_color }}">
+    <div class="pu-svg-grid__tile pu-svg-grid__tile--{{ tile_color }}"></div>
+    <div class="pu-svg-grid__figure-slot pu-svg-grid__figure-{{ figure_placement | replace: '_', '-' }}">
+      <div class="pu-svg-grid__figure" data-pu-svg-default>
+        {% if block.settings.default_image != blank %}
+          {{
+            block.settings.default_image
+            | image_url: width: 600
+            | image_tag: alt: 'PLEASE UNDO', loading: 'lazy', widths: '300, 400, 600'
+          }}
+        {% else %}
+          <img src="{{ default_asset | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%" loading="lazy">
+        {% endif %}
+      </div>
+      <div class="pu-svg-grid__figure pu-svg-grid__figure--alt" data-pu-svg-alt>
+        {% if block.settings.alt_image != blank %}
+          {{
+            block.settings.alt_image
+            | image_url: width: 600
+            | image_tag: alt: 'PLEASE UNDO', loading: 'lazy', widths: '300, 400, 600'
+          }}
+        {% else %}
+          <img src="{{ alt_asset | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%" loading="lazy">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
