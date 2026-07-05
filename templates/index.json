@@ -140,7 +140,7 @@
         "text_1": {
           "type": "scramble_text",
           "settings": {
-            "text": "Life isn't ALL FUN and frolic."
+            "text": "Life isn't ALL FUN"
           }
         },
         "video_1": {
@@ -149,13 +149,13 @@
             "video": "shopify://files/videos/02_a9244aea-6933-4bec-b042-7c8083e5c652.mp4",
             "alt": "",
             "play_delay": 0,
-            "rotation": 0
+            "rotation": -4
           }
         },
         "text_2": {
           "type": "scramble_text",
           "settings": {
-            "text": "It has many"
+            "text": "and frolic. It has many annoying"
           }
         },
         "video_2": {
@@ -170,7 +170,7 @@
         "text_3": {
           "type": "scramble_text",
           "settings": {
-            "text": "pains annoying ones Good thing we have a HACK TO UNDO THEM."
+            "text": "pains. Good thing we have a HACK TO UNDO THEM."
           }
         }
       },
