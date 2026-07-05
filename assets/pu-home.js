@@ -208,6 +208,82 @@ function initProductSlider() {
 
 let heroParallaxCleanup = null;
 let scrambleVideoCleanup = null;
+let scrambleTickerCleanup = null;
+
+function initScrambleTicker() {
+  const root = document.querySelector('[data-pu-product-ticker]');
+  if (!root) return () => {};
+
+  const marquee = root.querySelector('.pu-scramble__ticker-marquee');
+  const track = root.querySelector('[data-pu-ticker-track]');
+  const group = track?.querySelector('[data-pu-ticker-group]');
+  if (!marquee || !track || !group) return () => {};
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {};
+
+  const sourceNodes = [...group.children].map((node) => node.cloneNode(true));
+  if (!sourceNodes.length) return () => {};
+
+  let resizeTimer = 0;
+
+  const appendBatch = (target) => {
+    sourceNodes.forEach((node) => {
+      target.appendChild(node.cloneNode(true));
+    });
+  };
+
+  const build = () => {
+    track.classList.remove('is-ready');
+    track.style.animation = 'none';
+    track.style.transform = 'translateX(0)';
+    track.querySelectorAll('[data-pu-ticker-group-clone]').forEach((el) => el.remove());
+
+    group.innerHTML = '';
+    appendBatch(group);
+
+    const minWidth = marquee.offsetWidth + 2;
+    while (group.scrollWidth < minWidth) {
+      appendBatch(group);
+    }
+
+    const clone = group.cloneNode(true);
+    clone.removeAttribute('data-pu-ticker-group');
+    clone.dataset.puTickerGroupClone = '';
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+
+    const groupWidth = group.getBoundingClientRect().width;
+    const duration = Math.max(18, Math.min(40, groupWidth / 28));
+    track.style.setProperty('--pu-scramble-ticker-duration', `${duration}s`);
+    track.style.animation = '';
+    track.classList.add('is-ready');
+  };
+
+  build();
+
+  const onResize = () => {
+    window.clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(build, 150);
+  };
+
+  window.addEventListener('resize', onResize);
+
+  group.querySelectorAll('img').forEach((img) => {
+    if (img.complete) return;
+    img.addEventListener('load', build, { once: true });
+    img.addEventListener('error', build, { once: true });
+  });
+
+  return () => {
+    window.clearTimeout(resizeTimer);
+    window.removeEventListener('resize', onResize);
+    track.classList.remove('is-ready');
+    track.style.transform = '';
+    track.style.animation = '';
+    track.style.removeProperty('--pu-scramble-ticker-duration');
+    track.querySelectorAll('[data-pu-ticker-group-clone]').forEach((el) => el.remove());
+  };
+}
 
 function initHeroParallax() {
   heroParallaxCleanup?.();
@@ -438,6 +514,8 @@ function destroyAnimations() {
   heroParallaxCleanup = null;
   scrambleVideoCleanup?.();
   scrambleVideoCleanup = null;
+  scrambleTickerCleanup?.();
+  scrambleTickerCleanup = null;
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;
   ScrollTrigger = null;
@@ -445,6 +523,9 @@ function destroyAnimations() {
 
 async function init() {
   if (!document.querySelector('[data-pu-hero], [data-pu-image-scroll], [data-pu-product-slider], [data-pu-scramble]')) return;
+
+  scrambleTickerCleanup?.();
+  scrambleTickerCleanup = initScrambleTicker();
 
   try {
     await window.PleaseUndoScroll?.ready;

@@ -75,52 +75,25 @@
             if ticker_blocks.size == 0
               assign ticker_blocks = section.blocks | where: 'type', 'product_image'
             endif
-
-            assign ticker_repeat = 1
-            if ticker_blocks.size == 0
-              assign ticker_repeat = 2
-            elsif ticker_blocks.size < 10
-              assign ticker_repeat = 3
-            endif
           %}
-          {% for group_index in (1..2) %}
-            <div
-              class="pu-scramble__ticker-group"
-              {% if group_index == 2 %}
-                aria-hidden="true"
-              {% endif %}
-            >
-              {% if ticker_blocks.size == 0 %}
-                {% for repeat in (1..ticker_repeat) %}
-                  {% for i in (1..8) %}
-                    <img
-                      src="{{ 'pu-product-mockup.png' | asset_url }}"
-                      alt=""
-                      class="pu-scramble__ticker-img"
-                      width="37"
-                      height="94"
-                      loading="lazy"
-                    >
-                  {% endfor %}
-                {% endfor %}
-              {% else %}
-                {% for repeat in (1..ticker_repeat) %}
-                  {% for block in ticker_blocks %}
-                    {% liquid
-                      assign show_ticker_editor_attrs = false
-                      if group_index == 1 and repeat == 1
-                        assign show_ticker_editor_attrs = true
-                      endif
-                    %}
-                    {% render 'pu-scramble-ticker-item',
-                      block: block,
-                      show_editor_attrs: show_ticker_editor_attrs
-                    %}
-                  {% endfor %}
-                {% endfor %}
-              {% endif %}
-            </div>
-          {% endfor %}
+          <div class="pu-scramble__ticker-group" data-pu-ticker-group>
+            {% if ticker_blocks.size == 0 %}
+              {% for i in (1..8) %}
+                <img
+                  src="{{ 'pu-product-mockup.png' | asset_url }}"
+                  alt=""
+                  class="pu-scramble__ticker-img"
+                  width="37"
+                  height="94"
+                  loading="lazy"
+                >
+              {% endfor %}
+            {% else %}
+              {% for block in ticker_blocks %}
+                {% render 'pu-scramble-ticker-item', block: block, show_editor_attrs: true %}
+              {% endfor %}
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
@@ -213,8 +186,17 @@
   .pu-scramble__ticker-track {
     display: flex;
     width: max-content;
-    animation: pu-scramble-ticker-scroll 24s linear infinite;
+    flex-wrap: nowrap;
+    animation: pu-scramble-ticker-scroll var(--pu-scramble-ticker-duration, 24s) linear infinite;
     will-change: transform;
+  }
+
+  .pu-scramble__ticker-track.is-ready {
+    animation-play-state: running;
+  }
+
+  .pu-scramble__ticker-track:not(.is-ready) {
+    animation-play-state: paused;
   }
 
   .pu-scramble__ticker-group {
