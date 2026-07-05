@@ -314,9 +314,7 @@
             "tile_size": "standard",
             "stage_placement": "top_left",
             "rotation": -16,
-            "figure_placement": "top_left",
-            "default_image": "shopify://shop_images/2_bf428f04-0d03-4a5c-8bcb-27a5998eebc8.png",
-            "alt_image": "shopify://shop_images/Group_30.png"
+            "figure_placement": "top_left"
           }
         },
         "card_yellow": {

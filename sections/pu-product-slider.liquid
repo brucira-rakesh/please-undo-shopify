@@ -24,7 +24,8 @@
     <div class="pu-product-slider__texture pu-texture-overlay" aria-hidden="true"></div>
 
     <div class="pu-product-slider__hang" data-pu-hanging-title>
-      <div class="pu-product-slider__swing" data-pu-hang-swing>
+      <div class="pu-product-slider__swing">
+        {% comment %} data-pu-hang-swing {% endcomment %}
         <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
         <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
         <div class="pu-product-slider__sign">
@@ -49,6 +50,7 @@
               bullets_html: block.settings.bullet_points,
               product_image: block.settings.product_image,
               figure_image: block.settings.svg_icon,
+              figure_right: block.settings.figure_right,
               shop_url: block_shop_url,
               slide_index: forloop.index0,
               shopify_attributes: block.shopify_attributes
@@ -343,7 +345,7 @@
 
   .pu-product-slider__figure {
     position: absolute;
-    right: -60px;
+    right: var(--figure-right, -60px);
     bottom: 0;
     z-index: 2;
     width: 160px;
@@ -391,7 +393,102 @@
 
     .pu-product-slider__figure {
       width: min(220px, 58vw);
-      right: -40px;
+    }
+  }
+
+  @media (max-width: 749px) {
+    .pu-product-slider {
+      overflow-x: clip;
+    }
+
+    .pu-product-slider__pin {
+      min-height: auto;
+      padding-bottom: 48px;
+    }
+
+    .pu-product-slider__hang {
+      width: calc(100% - 32px);
+      margin-bottom: 24px;
+    }
+
+    .pu-product-slider.is-pinned .pu-product-slider__hang {
+      margin-bottom: 16px;
+    }
+
+    .pu-product-slider__sign {
+      position: relative;
+      top: 64px;
+      left: auto;
+      translate: none;
+      min-width: 0;
+      padding: 16px 20px;
+    }
+
+    .pu-product-slider__rope--left {
+      left: 3px;
+    }
+
+    .pu-product-slider__content {
+      padding: 16px 16px 40px;
+      gap: 24px;
+    }
+
+    .pu-product-slider__content .pu-product-slider__info,
+    .pu-product-slider__content .pu-product-slider__stage {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .pu-product-slider__content .pu-product-slider__info {
+      order: 1;
+    }
+
+    .pu-product-slider__content .pu-product-slider__stage {
+      order: 0;
+    }
+
+    .pu-product-slider__product-title {
+      margin-bottom: 24px;
+      font-size: clamp(28px, 8vw, 40px);
+    }
+
+    .pu-product-slider.is-pinned .pu-product-slider__product-title {
+      margin-bottom: 16px;
+    }
+
+    .pu-product-slider__features {
+      margin-bottom: 32px;
+    }
+
+    .pu-product-slider__feature-label {
+      font-size: clamp(18px, 4.5vw, 22px);
+    }
+
+    .pu-product-slider__category {
+      font-size: clamp(16px, 4vw, 20px);
+    }
+
+    .pu-product-slider__stage {
+      min-height: auto;
+    }
+
+    .pu-product-slider__image-wrap {
+      width: min(200px, 70vw);
+      height: auto;
+      aspect-ratio: 1 / 2;
+      margin: 0 auto;
+    }
+
+    .pu-product-slider__figure {
+      width: min(140px, 42vw);
+    }
+
+    .pu-product-slider__rope--right {
+      right: -3px;
+    }
+
+    .pu-product-slider__swing {
+      max-height: 100px;
     }
   }
 {% endstylesheet %}
@@ -445,6 +542,17 @@
           "id": "svg_icon",
           "label": "SVG icon",
           "info": "Upload an SVG or PNG illustration shown beside the product."
+        },
+        {
+          "type": "range",
+          "id": "figure_right",
+          "label": "Icon position right",
+          "info": "Horizontal offset from the right edge of the product image. Use negative values to overlap the bottle.",
+          "min": -100,
+          "max": 50,
+          "step": 5,
+          "unit": "px",
+          "default": -60
         },
         {
           "type": "text",

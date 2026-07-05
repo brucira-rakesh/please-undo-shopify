@@ -95,35 +95,61 @@ function initImageScroll() {
     );
   }
 
-  if (!pin || !track || window.matchMedia('(max-width: 749px)').matches) return;
+  if (!pin || !track) return;
 
-  const getScrollDistance = () => {
-    const overflow = track.scrollWidth - window.innerWidth + 80;
-    return Math.max(overflow, window.innerHeight * 0.35);
+  const isMobileScroll = () => window.matchMedia('(max-width: 749px)').matches;
+
+  const getHorizontalOverflow = () => {
+    const edgePadding = isMobileScroll() ? 32 : 80;
+    return Math.max(0, track.scrollWidth - window.innerWidth + edgePadding);
   };
 
-  const getScrollAmount = () => {
-    const overflow = track.scrollWidth - window.innerWidth + 80;
-    return overflow > 0 ? -overflow : 0;
+  const getScrollMetrics = () => {
+    const overflow = getHorizontalOverflow();
+    const scrollAmount = overflow > 0 ? -overflow : 0;
+
+    if (isMobileScroll()) {
+      return {
+        amount: scrollAmount,
+        distance: overflow,
+      };
+    }
+
+    return {
+      amount: scrollAmount,
+      distance: Math.max(overflow, window.innerHeight * 0.35),
+    };
   };
+
+  const refreshScroll = () => {
+    ScrollTrigger?.refresh();
+  };
+
+  const metrics = getScrollMetrics();
+
+  if (isMobileScroll() && metrics.distance < 1) {
+    gsap.set(track, { x: 0 });
+    return;
+  }
+
+  const pinEl = pin;
 
   const tween = gsap.to(track, {
-    x: () => getScrollAmount(),
+    x: () => getScrollMetrics().amount,
     ease: 'none',
     scrollTrigger: scrollTriggerConfig(orange, {
       start: 'top top',
-      end: () => `+=${getScrollDistance()}`,
-      pin: pin,
+      end: () => {
+        const distance = getScrollMetrics().distance;
+        return distance > 0 ? `+=${distance}` : '+=1';
+      },
+      pin: pinEl,
       pinSpacing: true,
       scrub: 1,
       invalidateOnRefresh: true,
-      anticipatePin: 1,
+      anticipatePin: isMobileScroll() ? 0 : 1,
     }),
   });
-
-  const refreshScroll = () => {
-    ScrollTrigger.refresh();
-  };
 
   section.querySelectorAll('.pu-image-scroll__image').forEach((img) => {
     if (img.complete) return;
@@ -137,9 +163,11 @@ function initImageScroll() {
 
   window.addEventListener('load', refreshScroll, { once: true });
 
-  if (Math.abs(getScrollAmount()) < 1) {
+  if (Math.abs(metrics.amount) < 1) {
     gsap.set(track, { x: 0 });
   }
+
+  requestAnimationFrame(refreshScroll);
 
   return tween;
 }
@@ -363,7 +391,6 @@ function initHeroParallax() {
   if (!hero || !gsap) return;
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  if (window.matchMedia('(max-width: 749px)').matches) return;
 
   const elements = hero.querySelectorAll('[data-pu-parallax]');
   if (!elements.length) return;
@@ -377,16 +404,17 @@ function initHeroParallax() {
   }));
 
   const reset = () => {
-    items.forEach(({ el, setX, setY }) => {
+    items.forEach(({ setX, setY }) => {
       setX(0);
       setY(0);
     });
   };
 
-  const onMove = (event) => {
+  const onPointerMove = (event) => {
     const rect = hero.getBoundingClientRect();
-    const normX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-    const normY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    const point = event.touches?.[0] ?? event;
+    const normX = ((point.clientX - rect.left) / rect.width - 0.5) * 2;
+    const normY = ((point.clientY - rect.top) / rect.height - 0.5) * 2;
 
     items.forEach(({ maxX, maxY, setX, setY }) => {
       setX(normX * maxX);
@@ -394,12 +422,18 @@ function initHeroParallax() {
     });
   };
 
-  hero.addEventListener('mousemove', onMove);
-  hero.addEventListener('mouseleave', reset);
+  hero.addEventListener('pointermove', onPointerMove);
+  hero.addEventListener('pointerleave', reset);
+  hero.addEventListener('touchmove', onPointerMove, { passive: true });
+  hero.addEventListener('touchend', reset);
+  hero.addEventListener('touchcancel', reset);
 
   heroParallaxCleanup = () => {
-    hero.removeEventListener('mousemove', onMove);
-    hero.removeEventListener('mouseleave', reset);
+    hero.removeEventListener('pointermove', onPointerMove);
+    hero.removeEventListener('pointerleave', reset);
+    hero.removeEventListener('touchmove', onPointerMove);
+    hero.removeEventListener('touchend', reset);
+    hero.removeEventListener('touchcancel', reset);
     items.forEach(({ el }) => gsap.set(el, { x: 0, y: 0 }));
   };
 }
@@ -665,6 +699,20 @@ function destroyAnimations() {
   ScrollTrigger = null;
 }
 
+let puHomeResizeTimer = null;
+
+function refreshPuHomeScroll() {
+  ScrollTrigger?.refresh();
+}
+
+function bindPuHomeResizeRefresh() {
+  window.addEventListener('resize', () => {
+    window.clearTimeout(puHomeResizeTimer);
+    puHomeResizeTimer = window.setTimeout(refreshPuHomeScroll, 200);
+  });
+  window.addEventListener('orientationchange', refreshPuHomeScroll);
+}
+
 async function init() {
   if (
     !document.querySelector(
@@ -685,6 +733,7 @@ async function init() {
     initScrambleText();
     initSvgGrid();
     initSearchOpen();
+    bindPuHomeResizeRefresh();
     ScrollTrigger?.refresh();
   } catch (err) {
     console.warn('PU Home animations failed to load:', err);

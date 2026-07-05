@@ -21,6 +21,14 @@
   overflow-x: hidden;
 }
 
+@media (max-width: 749px) {
+  .pu-page,
+  .pu-page .page-wrapper,
+  .pu-page .content-for-layout {
+    overflow-x: clip;
+  }
+}
+
 .pu-page .page-wrapper {
   overflow-x: hidden;
 }
@@ -148,15 +156,23 @@
   display: none;
 }
 
-/* SVG grid — override Horizon img { width: 100% } */
-.pu-svg-grid img {
-  width: 300px !important;
-  height: auto !important;
+/* SVG grid — override Horizon img { width: 100% } on desktop */
+@media (min-width: 750px) {
+  .pu-svg-grid img:not(.pu-svg-grid__spark):not(.pu-svg-grid__center-btn-img) {
+    width: 300px !important;
+    height: auto !important;
+  }
 }
 
 .pu-svg-grid img.pu-svg-grid__spark {
   width: 32px !important;
   height: auto !important;
+}
+
+@media (max-width: 749px) {
+  .pu-svg-grid img.pu-svg-grid__spark {
+    width: 18px !important;
+  }
 }
 
 .pu-svg-grid__spark:last-child {

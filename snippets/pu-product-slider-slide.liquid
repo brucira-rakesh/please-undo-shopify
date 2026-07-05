@@ -6,6 +6,7 @@
   @param {string} bullets_html - Feature bullets HTML
   @param {object} [product_image] - Image object
   @param {object} [figure_image] - Side illustration
+  @param {number} [figure_right] - CSS right offset in px for the icon on the product image
   @param {string} shop_url - Shop now link
   @param {number} slide_index - Zero-based slide index
   @param {string} [shopify_attributes] - Theme editor block attributes
@@ -70,7 +71,10 @@
     </div>
 
     <div class="pu-product-slider__stage">
-      <div class="pu-product-slider__image-wrap">
+      <div
+        class="pu-product-slider__image-wrap"
+        style="--figure-right: {{ figure_right | default: -60 }}px;"
+      >
         {% if figure_image != blank %}
           {{
             figure_image

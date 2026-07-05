@@ -32,15 +32,17 @@
   <div class="pu-image-scroll__orange" data-pu-scroll-orange>
     <div class="pu-image-scroll__pin" data-pu-scroll-pin>
       <div class="pu-image-scroll__bg" aria-hidden="true">
-        <div class="pu-image-scroll__bg-orange"></div>
-        <img
-          class="pu-image-scroll__arc"
-          src="{{ 'pu-orange-arc.png' | asset_url }}"
-          alt=""
-          width="1440"
-          height="629"
-          loading="lazy"
-        >
+        {% comment %}
+          <div class="pu-image-scroll__bg-orange"></div>
+          <img
+            class="pu-image-scroll__arc"
+            src="{{ 'pu-orange-arc.png' | asset_url }}"
+            alt=""
+            width="1440"
+            height="629"
+            loading="lazy"
+          >
+        {% endcomment %}
         <div class="pu-image-scroll__bg-green"></div>
         <img
           class="pu-image-scroll__green-arc"
@@ -156,6 +158,7 @@
     z-index: 2;
     margin-top: -120px;
     overflow: hidden;
+    background: var(--pu-orange);
   }
 
   .pu-image-scroll__pin {
@@ -310,35 +313,80 @@
 
   @media (max-width: 749px) {
     .pu-image-scroll__purple {
-      min-height: 520px;
+      min-height: 420px;
     }
 
     .pu-image-scroll__curved-text {
-      padding: 40px 0 100px;
+      padding: 32px 0 72px;
     }
 
     .pu-image-scroll__orange {
-      margin-top: -60px;
+      margin-top: -48px;
+      min-height: 100svh;
+      background: transparent;
     }
 
     .pu-image-scroll__pin {
-      min-height: auto;
+      position: relative;
+      min-height: 100svh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* Orange arc PNG tints the top band a different shade on narrow viewports */
+    .pu-image-scroll__arc {
+      display: none;
+    }
+
+    .pu-image-scroll__bg-orange {
+      inset: 0;
+    }
+
+    .pu-image-scroll__bg-green {
+      top: 0;
+      background: var(--pu-orange);
+    }
+
+    .pu-image-scroll__green-arc {
+      top: 38%;
     }
 
     .pu-image-scroll__viewport {
-      padding: 140px 0 60px;
+      padding: 24px 0;
+      flex: 0 0 auto;
+      position: relative;
+      z-index: 5;
     }
 
     .pu-image-scroll__track {
-      flex-direction: column;
-      align-items: center;
-      padding: 0 24px;
+      padding: 0 16px;
     }
 
-    .pu-image-scroll__slide,
-    .pu-image-scroll__slide:nth-child(n) {
-      transform: none !important;
-      margin-right: 0;
+    .pu-image-scroll__slide {
+      flex: 0 0 clamp(200px, 72vw, 320px);
+    }
+
+    .pu-image-scroll__slide:nth-child(3n + 1) {
+      transform: translateY(12px) rotate(4deg);
+    }
+
+    .pu-image-scroll__slide:nth-child(3n + 2) {
+      transform: translateY(20px) rotate(-5deg);
+    }
+
+    .pu-image-scroll__slide:nth-child(3n) {
+      transform: translateY(4px) rotate(-3deg);
+    }
+
+    .pu-image-scroll__overlay--bottom-left,
+    .pu-image-scroll__overlay--top-right {
+      font-size: clamp(16px, 4.5vw, 22px);
+    }
+
+    .pu-image-scroll__image {
+      max-width: 100% !important;
     }
   }
 {% endstylesheet %}

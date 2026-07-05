@@ -113,6 +113,7 @@
     margin: 0 auto;
     padding: 120px 32px 200px;
     position: relative;
+    z-index: 10;
   }
 
   .pu-scramble__text {
@@ -237,14 +238,32 @@
   }
 
   @media (max-width: 749px) {
+    .pu-scramble {
+      min-height: auto;
+    }
+
+    .pu-scramble__inner {
+      padding: 64px 16px 140px;
+    }
+
     .pu-scramble__text {
       min-height: auto;
-      font-size: 36px;
+      font-size: clamp(28px, 16vw, 64px);
     }
 
     .pu-scramble__video {
       width: 2.1em;
       height: 0.62em;
+    }
+
+    .pu-scramble__ticker {
+      width: calc(100% - 32px);
+      height: 96px;
+      bottom: 32px;
+    }
+
+    .pu-scramble__ticker-img {
+      height: 64px;
     }
   }
 {% endstylesheet %}
