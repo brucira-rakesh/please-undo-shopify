@@ -172,6 +172,62 @@
           "settings": {
             "text": "pains annoying ones Good thing we have a HACK TO UNDO THEM."
           }
+        },
+        "ticker_1": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_2": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_3": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_4": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_5": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_6": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_7": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        "ticker_8": {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
         }
       },
       "block_order": [
@@ -179,7 +235,15 @@
         "video_1",
         "text_2",
         "video_2",
-        "text_3"
+        "text_3",
+        "ticker_1",
+        "ticker_2",
+        "ticker_3",
+        "ticker_4",
+        "ticker_5",
+        "ticker_6",
+        "ticker_7",
+        "ticker_8"
       ],
       "settings": {
         "full_text": "Life isn't ALL FUN and frolic. It has many annoying pains. Good thing we have a HACK TO UNDO THEM."
@@ -191,7 +255,6 @@
         "product_1": {
           "type": "product",
           "settings": {
-            "product_image": "shopify://shop_images/Primary-Mockup_12_3.png",
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",

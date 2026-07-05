@@ -150,6 +150,11 @@
 
 /* SVG grid — override Horizon img { width: 100% } */
 .pu-svg-grid img {
+  width: 300px !important;
+  height: auto !important;
+}
+
+.pu-svg-grid img.pu-svg-grid__spark {
   width: 32px !important;
   height: auto !important;
 }

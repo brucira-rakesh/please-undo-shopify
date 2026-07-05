@@ -373,9 +373,9 @@ function splitTextIntoWords(el) {
 }
 
 function initScrambleVideoPlayback(section) {
-  const VIDEO_HANDOFF_MS = 3000;
   /** @type {number[]} */
   const timeouts = [];
+  let playbackToken = 0;
 
   const queue = [...section.querySelectorAll('[data-pu-scramble-video]')]
     .map((wrapper) => ({
@@ -383,61 +383,78 @@ function initScrambleVideoPlayback(section) {
       video: wrapper.querySelector('video'),
       entryDelayMs: (parseFloat(wrapper.dataset.playDelay) || 0) * 1000,
     }))
-    .filter((item) => item.video);
+    .filter((item, index, items) => item.video && items.findIndex((other) => other.video === item.video) === index);
 
   if (!queue.length) return () => {};
 
+  const token = ++playbackToken;
+
+  const clearAll = () => {
+    timeouts.forEach((id) => window.clearTimeout(id));
+    timeouts.length = 0;
+  };
+
   const schedule = (fn, ms) => {
-    const id = window.setTimeout(fn, ms);
+    const id = window.setTimeout(() => {
+      if (token !== playbackToken) return;
+      fn();
+    }, ms);
     timeouts.push(id);
     return id;
   };
 
-  const playExclusive = (item) => {
-    queue.forEach(({ wrapper, video }) => {
-      if (video === item.video) return;
+  const playExclusive = (index) => {
+    if (token !== playbackToken) return;
+
+    queue.forEach(({ wrapper, video }, i) => {
+      if (i === index) return;
       wrapper.classList.remove('is-playing');
       video.pause();
       video.currentTime = 0;
     });
 
+    const item = queue[index];
     item.wrapper.classList.add('is-playing');
     item.video.currentTime = 0;
     item.video.play().catch(() => {});
   };
 
-  queue.forEach((item) => {
-    item.video.loop = true;
-    item.video.muted = true;
-    item.video.playsInline = true;
-    item.video.preload = 'auto';
-    item.video.pause();
-    item.video.currentTime = 0;
-  });
-
   let currentIndex = 0;
 
-  const handoff = () => {
+  const advance = () => {
+    if (token !== playbackToken || queue.length <= 1) return;
     currentIndex = (currentIndex + 1) % queue.length;
-    playExclusive(queue[currentIndex]);
-    if (queue.length > 1) {
-      schedule(handoff, VIDEO_HANDOFF_MS);
-    }
+    playExclusive(currentIndex);
   };
 
+  const onVideoEnded = () => {
+    if (token !== playbackToken) return;
+    advance();
+  };
+
+  queue.forEach(({ video }) => {
+    video.loop = false;
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.pause();
+    video.currentTime = 0;
+    video.addEventListener('ended', onVideoEnded);
+  });
+
   const startPlayback = () => {
+    if (token !== playbackToken) return;
     currentIndex = 0;
-    playExclusive(queue[0]);
-    if (queue.length > 1) {
-      schedule(handoff, VIDEO_HANDOFF_MS);
-    }
+    playExclusive(0);
   };
 
   schedule(startPlayback, queue[0].entryDelayMs);
 
   return () => {
-    timeouts.forEach((id) => window.clearTimeout(id));
+    playbackToken++;
+    clearAll();
     queue.forEach(({ wrapper, video }) => {
+      video.removeEventListener('ended', onVideoEnded);
       wrapper.classList.remove('is-playing');
       video.pause();
       video.currentTime = 0;
