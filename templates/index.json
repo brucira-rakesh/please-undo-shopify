@@ -116,7 +116,7 @@
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "You don't have back pain. You have calendar pain.",
-            "overlay_position": "bottom-left",
+            "overlay_position": "top-right",
             "overlay_rotation": 0
           }
         }
