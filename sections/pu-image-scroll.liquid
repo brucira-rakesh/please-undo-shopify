@@ -220,14 +220,14 @@
 
   .pu-image-scroll__track {
     display: flex;
-    gap: 32px;
+    gap: 8px;
     align-items: flex-end;
-    padding: 0 2vw;
+    padding: 0 4vw;
     will-change: transform;
   }
 
   .pu-image-scroll__slide {
-    flex: 0 0 clamp(240px, 34vw, 485px);
+    flex: 0 0 clamp(240px, 32vw, 460px);
     filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
   }
 
@@ -236,7 +236,8 @@
   }
 
   .pu-image-scroll__slide:nth-child(3n + 2) {
-    transform: translateY(48px) rotate(-5deg);
+    transform: translateY(44px) rotate(-5deg);
+    margin-right: -8px;
   }
 
   .pu-image-scroll__slide:nth-child(3n) {
@@ -252,9 +253,6 @@
     height: auto;
     display: block;
     object-fit: cover;
-    clip-path: polygon(2% 0%, 98% 2%, 100% 95%, 5% 100%, 0% 50%);
-    /* border: 6px solid var(--pu-green);
-    background: var(--pu-green); */
   }
 
   .pu-image-scroll__overlay {
@@ -340,6 +338,7 @@
     .pu-image-scroll__slide,
     .pu-image-scroll__slide:nth-child(n) {
       transform: none !important;
+      margin-right: 0;
     }
   }
 {% endstylesheet %}
@@ -348,7 +347,7 @@
 {
   "name": "PU Image Scroll",
   "class": "pu-image-scroll-section",
-  "max_blocks": 8,
+  "max_blocks": 12,
   "blocks": [
     {
       "type": "image",

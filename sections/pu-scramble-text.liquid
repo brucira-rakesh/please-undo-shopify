@@ -24,10 +24,6 @@
                 {% assign scramble_prev_content = true %}
               {% when 'scramble_video' %}
                 {% assign scramble_video_index = scramble_video_index | plus: 1 %}
-                {% assign scramble_video_autoplay = false %}
-                {% if scramble_video_index == 1 and block.settings.play_delay == 0 %}
-                  {% assign scramble_video_autoplay = true %}
-                {% endif %}
                 {% if scramble_prev_content %} {% endif %}
                 <span
                   class="pu-scramble__video"
@@ -42,7 +38,7 @@
                       block.settings.video
                       | video_tag:
                         image_size: '600x',
-                        autoplay: scramble_video_autoplay,
+                        autoplay: false,
                         loop: true,
                         muted: true,
                         playsinline: true,

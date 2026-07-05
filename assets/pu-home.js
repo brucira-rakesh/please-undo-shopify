@@ -97,9 +97,14 @@ function initImageScroll() {
 
   if (!pin || !track || window.matchMedia('(max-width: 749px)').matches) return;
 
+  const getScrollDistance = () => {
+    const overflow = track.scrollWidth - window.innerWidth + 80;
+    return Math.max(overflow, window.innerHeight * 0.35);
+  };
+
   const getScrollAmount = () => {
-    const amount = track.scrollWidth - window.innerWidth + 160;
-    return amount > 0 ? -amount : 0;
+    const overflow = track.scrollWidth - window.innerWidth + 80;
+    return overflow > 0 ? -overflow : 0;
   };
 
   const tween = gsap.to(track, {
@@ -107,19 +112,36 @@ function initImageScroll() {
     ease: 'none',
     scrollTrigger: scrollTriggerConfig(orange, {
       start: 'top top',
-      end: () => `+=${Math.max(Math.abs(getScrollAmount()), 1)}`,
+      end: () => `+=${getScrollDistance()}`,
       pin: pin,
+      pinSpacing: true,
       scrub: 1,
       invalidateOnRefresh: true,
       anticipatePin: 1,
     }),
   });
 
+  const refreshScroll = () => {
+    ScrollTrigger.refresh();
+  };
+
+  section.querySelectorAll('.pu-image-scroll__image').forEach((img) => {
+    if (img.complete) return;
+    img.addEventListener('load', refreshScroll, { once: true });
+    img.addEventListener('error', refreshScroll, { once: true });
+  });
+
+  if (document.fonts?.ready) {
+    document.fonts.ready.then(refreshScroll);
+  }
+
+  window.addEventListener('load', refreshScroll, { once: true });
+
   if (Math.abs(getScrollAmount()) < 1) {
-    tween.scrollTrigger?.kill();
-    tween.kill();
     gsap.set(track, { x: 0 });
   }
+
+  return tween;
 }
 
 function initProductSlider() {
@@ -185,6 +207,7 @@ function initProductSlider() {
 }
 
 let heroParallaxCleanup = null;
+let scrambleVideoCleanup = null;
 
 function initHeroParallax() {
   heroParallaxCleanup?.();
@@ -274,7 +297,9 @@ function splitTextIntoWords(el) {
 }
 
 function initScrambleVideoPlayback(section) {
-  const VIDEO2_OFFSET_MS = 3000;
+  const VIDEO_HANDOFF_MS = 3000;
+  /** @type {number[]} */
+  const timeouts = [];
 
   const queue = [...section.querySelectorAll('[data-pu-scramble-video]')]
     .map((wrapper) => ({
@@ -284,13 +309,25 @@ function initScrambleVideoPlayback(section) {
     }))
     .filter((item) => item.video);
 
-  if (!queue.length) return;
+  if (!queue.length) return () => {};
 
-  const ensurePlaying = (item) => {
+  const schedule = (fn, ms) => {
+    const id = window.setTimeout(fn, ms);
+    timeouts.push(id);
+    return id;
+  };
+
+  const playExclusive = (item) => {
+    queue.forEach(({ wrapper, video }) => {
+      if (video === item.video) return;
+      wrapper.classList.remove('is-playing');
+      video.pause();
+      video.currentTime = 0;
+    });
+
     item.wrapper.classList.add('is-playing');
-    if (item.video.paused) {
-      item.video.play().catch(() => { });
-    }
+    item.video.currentTime = 0;
+    item.video.play().catch(() => {});
   };
 
   queue.forEach((item) => {
@@ -298,21 +335,38 @@ function initScrambleVideoPlayback(section) {
     item.video.muted = true;
     item.video.playsInline = true;
     item.video.preload = 'auto';
+    item.video.pause();
+    item.video.currentTime = 0;
   });
 
-  const v1 = queue[0];
-  const startV1 = () => ensurePlaying(v1);
+  let currentIndex = 0;
 
-  if (v1.entryDelayMs > 0) {
-    window.setTimeout(startV1, v1.entryDelayMs);
-  } else {
-    startV1();
-  }
+  const handoff = () => {
+    currentIndex = (currentIndex + 1) % queue.length;
+    playExclusive(queue[currentIndex]);
+    if (queue.length > 1) {
+      schedule(handoff, VIDEO_HANDOFF_MS);
+    }
+  };
 
-  queue.slice(1).forEach((item, offsetIndex) => {
-    const startMs = v1.entryDelayMs + VIDEO2_OFFSET_MS * (offsetIndex + 1);
-    window.setTimeout(() => ensurePlaying(item), startMs);
-  });
+  const startPlayback = () => {
+    currentIndex = 0;
+    playExclusive(queue[0]);
+    if (queue.length > 1) {
+      schedule(handoff, VIDEO_HANDOFF_MS);
+    }
+  };
+
+  schedule(startPlayback, queue[0].entryDelayMs);
+
+  return () => {
+    timeouts.forEach((id) => window.clearTimeout(id));
+    queue.forEach(({ wrapper, video }) => {
+      wrapper.classList.remove('is-playing');
+      video.pause();
+      video.currentTime = 0;
+    });
+  };
 }
 
 function initScrambleText() {
@@ -322,7 +376,8 @@ function initScrambleText() {
   const textEl = section.querySelector('[data-pu-scramble-text]');
   if (!textEl) return;
 
-  initScrambleVideoPlayback(section);
+  scrambleVideoCleanup?.();
+  scrambleVideoCleanup = initScrambleVideoPlayback(section);
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
@@ -381,6 +436,8 @@ function initSearchOpen() {
 function destroyAnimations() {
   heroParallaxCleanup?.();
   heroParallaxCleanup = null;
+  scrambleVideoCleanup?.();
+  scrambleVideoCleanup = null;
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;
   ScrollTrigger = null;
