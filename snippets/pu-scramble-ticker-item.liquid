@@ -1,0 +1,30 @@
+{% doc %}
+  Renders one product image in the PU scramble ticker.
+
+  @param {object} block - Ticker image block
+  @param {boolean} [show_editor_attrs] - Theme editor attributes on first pass only
+{% enddoc %}
+
+<div
+  class="pu-scramble__ticker-item"
+  {% if show_editor_attrs %}
+    {{ block.shopify_attributes }}
+  {% endif %}
+>
+  {% if block.settings.image != blank %}
+    {{
+      block.settings.image
+      | image_url: width: 120
+      | image_tag: class: 'pu-scramble__ticker-img', loading: 'lazy', alt: block.settings.alt
+    }}
+  {% else %}
+    <img
+      src="{{ block.settings.fallback_asset | default: 'pu-product-mockup.png' | asset_url }}"
+      alt="{{ block.settings.alt | escape }}"
+      class="pu-scramble__ticker-img"
+      width="37"
+      height="94"
+      loading="lazy"
+    >
+  {% endif %}
+</div>

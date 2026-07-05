@@ -68,35 +68,31 @@
     </div>
 
     <div class="pu-scramble__ticker" data-pu-product-ticker>
-      <div class="pu-scramble__ticker-track" data-pu-ticker-track aria-hidden="true">
-        {% assign ticker_images = section.blocks | where: 'type', 'product_image' %}
-        {% for pass in (1..2) %}
-          {% if ticker_images.size == 0 %}
-            {% for i in (1..17) %}
-              <img
-                src="{{ 'pu-product-mockup.png' | asset_url }}"
-                alt=""
-                class="pu-scramble__ticker-img"
-                width="37"
-                height="94"
-                loading="lazy"
-              >
-            {% endfor %}
-          {% else %}
-            {% for block in section.blocks %}
-              {% if block.type == 'product_image' %}
-                <div
-                  {% if pass == 1 %}
-                    {{ block.shopify_attributes -}}
-                  {% endif %}
-                >
-                  {% if block.settings.image != blank %}
-                    {{
-                      block.settings.image
-                      | image_url: width: 80
-                      | image_tag: class: 'pu-scramble__ticker-img', loading: 'lazy'
-                    }}
-                  {% else %}
+      <div class="pu-scramble__ticker-marquee" aria-hidden="true">
+        <div class="pu-scramble__ticker-track" data-pu-ticker-track>
+          {% liquid
+            assign ticker_blocks = section.blocks | where: 'type', 'ticker_image'
+            if ticker_blocks.size == 0
+              assign ticker_blocks = section.blocks | where: 'type', 'product_image'
+            endif
+
+            assign ticker_repeat = 1
+            if ticker_blocks.size == 0
+              assign ticker_repeat = 2
+            elsif ticker_blocks.size < 10
+              assign ticker_repeat = 3
+            endif
+          %}
+          {% for group_index in (1..2) %}
+            <div
+              class="pu-scramble__ticker-group"
+              {% if group_index == 2 %}
+                aria-hidden="true"
+              {% endif %}
+            >
+              {% if ticker_blocks.size == 0 %}
+                {% for repeat in (1..ticker_repeat) %}
+                  {% for i in (1..8) %}
                     <img
                       src="{{ 'pu-product-mockup.png' | asset_url }}"
                       alt=""
@@ -105,12 +101,27 @@
                       height="94"
                       loading="lazy"
                     >
-                  {% endif %}
-                </div>
+                  {% endfor %}
+                {% endfor %}
+              {% else %}
+                {% for repeat in (1..ticker_repeat) %}
+                  {% for block in ticker_blocks %}
+                    {% liquid
+                      assign show_ticker_editor_attrs = false
+                      if group_index == 1 and repeat == 1
+                        assign show_ticker_editor_attrs = true
+                      endif
+                    %}
+                    {% render 'pu-scramble-ticker-item',
+                      block: block,
+                      show_editor_attrs: show_ticker_editor_attrs
+                    %}
+                  {% endfor %}
+                {% endfor %}
               {% endif %}
-            {% endfor %}
-          {% endif %}
-        {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
@@ -194,14 +205,24 @@
     align-items: center;
   }
 
+  .pu-scramble__ticker-marquee {
+    overflow: hidden;
+    width: 100%;
+  }
+
   .pu-scramble__ticker-track {
-    display: inline-flex;
-    gap: 10px;
-    align-items: center;
+    display: flex;
     width: max-content;
-    padding: 0 20px;
     animation: pu-scramble-ticker-scroll 24s linear infinite;
     will-change: transform;
+  }
+
+  .pu-scramble__ticker-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    padding: 0 10px;
   }
 
   @keyframes pu-scramble-ticker-scroll {
@@ -217,6 +238,12 @@
     .pu-scramble__ticker-track {
       animation: none;
     }
+  }
+
+  .pu-scramble__ticker-item {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
   }
 
   .pu-scramble__ticker-img {
@@ -305,21 +332,46 @@
       ]
     },
     {
-      "type": "product_image",
-      "name": "Ticker product image",
+      "type": "ticker_image",
+      "name": "Ticker image",
+      "limit": 24,
       "settings": [
         {
           "type": "image_picker",
           "id": "image",
-          "label": "Product image"
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "fallback_asset",
+          "label": "Fallback asset filename",
+          "info": "Used when no image is uploaded. File must exist in theme assets.",
+          "default": "pu-product-mockup.png"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text"
         }
       ]
     }
   ],
   "settings": [
     {
+      "type": "header",
+      "content": "Scramble text"
+    },
+    {
       "type": "paragraph",
-      "content": "Add Text and Video blocks below to control where videos appear. Block order defines the reading flow."
+      "content": "Add Text and Video blocks to control the headline. Block order defines the reading flow."
+    },
+    {
+      "type": "header",
+      "content": "Bottom product ticker"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add Ticker image blocks to customize the scrolling product strip. Images repeat seamlessly in the marquee."
     },
     {
       "type": "textarea",
@@ -363,6 +415,62 @@
           "type": "scramble_text",
           "settings": {
             "text": "pains. Good thing we have a HACK TO UNDO THEM."
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
+          }
+        },
+        {
+          "type": "ticker_image",
+          "settings": {
+            "fallback_asset": "pu-product-mockup.png",
+            "alt": "Please Undo product"
           }
         }
       ]
