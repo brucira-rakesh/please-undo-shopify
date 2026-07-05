@@ -294,7 +294,6 @@
       ],
       "settings": {
         "title": "Pick your Undo.",
-        "collection": "all",
         "products_limit": 6,
         "default_bullets": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
       }

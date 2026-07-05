@@ -1,0 +1,81 @@
+<section class="pu-pdp-story" id="pu-pdp-story">
+  <div class="pu-pdp-story__rays-wrap" aria-hidden="true">
+    <img class="pu-pdp-story__rays" src="{{ 'pu-purple-rays.png' | asset_url }}" alt="" width="1441" height="927" loading="lazy">
+  </div>
+
+  <div class="pu-pdp-story__inner">
+    <div class="pu-pdp-story__content">
+      {% if section.settings.patch_1 != blank %}
+        <span class="pu-sticker pu-pdp-story__patch pu-pdp-story__patch--1">{{ section.settings.patch_1 }}</span>
+      {% endif %}
+
+      <h2 class="pu-pdp-story__headline">
+        {{ section.settings.headline_before }}
+        <span class="pu-pdp-story__accent">{{ section.settings.headline_accent }}</span>
+        {{ section.settings.headline_after }}
+      </h2>
+      <div class="pu-pdp-story__body rte">
+        {% if section.settings.body != blank %}
+          {{ section.settings.body }}
+        {% elsif product.description != blank %}
+          {{ product.description | strip_html | truncate: 280 }}
+        {% else %}
+          <p>Life isn't all fun and frolic. Some pains need a quick reset — this roll-on targets the silly ones you collect at your desk.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="pu-pdp-story__figure" aria-hidden="true">
+      {% if section.settings.patch_2 != blank %}
+        <span class="pu-sticker pu-pdp-story__patch pu-pdp-story__patch--2">{{ section.settings.patch_2 }}</span>
+      {% endif %}
+      <img src="{{ 'pu-stick-figure-1.png' | asset_url }}" alt="" width="180" height="220" loading="lazy">
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "PU Product Story",
+  "class": "pu-product-story-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "patch_1",
+      "label": "Sticker 1",
+      "default": "desk pain"
+    },
+    {
+      "type": "text",
+      "id": "patch_2",
+      "label": "Sticker 2",
+      "default": "quick fix"
+    },
+    {
+      "type": "text",
+      "id": "headline_before",
+      "label": "Headline (before accent)",
+      "default": "For every"
+    },
+    {
+      "type": "text",
+      "id": "headline_accent",
+      "label": "Headline accent",
+      "default": "SILLY THING"
+    },
+    {
+      "type": "text",
+      "id": "headline_after",
+      "label": "Headline (after accent)",
+      "default": "you do"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body copy",
+      "default": "<p>Whether it's laptop neck, concert shoulders, or the aftermath of saying yes to one more drink — Please Undo is your right to a quick reset.</p>"
+    }
+  ],
+  "presets": [{ "name": "PU Product Story" }]
+}
+{% endschema %}

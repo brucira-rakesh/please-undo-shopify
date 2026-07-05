@@ -144,9 +144,54 @@ function initImageScroll() {
   return tween;
 }
 
+let productSliderSwingTween = null;
+let productSliderScrollTrigger = null;
+let productSliderSlideTween = null;
+
+function destroyProductSliderScroll() {
+  productSliderSlideTween?.kill();
+  productSliderSlideTween = null;
+  productSliderScrollTrigger?.kill();
+  productSliderScrollTrigger = null;
+  document.querySelector('[data-pu-product-slider]')?.classList.remove('is-pinned');
+}
+
+function initProductSliderSignSwing(section) {
+  const swing = section.querySelector('[data-pu-hang-swing]');
+  if (!swing) return;
+
+  productSliderSwingTween?.kill();
+  productSliderSwingTween = null;
+  swing.classList.remove('is-css-swing');
+  gsap?.set(swing, { clearProps: 'transform' });
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap?.set(swing, { rotate: 3, transformOrigin: '50% 0' });
+    return;
+  }
+
+  if (gsap) {
+    gsap.set(swing, { rotate: -4.5, transformOrigin: '50% 0' });
+    productSliderSwingTween = gsap.to(swing, {
+      rotate: 4.5,
+      duration: 2.6,
+      ease: 'sine.inOut',
+      yoyo: true,
+      repeat: -1,
+    });
+    return;
+  }
+
+  swing.classList.add('is-css-swing');
+}
+
 function initProductSlider() {
   const section = document.querySelector('[data-pu-product-slider]');
-  if (!section || !gsap || !ScrollTrigger) return;
+  if (!section) return;
+
+  initProductSliderSignSwing(section);
+
+  if (!gsap || !ScrollTrigger) return;
 
   const pin = section.querySelector('[data-pu-product-pin]');
   const track = section.querySelector('[data-pu-product-track]');
@@ -168,42 +213,67 @@ function initProductSlider() {
 
   const setProgress = (index, total) => {
     if (!segments.length || total <= 1) return;
-    const segIndex = Math.round((index / (total - 1)) * (segments.length - 1));
-    segments.forEach((seg, i) => seg.classList.toggle('is-active', i === segIndex));
+    segments.forEach((seg, i) => seg.classList.toggle('is-active', i === index));
   };
 
   if (!pin || !track || slides.length === 0) return;
+
+  section.classList.remove('is-pinned');
+
+  slides.forEach((slide) => gsap.set(slide, { clearProps: 'transform,opacity,zIndex' }));
 
   setSlidePositions(0);
   setProgress(0, slides.length);
 
   if (slides.length <= 1) return;
 
-  const total = slides.length;
-  const scrollPerProduct = 600;
+  destroyProductSliderScroll();
 
-  ScrollTrigger.create(
+  const total = slides.length;
+  const getScrollPerSlide = () => Math.max(window.innerHeight * 0.75, 520);
+  const getPinLeadIn = () => Math.max(window.innerHeight * 0.4, 320);
+
+  const getSlideProgress = (scrollProgress) => {
+    const leadIn = getPinLeadIn();
+    const slideDistance = Math.max((total - 1) * getScrollPerSlide(), 1);
+    const leadInRatio = leadIn / (leadIn + slideDistance);
+
+    if (scrollProgress <= leadInRatio) return 0;
+    return (scrollProgress - leadInRatio) / (1 - leadInRatio);
+  };
+
+  const setProductSliderPinned = (pinned) => {
+    section.classList.toggle('is-pinned', pinned);
+  };
+
+  productSliderScrollTrigger = ScrollTrigger.create(
     scrollTriggerConfig(section, {
+      id: 'pu-product-slider',
       start: 'top top',
-      end: () => `+=${Math.max((total - 1) * scrollPerProduct, 1)}`,
+      end: () => {
+        const leadIn = getPinLeadIn();
+        const slideDistance = Math.max((total - 1) * getScrollPerSlide(), 1);
+        return `+=${leadIn + slideDistance}`;
+      },
       pin: pin,
       pinSpacing: true,
-      scrub: 0.65,
-      snap: {
-        snapTo: 1 / (total - 1),
-        duration: { min: 0.2, max: 0.5 },
-        ease: 'power2.inOut',
-      },
       anticipatePin: 1,
       invalidateOnRefresh: true,
+      onEnter: () => setProductSliderPinned(true),
+      onEnterBack: () => setProductSliderPinned(true),
+      onLeave: () => setProductSliderPinned(false),
+      onLeaveBack: () => setProductSliderPinned(false),
       onUpdate: (self) => {
-        const rawIndex = self.progress * (total - 1);
-        const index = Math.min(total - 1, Math.round(rawIndex));
+        const rawIndex = getSlideProgress(self.progress) * (total - 1);
         setSlidePositions(rawIndex);
-        setProgress(index, total);
+        setProgress(Math.round(rawIndex), total);
       },
     })
   );
+
+  if (productSliderScrollTrigger?.isActive) {
+    setProductSliderPinned(true);
+  }
 }
 
 let heroParallaxCleanup = null;
@@ -533,6 +603,9 @@ function destroyAnimations() {
   scrambleVideoCleanup = null;
   scrambleTickerCleanup?.();
   scrambleTickerCleanup = null;
+  productSliderSwingTween?.kill();
+  productSliderSwingTween = null;
+  destroyProductSliderScroll();
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;
   ScrollTrigger = null;
@@ -568,6 +641,10 @@ if (document.readyState === 'loading') {
 document.addEventListener('shopify:section:load', () => {
   destroyAnimations();
   init();
+});
+
+document.addEventListener('shopify:section:unload', () => {
+  destroyAnimations();
 });
 
 document.addEventListener('lenis:ready', () => {

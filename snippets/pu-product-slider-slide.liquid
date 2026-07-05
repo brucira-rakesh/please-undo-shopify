@@ -22,29 +22,49 @@
       <p class="pu-product-slider__category">{{ category }}</p>
       <h3 class="pu-product-slider__product-title">{{ title }}</h3>
       <div class="pu-product-slider__features">
-        <div class="pu-product-slider__feature-nums">
-          {% assign bullet_parts = bullets_html | split: '<p>' %}
-          {% assign bullet_count = 0 %}
+        {% assign bullet_count = 0 %}
+        {% assign bullets_stripped = bullets_html | replace: '<ol>', '' | replace: '</ol>', '' | replace: '<ul>', '' | replace: '</ul>', '' %}
+        {% if bullets_stripped contains '<li>' %}
+          {% assign bullet_parts = bullets_stripped | split: '<li>' %}
           {% for part in bullet_parts %}
-            {% assign part_text = part | strip_html | strip %}
-            {% if part_text != blank %}
+            {% assign item_html = part | split: '</li>' | first | strip %}
+            {% assign item_text = item_html | strip_html | strip %}
+            {% if item_text != blank %}
               {% assign bullet_count = bullet_count | plus: 1 %}
-              <span>{{ bullet_count }}</span>
+              <div class="pu-product-slider__feature-row">
+                <span class="pu-product-slider__feature-num">{{ bullet_count }}</span>
+                <span class="pu-product-slider__feature-label">{{ item_html }}</span>
+              </div>
             {% endif %}
           {% endfor %}
-          {% if bullet_count == 0 %}
-            <span>1</span><span>2</span><span>3</span>
-          {% endif %}
-        </div>
-        <div class="pu-product-slider__feature-text rte">
-          {% if bullets_html != blank %}
-            {{ bullets_html }}
-          {% else %}
-            <p>Low smell</p>
-            <p>0 Stain</p>
-            <p>Daily use</p>
-          {% endif %}
-        </div>
+        {% else %}
+          {% assign bullet_parts = bullets_html | split: '<p>' %}
+          {% for part in bullet_parts %}
+            {% assign item_html = part | split: '</p>' | first | strip %}
+            {% assign item_text = item_html | strip_html | strip %}
+            {% if item_text != blank %}
+              {% assign bullet_count = bullet_count | plus: 1 %}
+              <div class="pu-product-slider__feature-row">
+                <span class="pu-product-slider__feature-num">{{ bullet_count }}</span>
+                <span class="pu-product-slider__feature-label">{{ item_html }}</span>
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {% if bullet_count == 0 %}
+          <div class="pu-product-slider__feature-row">
+            <span class="pu-product-slider__feature-num">1</span>
+            <span class="pu-product-slider__feature-label">Low smell</span>
+          </div>
+          <div class="pu-product-slider__feature-row">
+            <span class="pu-product-slider__feature-num">2</span>
+            <span class="pu-product-slider__feature-label">0 Stain</span>
+          </div>
+          <div class="pu-product-slider__feature-row">
+            <span class="pu-product-slider__feature-num">3</span>
+            <span class="pu-product-slider__feature-label">Daily use</span>
+          </div>
+        {% endif %}
       </div>
       <a href="{{ shop_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
     </div>
@@ -69,14 +89,11 @@
         {% endif %}
       </div>
       {% if figure_image != blank %}
-        <img
-          class="pu-product-slider__figure"
-          src="{{ figure_image | image_url: width: 400 }}"
-          alt=""
-          width="274"
-          height="332"
-          loading="lazy"
-        >
+        {{
+          figure_image
+          | image_url: width: 400
+          | image_tag: class: 'pu-product-slider__figure', loading: 'lazy', alt: ''
+        }}
       {% else %}
         <img
           class="pu-product-slider__figure"

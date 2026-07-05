@@ -6,23 +6,23 @@
   assign slide_count = 0
   assign use_collection = false
 
-  if slider_collection != blank and slider_collection.products_count > 0
+  if product_blocks.size > 0
+    assign slide_count = product_blocks.size
+  elsif slider_collection != blank and slider_collection.products_count > 0
     assign use_collection = true
     assign slide_count = slider_collection.products_count
     if slide_count > products_limit
       assign slide_count = products_limit
     endif
-  elsif product_blocks.size > 0
-    assign slide_count = product_blocks.size
   else
     assign slide_count = 1
   endif
 %}
 
 <section class="pu-product-slider" data-pu-product-slider data-pu-product-count="{{ slide_count }}">
-  <div class="pu-product-slider__texture pu-texture-overlay"></div>
-
   <div class="pu-product-slider__pin" data-pu-product-pin>
+    <div class="pu-product-slider__texture pu-texture-overlay" aria-hidden="true"></div>
+
     <div class="pu-product-slider__hang" data-pu-hanging-title>
       <div class="pu-product-slider__swing" data-pu-hang-swing>
         <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
@@ -35,7 +35,26 @@
 
     <div class="pu-product-slider__viewport" data-pu-product-viewport>
       <div class="pu-product-slider__track" data-pu-product-track>
-        {% if use_collection %}
+        {% if product_blocks.size > 0 %}
+          {% for block in product_blocks %}
+            {% liquid
+              assign block_shop_url = block.settings.shop_now_url
+              if block_shop_url == blank
+                assign block_shop_url = routes.all_products_collection_url
+              endif
+            %}
+            {% render 'pu-product-slider-slide',
+              category: block.settings.subtext,
+              title: block.settings.title,
+              bullets_html: block.settings.bullet_points,
+              product_image: block.settings.product_image,
+              figure_image: block.settings.svg_icon,
+              shop_url: block_shop_url,
+              slide_index: forloop.index0,
+              shopify_attributes: block.shopify_attributes
+            %}
+          {% endfor %}
+        {% elsif use_collection %}
           {% assign slide_index = 0 %}
           {% for collection_product in slider_collection.products limit: products_limit %}
             {% liquid
@@ -59,25 +78,6 @@
             %}
             {% assign slide_index = slide_index | plus: 1 %}
           {% endfor %}
-        {% elsif product_blocks.size > 0 %}
-          {% for block in product_blocks %}
-            {% liquid
-              assign block_shop_url = block.settings.shop_now_url
-              if block_shop_url == blank
-                assign block_shop_url = routes.all_products_collection_url
-              endif
-            %}
-            {% render 'pu-product-slider-slide',
-              category: block.settings.subtext,
-              title: block.settings.title,
-              bullets_html: block.settings.bullet_points,
-              product_image: block.settings.product_image,
-              figure_image: block.settings.svg_icon,
-              shop_url: block_shop_url,
-              slide_index: forloop.index0,
-              shopify_attributes: block.shopify_attributes
-            %}
-          {% endfor %}
         {% else %}
           {% render 'pu-product-slider-slide',
             category: 'LAPTOP NECK',
@@ -92,14 +92,16 @@
       </div>
     </div>
 
-    <div class="pu-product-slider__progress" data-pu-product-progress>
-      {% for i in (1..33) %}
-        <span
-          class="pu-product-slider__progress-segment{% if forloop.first %} is-active{% endif %}"
-          data-pu-progress-segment
-        ></span>
-      {% endfor %}
-    </div>
+    {% if slide_count > 1 %}
+      <div class="pu-product-slider__progress" data-pu-product-progress>
+        {% for i in (1..slide_count) %}
+          <span
+            class="pu-product-slider__progress-segment{% if forloop.first %} is-active{% endif %}"
+            data-pu-progress-segment
+          ></span>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 </section>
 
@@ -108,7 +110,29 @@
     position: relative;
     background: var(--pu-blue);
     overflow: visible;
-    padding: 0 0 80px;
+  }
+
+  .pu-product-slider__pin {
+    position: relative;
+    z-index: 1;
+    min-height: min(70vh, 760px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 8px 0 80px;
+    background: var(--pu-blue);
+    overflow: hidden;
+  }
+
+  .pu-product-slider__pin > .pu-product-slider__texture {
+    z-index: 0;
+  }
+
+  .pu-product-slider__hang,
+  .pu-product-slider__viewport,
+  .pu-product-slider__progress {
+    position: relative;
+    z-index: 1;
   }
 
   .pu-product-slider__hang {
@@ -117,6 +141,13 @@
     width: min(870px, 90vw);
     margin: 0 auto 56px;
     pointer-events: none;
+    transform-origin: top center;
+    transition: transform 0.45s ease, margin-bottom 0.45s ease;
+  }
+
+  .pu-product-slider.is-pinned .pu-product-slider__hang {
+    transform: scale(0.65);
+    margin-bottom: 12px;
   }
 
   .pu-product-slider__swing {
@@ -126,47 +157,20 @@
     transform-origin: 50% 0;
     will-change: transform;
     backface-visibility: hidden;
-    animation: pu-product-pendulum 3.2s linear infinite;
   }
 
   @keyframes pu-product-pendulum {
-    0% {
-      transform: rotate(5deg);
-    }
-    12.5% {
-      transform: rotate(3.2deg);
-    }
-    25% {
-      transform: rotate(0deg);
-    }
-    37.5% {
-      transform: rotate(-3.2deg);
+    0%,
+    100% {
+      transform: rotate(-4.5deg);
     }
     50% {
-      transform: rotate(-2deg);
-    }
-    62.5% {
-      transform: rotate(-3.24deg);
-    }
-    75% {
-      transform: rotate(0deg);
-    }
-    87.5% {
-      transform: rotate(3.2deg);
-    }
-    100% {
-      transform: rotate(1deg);
+      transform: rotate(4.5deg);
     }
   }
 
-  .pu-product-slider__pin {
-    position: relative;
-    z-index: 2;
-    min-height: min(70vh, 760px);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding-top: 8px;
+  .pu-product-slider__swing.is-css-swing {
+    animation: pu-product-pendulum 4.8s ease-in-out infinite;
   }
 
   .pu-product-slider__rope {
@@ -245,6 +249,11 @@
     flex: 1;
   }
 
+  .pu-product-slider__content .pu-product-slider__info,
+  .pu-product-slider__content .pu-product-slider__stage {
+    min-width: 33.33%;
+  }
+
   .pu-product-slider__category {
     margin: 0 0 12px;
     font-family: var(--pu-font-display);
@@ -264,22 +273,28 @@
     text-transform: uppercase;
     letter-spacing: -1.28px;
     line-height: 0.97;
+    transition: margin-bottom 0.45s ease;
+  }
+
+  .pu-product-slider.is-pinned .pu-product-slider__product-title {
+    margin-bottom: 16px;
   }
 
   .pu-product-slider__features {
     display: flex;
-    gap: 9px;
-    align-items: flex-start;
-    margin-bottom: 72px;
-  }
-
-  .pu-product-slider__feature-nums {
-    display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-bottom: 56px;
   }
 
-  .pu-product-slider__feature-nums span {
+  .pu-product-slider__feature-row {
+    display: flex;
+    gap: 9px;
+    align-items: center;
+  }
+
+  .pu-product-slider__feature-num {
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -290,20 +305,14 @@
     color: var(--pu-white);
     font-size: 16px;
     font-weight: 600;
+    line-height: 1;
   }
 
-  .pu-product-slider__feature-text :is(p, li) {
-    margin: 0 0 8px;
+  .pu-product-slider__feature-label {
     font-size: 28px;
     font-weight: 500;
     color: var(--pu-white);
     line-height: 1.4;
-  }
-
-  .pu-product-slider__feature-text ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
   }
 
   .pu-product-slider__stage {
@@ -317,14 +326,14 @@
 
   .pu-product-slider__image-wrap {
     position: relative;
-    width: 291px;
-    height: 744px;
+    width: 240px;
+    height: 480px;
   }
 
   .pu-product-slider__product-img {
     width: 100% !important;
     height: 100% !important;
-    max-width: none !important;
+    max-width: 280px !important;
     object-fit: contain;
   }
 
@@ -361,7 +370,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .pu-product-slider__swing {
+    .pu-product-slider__swing,
+    .pu-product-slider__swing.is-css-swing {
       animation: none;
       transform: rotate(3deg);
     }
@@ -394,7 +404,7 @@
       "type": "collection",
       "id": "collection",
       "label": "Products collection",
-      "info": "Pulls slides from collection products. Manual blocks are used when empty."
+      "info": "Used only when no Product blocks are added below."
     },
     {
       "type": "range",

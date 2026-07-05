@@ -432,26 +432,32 @@
   align-items: center;
 }
 
-.pu-pdp-story__patches {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
+.pu-pdp-story__content {
+  position: relative;
+  z-index: 1;
 }
 
 .pu-pdp-story__patch {
   position: absolute;
+  z-index: 2;
   font-size: clamp(14px, 2vw, 18px);
+  white-space: nowrap;
 }
 
 .pu-pdp-story__patch--1 {
-  top: 8%;
-  left: 4%;
+  top: clamp(52px, 9vw, 84px);
+  left: clamp(148px, 36%, 300px);
   transform: rotate(-12deg);
 }
 
+.pu-pdp-story__figure {
+  position: relative;
+  align-self: center;
+}
+
 .pu-pdp-story__patch--2 {
-  bottom: 20%;
-  right: 8%;
+  bottom: 28%;
+  left: -8%;
   transform: rotate(8deg);
 }
 
@@ -1150,6 +1156,17 @@
 
   .pu-pdp-story__figure {
     justify-self: center;
+  }
+
+  .pu-pdp-story__patch--1 {
+    top: clamp(44px, 14vw, 72px);
+    left: 50%;
+    translate: -42% 0;
+  }
+
+  .pu-pdp-story__patch--2 {
+    bottom: 22%;
+    left: 8%;
   }
 
   .pu-pdp-use__steps {
