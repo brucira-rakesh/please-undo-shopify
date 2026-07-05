@@ -140,7 +140,7 @@
         "text_1": {
           "type": "scramble_text",
           "settings": {
-            "text": "Life isn't ALL FUN"
+            "text": "Life isn't ALL FUN and frolic."
           }
         },
         "video_1": {
@@ -155,7 +155,7 @@
         "text_2": {
           "type": "scramble_text",
           "settings": {
-            "text": "and frolic. It has many annoying"
+            "text": "It has many"
           }
         },
         "video_2": {
