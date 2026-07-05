@@ -294,6 +294,7 @@
       ],
       "settings": {
         "title": "Pick your Undo.",
+        "collection": "",
         "products_limit": 6,
         "default_bullets": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
       }
@@ -306,8 +307,10 @@
           "settings": {
             "tile_color": "orange",
             "stage_placement": "top_left",
+            "rotation": -16,
             "figure_placement": "top_left",
-            "rotation": -16
+            "default_image": "shopify://shop_images/2_bf428f04-0d03-4a5c-8bcb-27a5998eebc8.png",
+            "alt_image": "shopify://shop_images/Group_30.png"
           }
         },
         "card_yellow": {
@@ -315,8 +318,10 @@
           "settings": {
             "tile_color": "yellow",
             "stage_placement": "top_right",
+            "rotation": 11,
             "figure_placement": "top_right",
-            "rotation": 11
+            "default_image": "shopify://shop_images/4_0040886b-6d54-4d5d-bf11-805982a90efb.png",
+            "alt_image": "shopify://shop_images/Group_35.png"
           }
         },
         "card_blue": {
@@ -324,8 +329,10 @@
           "settings": {
             "tile_color": "blue",
             "stage_placement": "bottom_left",
+            "rotation": 9,
             "figure_placement": "bottom_left",
-            "rotation": 9
+            "default_image": "shopify://shop_images/1_cbd64b38-eef8-49bb-8f22-019403b20334.png",
+            "alt_image": "shopify://shop_images/Group_33.png"
           }
         },
         "card_green": {
@@ -333,8 +340,10 @@
           "settings": {
             "tile_color": "green",
             "stage_placement": "bottom_right",
+            "rotation": -11,
             "figure_placement": "bottom_right",
-            "rotation": -11
+            "default_image": "shopify://shop_images/3_c276be7d-f2e0-43a0-bdd5-32e7b8f5bce1.png",
+            "alt_image": "shopify://shop_images/Group_32.png"
           }
         }
       },
