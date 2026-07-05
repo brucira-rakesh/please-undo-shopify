@@ -238,6 +238,7 @@
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_12_3.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2.png",
+            "figure_right": -60,
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -249,6 +250,7 @@
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_10_1_5b8b7e17-f709-4ab1-810d-94be833cdbd9.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_1.png",
+            "figure_right": -60,
             "subtext": "Sat For Too Long, Achy Back",
             "title": "Pain-relief Roll On",
             "bullet_points": "<ol><li>Helps relieve stiffness </li><li>Helps ease muscle tension </li><li>Instant cooling relief</li><li>Fast-drying, non-greasy</li><li>Daily use</li></ol>",
@@ -260,6 +262,7 @@
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_14_1.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_1_1.png",
+            "figure_right": -60,
             "subtext": "Tired, Achy Everything",
             "title": "Relaxing Body Lotion",
             "bullet_points": "<ol><li>Loaded with actives</li><li>Helps muscles feel lighter</li><li>Cooling refreshes</li><li>Deep hydration without grease</li><li>Fast-absorbing</li><li>For daily use</li></ol>",
@@ -271,6 +274,7 @@
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_16_2.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_1_2.png",
+            "figure_right": -60,
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -282,6 +286,7 @@
           "settings": {
             "product_image": "shopify://shop_images/Primary-Mockup_18_1.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2_1.png",
+            "figure_right": -60,
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
@@ -310,18 +315,20 @@
           "type": "card",
           "settings": {
             "default_color": "#f66400",
-            "alt_color": "#F66400",
+            "alt_color": "#f66400",
             "tile_size": "standard",
             "stage_placement": "top_left",
             "rotation": -16,
-            "figure_placement": "top_left"
+            "figure_placement": "top_left",
+            "default_image": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_1_3.png",
+            "alt_image": "shopify://shop_images/Group_30.png"
           }
         },
         "card_yellow": {
           "type": "card",
           "settings": {
             "default_color": "#fceb00",
-            "alt_color": "#FCEB00",
+            "alt_color": "#fceb00",
             "tile_size": "standard",
             "stage_placement": "top_right",
             "rotation": 11,
@@ -334,7 +341,7 @@
           "type": "card",
           "settings": {
             "default_color": "#0067ef",
-            "alt_color": "#0067EF",
+            "alt_color": "#0067ef",
             "tile_size": "large",
             "stage_placement": "bottom_left",
             "rotation": 9,
@@ -347,7 +354,7 @@
           "type": "card",
           "settings": {
             "default_color": "#00973a",
-            "alt_color": "#6E36B9",
+            "alt_color": "#6e36b9",
             "tile_size": "large",
             "stage_placement": "bottom_right",
             "rotation": -11,
