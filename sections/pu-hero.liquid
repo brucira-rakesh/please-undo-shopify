@@ -6,33 +6,50 @@
         {% assign patch_blocks = section.blocks | where: 'type', 'patch' %}
         {% if patch_blocks.size > 0 %}
           {% for block in patch_blocks %}
-            {% render 'pu-hero-patch', block: block %}
+            {% case forloop.index0 %}
+              {% when 0 %}
+                {% assign patch_style = '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg;' %}
+                {% assign patch_parallax_y = 28 %}
+                {% assign patch_parallax_x = -6 %}
+              {% when 1 %}
+                {% assign patch_style = '--patch-top: 60%; --patch-left: 9%; --patch-rotate: -14deg;' %}
+                {% assign patch_parallax_y = 42 %}
+                {% assign patch_parallax_x = 8 %}
+              {% when 2 %}
+                {% assign patch_style = '--patch-top: 30%; --patch-right: 12%; --patch-rotate: -6deg;' %}
+                {% assign patch_parallax_y = 36 %}
+                {% assign patch_parallax_x = -10 %}
+              {% else %}
+                {% assign patch_style = '--patch-top: 50%; --patch-left: 50%; --patch-rotate: 0deg;' %}
+                {% assign patch_parallax_y = 30 %}
+                {% assign patch_parallax_x = 0 %}
+            {% endcase %}
+            {% render 'pu-hero-patch',
+              block: block,
+              patch_style: patch_style,
+              parallax_y: patch_parallax_y,
+              parallax_x: patch_parallax_x
+            %}
           {% endfor %}
         {% else %}
-          <div
-            class="pu-hero__patch"
-            style="--patch-top: 6%; --patch-left: 38%; --patch-rotate: 12deg;"
-          >
-            <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="28" data-parallax-x="-6">
-              <div class="pu-sticker pu-hero__patch-inner"><span>For every</span></div>
-            </div>
-          </div>
-          <div
-            class="pu-hero__patch"
-            style="--patch-top: 37%; --patch-left: 5%; --patch-rotate: -14deg;"
-          >
-            <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="42" data-parallax-x="8">
-              <div class="pu-sticker pu-hero__patch-inner"><span>There's a</span></div>
-            </div>
-          </div>
-          <div
-            class="pu-hero__patch"
-            style="--patch-top: 20%; --patch-right: 12%; --patch-rotate: -6deg;"
-          >
-            <div class="pu-hero__patch-drift" data-pu-parallax data-parallax-y="36" data-parallax-x="-10">
-              <div class="pu-sticker pu-hero__patch-inner"><span>you do</span></div>
-            </div>
-          </div>
+          {% render 'pu-hero-patch',
+            text: 'For every',
+            patch_style: '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg;',
+            parallax_y: 28,
+            parallax_x: -6
+          %}
+          {% render 'pu-hero-patch',
+            text: "There's a",
+            patch_style: '--patch-top: 60%; --patch-left: 9%; --patch-rotate: -14deg;',
+            parallax_y: 42,
+            parallax_x: 8
+          %}
+          {% render 'pu-hero-patch',
+            text: 'you do',
+            patch_style: '--patch-top: 30%; --patch-right: 12%; --patch-rotate: -6deg;',
+            parallax_y: 36,
+            parallax_x: -10
+          %}
         {% endif %}
       </div>
 
@@ -79,10 +96,25 @@
       >
         <img
           class="pu-hero__figure pu-hero__figure--3"
-          src="{{ 'pu-stick-figure-2.png' | asset_url }}"
+          src="{{ 'pu-stick-figure-3.svg' | asset_url }}"
           alt=""
           width="149"
           height="135"
+          loading="eager"
+        >
+      </div>
+      <div
+        class="pu-hero__figure-wrap pu-hero__figure-wrap--4"
+        data-pu-parallax
+        data-parallax-y="38"
+        data-parallax-x="10"
+      >
+        <img
+          class="pu-hero__figure pu-hero__figure--4"
+          src="{{ 'pu-stick-figure-4.svg' | asset_url }}"
+          alt=""
+          width="138"
+          height="140"
           loading="eager"
         >
       </div>
@@ -167,6 +199,7 @@
   }
 
   .pu-hero__typography {
+    position: relative;
     min-height: 280px;
     margin-bottom: 24px;
     display: flex;
@@ -179,7 +212,7 @@
     max-width: 100%;
     font-family: var(--pu-font-display);
     font-weight: 800;
-    font-size: clamp(48px, 11.5vw, 202px);
+    font-size: 202px;
     line-height: 0.76;
     letter-spacing: -0.02em;
     text-transform: uppercase;
@@ -250,21 +283,25 @@
   }
 
   .pu-hero__figure-wrap--1 {
-    top: 52%;
-    left: 12%;
+    top: 78%;
+    left: 11.5%;
   }
   .pu-hero__figure-wrap--2 {
-    top: 8%;
-    left: 30%;
+    top: -30%;
+    left: 31%;
   }
   .pu-hero__figure-wrap--3 {
-    top: 42%;
-    right: 12%;
+    top: -34%;
+    right: 18%;
+  }
+  .pu-hero__figure-wrap--4 {
+    top: 61.5%;
+    right: 14%;
   }
 
   .pu-hero__product-wrap {
-    top: 42%;
-    right: 18%;
+    top: 52%;
+    right: 12%;
     z-index: 4;
   }
 
@@ -282,16 +319,20 @@
   }
   .pu-hero__figure--2 {
     width: 120px !important;
-    transform: rotate(-18deg);
+    transform: rotate(3deg);
   }
   .pu-hero__figure--3 {
     width: 130px !important;
-    transform: rotate(10deg);
+    transform: rotate(0deg);
+  }
+  .pu-hero__figure--4 {
+    width: 140px !important;
+    transform: rotate(0deg);
   }
 
   .pu-hero__product {
-    width: 78px !important;
-    max-width: 78px !important;
+    width: 51px !important;
+    max-width: 51px !important;
     height: auto !important;
     transform: rotate(12deg);
     display: block;
@@ -462,68 +503,6 @@
           "type": "html",
           "id": "html",
           "label": "Custom HTML or inline SVG"
-        },
-        {
-          "type": "range",
-          "id": "position_top",
-          "label": "Vertical position",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
-          "default": 0
-        },
-        {
-          "type": "range",
-          "id": "position_left",
-          "label": "Left position",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
-          "default": 0,
-          "info": "Use 0 when positioning from the right"
-        },
-        {
-          "type": "range",
-          "id": "position_right",
-          "label": "Right position",
-          "min": 0,
-          "max": 100,
-          "step": 1,
-          "unit": "%",
-          "default": 0,
-          "info": "Overrides left when greater than 0"
-        },
-        {
-          "type": "range",
-          "id": "rotation",
-          "label": "Rotation",
-          "min": -45,
-          "max": 45,
-          "step": 1,
-          "unit": "deg",
-          "default": 0
-        },
-        {
-          "type": "range",
-          "id": "parallax_y",
-          "label": "Scroll drift (vertical)",
-          "min": 0,
-          "max": 120,
-          "step": 2,
-          "unit": "px",
-          "default": 30
-        },
-        {
-          "type": "range",
-          "id": "parallax_x",
-          "label": "Scroll drift (horizontal)",
-          "min": -40,
-          "max": 40,
-          "step": 2,
-          "unit": "px",
-          "default": 0
         }
       ]
     }
@@ -536,36 +515,21 @@
           "type": "patch",
           "settings": {
             "content_type": "text",
-            "text": "For every",
-            "position_top": 8,
-            "position_left": 38,
-            "rotation": 15,
-            "parallax_y": 28,
-            "parallax_x": -6
+            "text": "For every"
           }
         },
         {
           "type": "patch",
           "settings": {
             "content_type": "text",
-            "text": "There's a",
-            "position_top": 58,
-            "position_left": 8,
-            "rotation": -12,
-            "parallax_y": 42,
-            "parallax_x": 8
+            "text": "There's a"
           }
         },
         {
           "type": "patch",
           "settings": {
             "content_type": "text",
-            "text": "you do",
-            "position_top": 38,
-            "position_right": 8,
-            "rotation": -8,
-            "parallax_y": 36,
-            "parallax_x": -10
+            "text": "you do"
           }
         }
       ]

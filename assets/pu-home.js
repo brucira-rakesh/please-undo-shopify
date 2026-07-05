@@ -184,34 +184,55 @@ function initProductSlider() {
   );
 }
 
+let heroParallaxCleanup = null;
+
 function initHeroParallax() {
+  heroParallaxCleanup?.();
+  heroParallaxCleanup = null;
+
   const hero = document.querySelector('[data-pu-hero]');
-  if (!hero || !gsap || !ScrollTrigger) return;
+  if (!hero || !gsap) return;
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (window.matchMedia('(max-width: 749px)').matches) return;
 
   const elements = hero.querySelectorAll('[data-pu-parallax]');
+  if (!elements.length) return;
 
-  elements.forEach((el) => {
-    const y = parseFloat(el.dataset.parallaxY || '30');
-    const x = parseFloat(el.dataset.parallaxX || '0');
+  const items = [...elements].map((el) => ({
+    el,
+    maxY: parseFloat(el.dataset.parallaxY || '30'),
+    maxX: parseFloat(el.dataset.parallaxX || '0'),
+    setX: gsap.quickTo(el, 'x', { duration: 0.85, ease: 'power3.out' }),
+    setY: gsap.quickTo(el, 'y', { duration: 0.85, ease: 'power3.out' }),
+  }));
 
-    gsap.fromTo(
-      el,
-      { y: 0, x: 0 },
-      {
-        y,
-        x,
-        ease: 'none',
-        scrollTrigger: scrollTriggerConfig(hero, {
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,
-        }),
-      }
-    );
-  });
+  const reset = () => {
+    items.forEach(({ el, setX, setY }) => {
+      setX(0);
+      setY(0);
+    });
+  };
+
+  const onMove = (event) => {
+    const rect = hero.getBoundingClientRect();
+    const normX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    const normY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+
+    items.forEach(({ maxX, maxY, setX, setY }) => {
+      setX(normX * maxX);
+      setY(normY * maxY);
+    });
+  };
+
+  hero.addEventListener('mousemove', onMove);
+  hero.addEventListener('mouseleave', reset);
+
+  heroParallaxCleanup = () => {
+    hero.removeEventListener('mousemove', onMove);
+    hero.removeEventListener('mouseleave', reset);
+    items.forEach(({ el }) => gsap.set(el, { x: 0, y: 0 }));
+  };
 }
 
 function animateScrambleReveal(el) {
@@ -358,6 +379,8 @@ function initSearchOpen() {
 }
 
 function destroyAnimations() {
+  heroParallaxCleanup?.();
+  heroParallaxCleanup = null;
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;
   ScrollTrigger = null;

@@ -1,27 +1,25 @@
 {% doc %}
   Renders a white sticker patch for the PU hero section.
 
-  @param {object} block - Section block with patch settings
+  @param {object} [block] - Section block with patch content settings
+  @param {string} [text] - Fallback text when no block is provided
+  @param {string} patch_style - Inline CSS custom properties for patch placement
+  @param {number} parallax_y - Max vertical mouse parallax in px
+  @param {number} parallax_x - Max horizontal mouse parallax in px
 {% enddoc %}
 
 {% liquid
-  assign content_type = block.settings.content_type | default: 'text'
-  assign top = block.settings.position_top | default: 50
-  assign left = block.settings.position_left
-  assign right = block.settings.position_right
-  assign rotation = block.settings.rotation | default: 0
-  assign parallax_y = block.settings.parallax_y | default: 30
-  assign parallax_x = block.settings.parallax_x | default: 0
+  if block != blank
+    assign content_type = block.settings.content_type | default: 'text'
+  else
+    assign content_type = 'text'
+  endif
 %}
 
 <div
   class="pu-hero__patch"
-  style="
-    --patch-top: {{ top }}%;
-    {% if right > 0 %}--patch-right: {{ right }}%;{% else %}--patch-left: {{ left }}%;{% endif %}
-    --patch-rotate: {{ rotation }}deg;
-  "
-  {{ block.shopify_attributes }}
+  style="{{ patch_style }}"
+  {% if block != blank %}{{ block.shopify_attributes }}{% endif %}
 >
   <div
     class="pu-hero__patch-drift"
@@ -30,26 +28,30 @@
     data-parallax-x="{{ parallax_x }}"
   >
     <div class="pu-sticker pu-hero__patch-inner">
-      {% case content_type %}
-        {% when 'image' %}
-          {% if block.settings.image != blank %}
-            {{
-              block.settings.image
-              | image_url: width: 400
-              | image_tag: class: 'pu-hero__patch-media', loading: 'eager', alt: block.settings.text
-            }}
-          {% elsif block.settings.text != blank %}
+      {% if block != blank %}
+        {% case content_type %}
+          {% when 'image' %}
+            {% if block.settings.image != blank %}
+              {{
+                block.settings.image
+                | image_url: width: 400
+                | image_tag: class: 'pu-hero__patch-media', loading: 'eager', alt: block.settings.text
+              }}
+            {% elsif block.settings.text != blank %}
+              <span>{{ block.settings.text }}</span>
+            {% endif %}
+          {% when 'html' %}
+            {% if block.settings.html != blank %}
+              <div class="pu-hero__patch-html">{{ block.settings.html }}</div>
+            {% elsif block.settings.text != blank %}
+              <span>{{ block.settings.text }}</span>
+            {% endif %}
+          {% else %}
             <span>{{ block.settings.text }}</span>
-          {% endif %}
-        {% when 'html' %}
-          {% if block.settings.html != blank %}
-            <div class="pu-hero__patch-html">{{ block.settings.html }}</div>
-          {% elsif block.settings.text != blank %}
-            <span>{{ block.settings.text }}</span>
-          {% endif %}
-        {% else %}
-          <span>{{ block.settings.text }}</span>
-      {% endcase %}
+        {% endcase %}
+      {% else %}
+        <span>{{ text }}</span>
+      {% endif %}
     </div>
   </div>
 </div>

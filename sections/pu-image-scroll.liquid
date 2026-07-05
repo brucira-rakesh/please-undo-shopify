@@ -222,7 +222,7 @@
     display: flex;
     gap: 32px;
     align-items: flex-end;
-    padding: 0 10vw;
+    padding: 0 2vw;
     will-change: transform;
   }
 
@@ -275,15 +275,25 @@
   .pu-image-scroll__overlay--bottom-left {
     bottom: 8%;
     left: 5%;
-    transform: rotate(calc(-4deg + var(--overlay-rotate, 0deg)));
     text-align: left;
+    font-size: 28px;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 118%;
+    letter-spacing: -2%;
+    transform: rotate(-12deg);
   }
 
   .pu-image-scroll__overlay--top-right {
-    top: 6%;
+    top: -4%;
     right: 4%;
-    transform: rotate(calc(5deg + var(--overlay-rotate, 0deg)));
     text-align: right;
+    font-family: Homemade Apple;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 103%;
+    letter-spacing: -2%;
+    transform: rotate(8deg);
   }
 
   .pu-image-scroll__overlay--bottom-right {
