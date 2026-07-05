@@ -558,18 +558,78 @@ function initScrambleText() {
 
 function initSvgGrid() {
   const section = document.querySelector('[data-pu-svg-grid]');
-  if (!section) return;
+  if (!section || section.dataset.puSvgGridInit === 'true') return;
+
+  section.dataset.puSvgGridInit = 'true';
 
   const btn = section.querySelector('[data-pu-svg-toggle]');
+  const keyCap = btn?.querySelector('.pu-svg-grid__key-cap');
   const cards = section.querySelectorAll('[data-pu-svg-card]');
   let swapped = false;
+
+  const setKeyPressed = (pressed) => {
+    btn?.classList.toggle('is-pressing', pressed);
+  };
+
+  const animateKeyPress = () => {
+    if (!keyCap || !gsap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    gsap.killTweensOf(keyCap);
+    gsap.fromTo(
+      keyCap,
+      { y: swapped ? 8 : 0, scale: swapped ? 0.99 : 1 },
+      {
+        y: swapped ? 11 : 10,
+        scale: 0.985,
+        duration: 0.07,
+        ease: 'power2.in',
+        onComplete: () => {
+          gsap.to(keyCap, {
+            y: swapped ? 8 : 0,
+            scale: swapped ? 0.99 : 1,
+            duration: swapped ? 0.18 : 0.38,
+            ease: swapped ? 'power2.out' : 'back.out(2.4)',
+            onComplete: () => {
+              gsap.set(keyCap, { clearProps: 'transform' });
+            },
+          });
+        },
+      }
+    );
+  };
+
+  btn?.addEventListener('pointerdown', () => setKeyPressed(true));
+  btn?.addEventListener('pointerup', () => setKeyPressed(false));
+  btn?.addEventListener('pointerleave', () => setKeyPressed(false));
+  btn?.addEventListener('pointercancel', () => setKeyPressed(false));
+
+  const setCardTileColor = (card, isSwapped) => {
+    const tile = card.querySelector('.pu-svg-grid__tile');
+    if (!tile) return;
+
+    const defaultColor =
+      card.dataset.tileColorDefault ||
+      getComputedStyle(card).getPropertyValue('--tile-color-default').trim();
+    const altColor =
+      card.dataset.tileColorAlt ||
+      getComputedStyle(card).getPropertyValue('--tile-color-alt').trim();
+
+    tile.style.backgroundColor = isSwapped ? altColor : defaultColor;
+  };
+
+  cards.forEach((card) => setCardTileColor(card, swapped));
 
   btn?.addEventListener('click', () => {
     swapped = !swapped;
     btn.classList.toggle('is-active', swapped);
+    btn.setAttribute('aria-pressed', swapped ? 'true' : 'false');
+    section.classList.toggle('is-swapped', swapped);
+    setKeyPressed(false);
+    animateKeyPress();
 
     cards.forEach((card, i) => {
       card.classList.toggle('is-swapped', swapped);
+      setCardTileColor(card, swapped);
 
       if (gsap) {
         gsap.fromTo(
@@ -599,13 +659,19 @@ function destroyAnimations() {
   productSliderSwingTween?.kill();
   productSliderSwingTween = null;
   destroyProductSliderScroll();
+  document.querySelector('[data-pu-svg-grid]')?.removeAttribute('data-pu-svg-grid-init');
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;
   ScrollTrigger = null;
 }
 
 async function init() {
-  if (!document.querySelector('[data-pu-hero], [data-pu-image-scroll], [data-pu-product-slider], [data-pu-scramble]')) return;
+  if (
+    !document.querySelector(
+      '[data-pu-hero], [data-pu-image-scroll], [data-pu-product-slider], [data-pu-scramble], [data-pu-svg-grid]'
+    )
+  )
+    return;
 
   scrambleTickerCleanup?.();
   scrambleTickerCleanup = initScrambleTicker();

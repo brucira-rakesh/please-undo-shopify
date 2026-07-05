@@ -6,10 +6,20 @@
 {% enddoc %}
 
 {% liquid
-  assign tile_color = block.settings.tile_color | default: 'orange'
   assign stage_placement = block.settings.stage_placement | default: 'top_left'
   assign figure_placement = block.settings.figure_placement | default: 'top_left'
   assign rotation = block.settings.rotation | default: 0
+  assign tile_size = block.settings.tile_size | default: 'standard'
+
+  assign default_color = block.settings.default_color
+  assign alt_color = block.settings.alt_color
+
+  if default_color == blank
+    assign default_color = '#f66400'
+  endif
+  if alt_color == blank
+    assign alt_color = '#ff6800'
+  endif
 
   assign default_asset = 'sponsor-top-left.svg'
   assign alt_asset = 'sponsor-happy-top-left.svg'
@@ -32,12 +42,16 @@
   data-pu-svg-card
   data-card-index="{{ card_index }}"
   data-stage-placement="{{ stage_placement }}"
-  data-tile-color="{{ tile_color }}"
-  style="--card-rotate: {{ rotation }}deg;"
+  data-tile-color-default="{{ default_color }}"
+  data-tile-color-alt="{{ alt_color }}"
+  style="--card-rotate: {{ rotation }}deg; --tile-color-default: {{ default_color }}; --tile-color-alt: {{ alt_color }};"
   {{ block.shopify_attributes }}
 >
-  <div class="pu-svg-grid__card-inner pu-svg-grid__card-inner--{{ tile_color }}">
-    <div class="pu-svg-grid__tile pu-svg-grid__tile--{{ tile_color }}"></div>
+  <div class="pu-svg-grid__card-inner pu-svg-grid__card-inner--{{ tile_size }}">
+    <div
+      class="pu-svg-grid__tile"
+      style="background-color: {{ default_color }};"
+    ></div>
     <div class="pu-svg-grid__figure-slot pu-svg-grid__figure-{{ figure_placement | replace: '_', '-' }}">
       <div class="pu-svg-grid__figure" data-pu-svg-default>
         {% if block.settings.default_image != blank %}

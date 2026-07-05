@@ -305,7 +305,9 @@
         "card_orange": {
           "type": "card",
           "settings": {
-            "tile_color": "orange",
+            "default_color": "#f66400",
+            "alt_color": "#fceb00",
+            "tile_size": "standard",
             "stage_placement": "top_left",
             "rotation": -16,
             "figure_placement": "top_left",
@@ -316,7 +318,9 @@
         "card_yellow": {
           "type": "card",
           "settings": {
-            "tile_color": "yellow",
+            "default_color": "#fceb00",
+            "alt_color": "#0067ef",
+            "tile_size": "standard",
             "stage_placement": "top_right",
             "rotation": 11,
             "figure_placement": "top_right",
@@ -327,7 +331,9 @@
         "card_blue": {
           "type": "card",
           "settings": {
-            "tile_color": "blue",
+            "default_color": "#0067ef",
+            "alt_color": "#00973a",
+            "tile_size": "large",
             "stage_placement": "bottom_left",
             "rotation": 9,
             "figure_placement": "bottom_left",
@@ -338,7 +344,9 @@
         "card_green": {
           "type": "card",
           "settings": {
-            "tile_color": "green",
+            "default_color": "#00973a",
+            "alt_color": "#f66400",
+            "tile_size": "large",
             "stage_placement": "bottom_right",
             "rotation": -11,
             "figure_placement": "bottom_right",

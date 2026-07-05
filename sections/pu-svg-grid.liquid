@@ -28,8 +28,16 @@
           height="90"
           loading="lazy"
         >
-        <button type="button" class="pu-svg-grid__key" data-pu-svg-toggle aria-label="Toggle illustrations">
-          <img src="{{ 'please-undo-btn.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+        <button
+          type="button"
+          class="pu-svg-grid__key"
+          data-pu-svg-toggle
+          aria-label="Toggle illustrations"
+          aria-pressed="false"
+        >
+          <span class="pu-svg-grid__key-cap">
+            <img src="{{ 'please-undo-btn.svg' | asset_url }}" alt="PLEASE UNDO" width="100%" height="100%">
+          </span>
         </button>
         <img
           class="pu-svg-grid__spark pu-svg-grid__spark--right"
@@ -104,14 +112,12 @@
     transform-origin: center center;
   }
 
-  .pu-svg-grid__card-inner--orange,
-  .pu-svg-grid__card-inner--yellow {
+  .pu-svg-grid__card-inner--standard {
     min-width: 235px;
-    min-height: 275px;
+    min-height: 270px;
   }
 
-  .pu-svg-grid__card-inner--blue,
-  .pu-svg-grid__card-inner--green {
+  .pu-svg-grid__card-inner--large {
     min-width: 285px;
     min-height: 330px;
   }
@@ -120,19 +126,15 @@
     position: absolute;
     inset: 0;
     border-radius: 2px;
+    transition: background-color 0.35s ease;
   }
 
-  .pu-svg-grid__tile--orange {
-    background: #f66400;
+  .pu-svg-grid__card.is-swapped .pu-svg-grid__tile {
+    background-color: var(--tile-color-alt, #ff6800) !important;
   }
-  .pu-svg-grid__tile--yellow {
-    background: #fceb00;
-  }
-  .pu-svg-grid__tile--blue {
-    background: #0067ef;
-  }
-  .pu-svg-grid__tile--green {
-    background: #00973a;
+
+  .pu-svg-grid__card:not(.is-swapped) .pu-svg-grid__tile {
+    background-color: var(--tile-color-default, #f66400) !important;
   }
 
   .pu-svg-grid__figure-slot {
@@ -166,33 +168,39 @@
   }
 
   .pu-svg-grid__figure-slot.pu-svg-grid__figure-top-left {
-    top: -39%;
-    left: -45%;
+    top: -12%;
+    left: -16%;
     transform: rotate(16deg);
+    max-width: 200px;
   }
 
   .pu-svg-grid__figure-slot.pu-svg-grid__figure-bottom-left {
-    bottom: -14%;
+    bottom: 0;
     transform: rotate(-10deg);
-    right: -18%;
+    right: -6%;
+    max-width: 240px;
   }
 
   .pu-svg-grid__figure-slot.pu-svg-grid__figure-top-right {
-    top: -12%;
-    right: -21%;
+    top: -6%;
+    right: -4%;
     transform: rotate(-8deg);
+    max-width: 200px;
   }
 
   .pu-svg-grid__figure-slot.pu-svg-grid__figure-bottom-right {
-    left: -53%;
-    top: -21%;
+    left: -12%;
+    top: 10%;
+    max-width: 240px;
   }
 
-  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-default] {
+  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-default],
+  .pu-svg-grid__card.is-swapped .pu-svg-grid__figure[data-pu-svg-default] {
     opacity: 0;
   }
 
-  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-alt] {
+  [data-pu-svg-card].is-swapped .pu-svg-grid__figure[data-pu-svg-alt],
+  .pu-svg-grid__card.is-swapped .pu-svg-grid__figure[data-pu-svg-alt] {
     opacity: 1;
   }
 
@@ -232,6 +240,12 @@
     height: 32px !important;
     flex-shrink: 0;
     pointer-events: none;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+  }
+
+  .pu-svg-grid.is-swapped .pu-svg-grid__spark {
+    opacity: 0;
+    visibility: hidden;
   }
 
   .pu-svg-grid__key {
@@ -242,13 +256,12 @@
     gap: 2px;
     width: clamp(120px, 17vw, 200px);
     aspect-ratio: 242 / 199;
-    padding: 12px 16px;
+    padding: 0;
     border: none;
     border-radius: 10px;
     background: transparent;
     box-shadow: none;
     cursor: pointer;
-    transition: transform 0.2s ease;
     font-family: var(--pu-font-display);
     font-weight: 800;
     font-size: clamp(18px, 2.4vw, 28px);
@@ -256,14 +269,52 @@
     letter-spacing: -0.02em;
     text-transform: uppercase;
     color: var(--pu-navy-text);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .pu-svg-grid__key:hover {
-    transform: translateY(-2px);
+  .pu-svg-grid__key-cap {
+    display: block;
+    width: 100%;
+    transform: translateY(0);
+    transform-origin: center bottom;
+    will-change: transform;
+    transition: transform 0.14s cubic-bezier(0.34, 1.4, 0.64, 1);
   }
 
-  .pu-svg-grid__key.is-active {
-    transform: translateY(2px);
+  .pu-svg-grid__key-cap img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .pu-svg-grid__key:hover:not(.is-active) .pu-svg-grid__key-cap {
+    transform: translateY(-3px);
+  }
+
+  .pu-svg-grid__key.is-pressing .pu-svg-grid__key-cap {
+    transform: translateY(10px) scale(0.985);
+    transition-duration: 0.07s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pu-svg-grid__key.is-active .pu-svg-grid__key-cap {
+    transform: translateY(8px) scale(0.99);
+  }
+
+  .pu-svg-grid__key.is-active.is-pressing .pu-svg-grid__key-cap {
+    transform: translateY(11px) scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pu-svg-grid__key-cap {
+      transition: none;
+    }
+
+    .pu-svg-grid__key:hover:not(.is-active) .pu-svg-grid__key-cap,
+    .pu-svg-grid__key.is-pressing .pu-svg-grid__key-cap,
+    .pu-svg-grid__key.is-active .pu-svg-grid__key-cap {
+      transform: none;
+    }
   }
 
   @media (max-width: 749px) {
@@ -339,16 +390,26 @@
       "name": "Card",
       "settings": [
         {
+          "type": "color",
+          "id": "default_color",
+          "label": "Default tile color",
+          "default": "#f66400"
+        },
+        {
+          "type": "color",
+          "id": "alt_color",
+          "label": "Tile color on click",
+          "default": "#ff6800"
+        },
+        {
           "type": "select",
-          "id": "tile_color",
-          "label": "Tile color",
+          "id": "tile_size",
+          "label": "Tile size",
           "options": [
-            { "value": "orange", "label": "Orange" },
-            { "value": "yellow", "label": "Yellow" },
-            { "value": "blue", "label": "Blue" },
-            { "value": "green", "label": "Green" }
+            { "value": "standard", "label": "Standard" },
+            { "value": "large", "label": "Large" }
           ],
-          "default": "orange"
+          "default": "standard"
         },
         {
           "type": "select",
@@ -406,7 +467,9 @@
         {
           "type": "card",
           "settings": {
-            "tile_color": "orange",
+            "default_color": "#f66400",
+            "alt_color": "#fceb00",
+            "tile_size": "standard",
             "stage_placement": "top_left",
             "figure_placement": "top_left",
             "rotation": -16
@@ -415,7 +478,9 @@
         {
           "type": "card",
           "settings": {
-            "tile_color": "yellow",
+            "default_color": "#fceb00",
+            "alt_color": "#0067ef",
+            "tile_size": "standard",
             "stage_placement": "top_right",
             "figure_placement": "top_right",
             "rotation": 11
@@ -424,7 +489,9 @@
         {
           "type": "card",
           "settings": {
-            "tile_color": "blue",
+            "default_color": "#0067ef",
+            "alt_color": "#00973a",
+            "tile_size": "large",
             "stage_placement": "bottom_left",
             "figure_placement": "bottom_left",
             "rotation": 9
@@ -433,7 +500,9 @@
         {
           "type": "card",
           "settings": {
-            "tile_color": "green",
+            "default_color": "#00973a",
+            "alt_color": "#f66400",
+            "tile_size": "large",
             "stage_placement": "bottom_right",
             "figure_placement": "bottom_right",
             "rotation": -11
