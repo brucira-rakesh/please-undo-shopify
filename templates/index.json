@@ -176,6 +176,7 @@
         "ticker_1": {
           "type": "ticker_image",
           "settings": {
+            "image": "shopify://shop_images/Primary-Mockup_12_3.png",
             "fallback_asset": "pu-product-mockup.png",
             "alt": "Please Undo product"
           }
@@ -183,6 +184,7 @@
         "ticker_2": {
           "type": "ticker_image",
           "settings": {
+            "image": "shopify://shop_images/Primary-Mockup_10_1_5b8b7e17-f709-4ab1-810d-94be833cdbd9.png",
             "fallback_asset": "pu-product-mockup.png",
             "alt": "Please Undo product"
           }
@@ -190,6 +192,7 @@
         "ticker_3": {
           "type": "ticker_image",
           "settings": {
+            "image": "shopify://shop_images/Primary-Mockup_14_1.png",
             "fallback_asset": "pu-product-mockup.png",
             "alt": "Please Undo product"
           }
@@ -197,6 +200,7 @@
         "ticker_4": {
           "type": "ticker_image",
           "settings": {
+            "image": "shopify://shop_images/Primary-Mockup_16_2.png",
             "fallback_asset": "pu-product-mockup.png",
             "alt": "Please Undo product"
           }
@@ -204,27 +208,7 @@
         "ticker_5": {
           "type": "ticker_image",
           "settings": {
-            "fallback_asset": "pu-product-mockup.png",
-            "alt": "Please Undo product"
-          }
-        },
-        "ticker_6": {
-          "type": "ticker_image",
-          "settings": {
-            "fallback_asset": "pu-product-mockup.png",
-            "alt": "Please Undo product"
-          }
-        },
-        "ticker_7": {
-          "type": "ticker_image",
-          "settings": {
-            "fallback_asset": "pu-product-mockup.png",
-            "alt": "Please Undo product"
-          }
-        },
-        "ticker_8": {
-          "type": "ticker_image",
-          "settings": {
+            "image": "shopify://shop_images/Primary-Mockup_18_1.png",
             "fallback_asset": "pu-product-mockup.png",
             "alt": "Please Undo product"
           }
@@ -240,10 +224,7 @@
         "ticker_2",
         "ticker_3",
         "ticker_4",
-        "ticker_5",
-        "ticker_6",
-        "ticker_7",
-        "ticker_8"
+        "ticker_5"
       ],
       "settings": {
         "full_text": "Life isn't ALL FUN and frolic. It has many annoying pains. Good thing we have a HACK TO UNDO THEM."
