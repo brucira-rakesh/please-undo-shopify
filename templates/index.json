@@ -281,6 +281,16 @@
             "shop_now_url": ""
           }
         },
+        "product_kcBLtB": {
+          "type": "product",
+          "settings": {
+            "figure_right": -45,
+            "subtext": "LAPTOP NECK",
+            "title": "Pain-relief Roll On",
+            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
+            "shop_now_url": ""
+          }
+        },
         "product_FgW9qB": {
           "type": "product",
           "settings": {
@@ -299,6 +309,7 @@
         "product_QLzQQ7",
         "product_rBqddp",
         "product_PC8jBa",
+        "product_kcBLtB",
         "product_FgW9qB"
       ],
       "settings": {
