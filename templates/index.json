@@ -149,16 +149,17 @@
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "Overthinking an argument that ended four hours ago. You finally remembered the perfect comeback.",
-            "overlay_position": "bottom-left",
+            "overlay_position": "top-right",
             "overlay_rotation": 0
           }
         },
         "image_8mb7Rh": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/image_146_2.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "",
+            "overlay_text": "Spent the whole weekend on the couch. You called it self-care. Your smartwatch called 0 steps today.",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
@@ -166,6 +167,7 @@
         "image_pYYNU7": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/image_198_1.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "",
@@ -176,9 +178,10 @@
         "image_AQDABM": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/image_145_1.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "",
+            "overlay_text": "Lunch break: 4 minutes. Back pain Indefinite.",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
