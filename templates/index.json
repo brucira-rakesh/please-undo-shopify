@@ -134,6 +134,7 @@
         "image_xBpamF": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/image_198.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "",
@@ -144,9 +145,10 @@
         "image_R93RVb": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/image_145.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "",
+            "overlay_text": "Overthinking an argument that ended four hours ago. You finally remembered the perfect comeback.",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
