@@ -1,32 +1,76 @@
+{% liquid
+  assign sequence_basename = section.settings.sequence_basename | strip
+  assign sequence_frames = section.settings.sequence_frame_count | default: 411
+  assign sequence_pad = section.settings.sequence_pad_digits | default: 5
+  assign sequence_start = section.settings.sequence_start_number | default: 0
+  assign sequence_first_suffix = section.settings.sequence_first_frame | default: '00000' | strip
+  assign has_sequence = false
+  if sequence_basename != blank
+    assign has_sequence = true
+    assign sequence_first_file = sequence_basename | append: sequence_first_suffix | append: '.png'
+  endif
+%}
+
 <section class="pu-image-scroll" data-pu-image-scroll>
-  <div class="pu-image-scroll__purple" data-pu-scroll-purple>
+  <div
+    class="pu-image-scroll__purple{% if has_sequence %} pu-image-scroll__purple--sequence{% endif %}"
+    data-pu-scroll-purple
+    {% if has_sequence %}data-pu-scroll-sequence-pin{% endif %}
+  >
     <img
-      class="pu-image-scroll__rays"
+      class="pu-image-scroll__rays{% if has_sequence %} pu-image-scroll__rays--sequence-fallback{% endif %}"
       src="{{ 'pu-purple-rays.png' | asset_url }}"
       alt=""
       width="1441"
       height="927"
-      loading="lazy"
+      {% unless has_sequence %}loading="lazy"{% endunless %}
+      {% if has_sequence %}fetchpriority="high"{% endif %}
     >
     <div class="pu-image-scroll__texture pu-texture-overlay"></div>
-    <div class="pu-image-scroll__curved-text">
-      <svg viewBox="0 0 1440 400" class="pu-image-scroll__text-svg" aria-hidden="true">
-        <defs>
-          <path id="pu-curve-top-{{ section.id }}" d="M-200,280 Q720,40 1640,280" fill="none"/>
-          <path id="pu-curve-bottom-{{ section.id }}" d="M-100,320 Q720,80 1540,320" fill="none"/>
-        </defs>
-        <text class="pu-image-scroll__svg-text">
-          <textPath href="#pu-curve-top-{{ section.id }}" startOffset="50%" text-anchor="middle">
-            {{ section.settings.curve_text_1 | default: 'Every morning' }}
-          </textPath>
-        </text>
-        <text class="pu-image-scroll__svg-text pu-image-scroll__svg-text--lower">
-          <textPath href="#pu-curve-bottom-{{ section.id }}" startOffset="50%" text-anchor="middle">
-            {{ section.settings.curve_text_2 | default: 'comes with a fresh start' }}
-          </textPath>
-        </text>
-      </svg>
-    </div>
+
+    {% if has_sequence %}
+      <div
+        class="pu-image-scroll__sequence"
+        data-pu-scroll-sequence
+        data-sequence-frames="{{ sequence_frames }}"
+        data-sequence-pad="{{ sequence_pad }}"
+        data-sequence-start="{{ sequence_start }}"
+        data-sequence-basename="{{ sequence_basename }}"
+        data-sequence-url="{{ sequence_first_file | asset_url }}"
+        data-sequence-scroll-vh="{{ section.settings.sequence_scroll_vh | default: 120 }}"
+        aria-label="{{ section.settings.sequence_alt | default: 'Every morning comes with a fresh start' }}"
+      >
+        <img
+          class="pu-image-scroll__sequence-img"
+          data-pu-sequence-frame
+          src="{{ sequence_first_file | asset_url }}"
+          alt=""
+          width="1920"
+          height="1080"
+          fetchpriority="high"
+          decoding="async"
+        >
+      </div>
+    {% else %}
+      <div class="pu-image-scroll__curved-text">
+        <svg viewBox="0 0 1440 400" class="pu-image-scroll__text-svg" aria-hidden="true">
+          <defs>
+            <path id="pu-curve-top-{{ section.id }}" d="M-200,280 Q720,40 1640,280" fill="none"/>
+            <path id="pu-curve-bottom-{{ section.id }}" d="M-100,320 Q720,80 1540,320" fill="none"/>
+          </defs>
+          <text class="pu-image-scroll__svg-text">
+            <textPath href="#pu-curve-top-{{ section.id }}" startOffset="50%" text-anchor="middle">
+              {{ section.settings.curve_text_1 | default: 'Every morning' }}
+            </textPath>
+          </text>
+          <text class="pu-image-scroll__svg-text pu-image-scroll__svg-text--lower">
+            <textPath href="#pu-curve-bottom-{{ section.id }}" startOffset="50%" text-anchor="middle">
+              {{ section.settings.curve_text_2 | default: 'comes with a fresh start' }}
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    {% endif %}
   </div>
 
   <div class="pu-image-scroll__orange" data-pu-scroll-orange>
@@ -125,6 +169,46 @@
 
   .pu-image-scroll__purple > .pu-image-scroll__texture {
     z-index: 1;
+  }
+
+  .pu-image-scroll__purple--sequence {
+    min-height: 100svh;
+    align-items: stretch;
+    justify-content: stretch;
+    background: #4a1a8a;
+  }
+
+  .pu-image-scroll__purple--sequence > .pu-image-scroll__texture {
+    display: none;
+  }
+
+  .pu-image-scroll__rays--sequence-fallback {
+    z-index: 1;
+  }
+
+  .pu-image-scroll__rays--sequence-fallback.is-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .pu-image-scroll__sequence {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    flex: 1;
+    min-height: 100svh;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+  }
+
+  .pu-image-scroll__sequence-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 100svh;
+    object-fit: cover;
+    object-position: center bottom;
   }
 
   .pu-image-scroll__curved-text {
@@ -316,6 +400,15 @@
       min-height: 420px;
     }
 
+    .pu-image-scroll__purple--sequence {
+      min-height: 100svh;
+    }
+
+    .pu-image-scroll__sequence,
+    .pu-image-scroll__sequence-canvas {
+      min-height: 100svh;
+    }
+
     .pu-image-scroll__curved-text {
       padding: 32px 0 72px;
     }
@@ -453,6 +546,74 @@
     }
   ],
   "settings": [
+    {
+      "type": "header",
+      "content": "PNG scroll sequence"
+    },
+    {
+      "type": "text",
+      "id": "sequence_basename",
+      "label": "Sequence image basename",
+      "default": "Seq_",
+      "info": "Shared prefix before the frame number. Example: Seq_ for Seq_00000.png … Seq_00410.png. Upload all frames to Online Store → Themes → Edit code → Assets (not Settings → Files)."
+    },
+    {
+      "type": "text",
+      "id": "sequence_first_frame",
+      "label": "First frame number",
+      "default": "00000",
+      "info": "Leading zeros included — must match your first file (e.g. 00000 for Seq_00000.png)."
+    },
+    {
+      "type": "number",
+      "id": "sequence_frame_count",
+      "label": "Total frames",
+      "default": 411
+    },
+    {
+      "type": "select",
+      "id": "sequence_pad_digits",
+      "label": "Frame number digits",
+      "default": "5",
+      "options": [
+        { "value": "3", "label": "3 (001)" },
+        { "value": "4", "label": "4 (0001)" },
+        { "value": "5", "label": "5 (00000)" },
+        { "value": "6", "label": "6 (000000)" }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "sequence_start_number",
+      "label": "First frame index",
+      "default": 0,
+      "info": "Numeric value of the first frame. Use 0 when files start at 00000."
+    },
+    {
+      "type": "range",
+      "id": "sequence_scroll_vh",
+      "label": "Scroll length",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "unit": "vh",
+      "default": 120,
+      "info": "How far to scroll while playing through all frames."
+    },
+    {
+      "type": "text",
+      "id": "sequence_alt",
+      "label": "Sequence accessibility label",
+      "default": "Every morning comes with a fresh start"
+    },
+    {
+      "type": "header",
+      "content": "Static curved text fallback"
+    },
+    {
+      "type": "paragraph",
+      "content": "Shown only when no sequence basename is set."
+    },
     {
       "type": "text",
       "id": "curve_text_1",

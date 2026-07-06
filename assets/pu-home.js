@@ -70,6 +70,202 @@ function scrollTriggerConfig(trigger, extra = {}) {
   return config;
 }
 
+let imageScrollSequenceState = null;
+
+function destroyImageScrollSequence() {
+  imageScrollSequenceState?.cleanup?.();
+  imageScrollSequenceState = null;
+}
+
+function padFrameNumber(value, digits) {
+  return String(value).padStart(digits, '0');
+}
+
+function padFrameNumber(value, digits) {
+  return String(value).padStart(digits, '0');
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function buildSequenceFrameUrl(templateUrl, basename, frameIndex, padDigits, startIndex) {
+  const frameNumber = padFrameNumber(startIndex + frameIndex, padDigits);
+  const filename = `${basename}${frameNumber}.png`;
+  const cleanUrl = templateUrl.split('?')[0];
+  const framePattern = new RegExp(`${escapeRegExp(basename)}\\d{${padDigits}}\\.png`, 'i');
+
+  if (framePattern.test(cleanUrl)) {
+    return cleanUrl.replace(framePattern, filename);
+  }
+
+  const dir = cleanUrl.slice(0, cleanUrl.lastIndexOf('/') + 1);
+  return `${dir}${filename}`;
+}
+
+function initImageScrollSequence(section) {
+  destroyImageScrollSequence();
+
+  const sequence = section.querySelector('[data-pu-scroll-sequence]');
+  const pin = section.querySelector('[data-pu-scroll-sequence-pin]');
+  const frameImg = sequence?.querySelector('[data-pu-sequence-frame]');
+  const raysFallback = pin?.querySelector('.pu-image-scroll__rays--sequence-fallback');
+
+  if (!sequence || !pin || !frameImg || !gsap || !ScrollTrigger) return null;
+
+  const frameCount = Math.max(2, parseInt(sequence.dataset.sequenceFrames, 10) || 411);
+  const padDigits = Math.max(2, parseInt(sequence.dataset.sequencePad, 10) || 5);
+  const startIndex = parseInt(sequence.dataset.sequenceStart, 10) || 0;
+  const basename = sequence.dataset.sequenceBasename || '';
+  const templateUrl = sequence.dataset.sequenceUrl;
+  const scrollVh = Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 120);
+
+  if (!templateUrl || !basename) return null;
+
+  const frameUrl = (frameIndex) =>
+    buildSequenceFrameUrl(templateUrl, basename, frameIndex, padDigits, startIndex);
+
+  const cache = new Map();
+  let currentFrame = frameImg.complete && frameImg.naturalWidth ? 0 : -1;
+  let preloadCursor = 0;
+  let preloadActive = false;
+
+  const markLoaded = () => {
+    sequence.classList.add('is-loaded');
+    raysFallback?.classList.add('is-hidden');
+  };
+
+  if (currentFrame === 0) markLoaded();
+
+  const getScrollDistance = () => (scrollVh / 100) * window.innerHeight;
+
+  const syncFrameFromProgress = (progress) => {
+    const frameIndex = Math.round(progress * (frameCount - 1));
+    preloadNearby(frameIndex);
+    applyFrame(frameIndex);
+  };
+
+  const sequenceUrlBase = (url) => (url || '').split('?')[0];
+
+  const applyFrame = (frameIndex) => {
+    const clamped = Math.max(0, Math.min(frameCount - 1, frameIndex));
+    const url = frameUrl(clamped);
+
+    if (clamped === currentFrame && sequenceUrlBase(frameImg.getAttribute('src')) === url) return;
+
+    currentFrame = clamped;
+    frameImg.src = url;
+  };
+
+  const preloadNearby = (centerFrame, radius = 12) => {
+    for (let i = centerFrame - radius; i <= centerFrame + radius; i += 1) {
+      if (i < 0 || i >= frameCount || cache.has(i)) continue;
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = frameUrl(i);
+      cache.set(i, img);
+    }
+  };
+
+  const preloadAll = () => {
+    if (preloadActive) return;
+    preloadActive = true;
+
+    const batchSize = 8;
+    const tick = () => {
+      const end = Math.min(frameCount, preloadCursor + batchSize);
+      for (; preloadCursor < end; preloadCursor += 1) {
+        if (cache.has(preloadCursor)) continue;
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = frameUrl(preloadCursor);
+        cache.set(preloadCursor, img);
+      }
+
+      if (preloadCursor < frameCount) {
+        window.requestIdleCallback
+          ? window.requestIdleCallback(tick, { timeout: 1200 })
+          : window.setTimeout(tick, 40);
+      }
+    };
+
+    tick();
+  };
+
+  const onFrameLoad = () => markLoaded();
+
+  const onFrameError = () => {
+    const failedUrl = frameImg.src;
+    const lowerUrl = failedUrl.replace(/([^/]+\.png)(\?.*)?$/i, (_, file, query = '') => {
+      const lowerFile = file.toLowerCase();
+      return lowerFile === file ? file + query : lowerFile + query;
+    });
+
+    if (lowerUrl !== failedUrl) {
+      frameImg.src = lowerUrl;
+      return;
+    }
+
+    console.warn('[PU] Sequence frame failed to load:', failedUrl);
+  };
+
+  frameImg.addEventListener('load', onFrameLoad);
+  frameImg.addEventListener('error', onFrameError);
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    applyFrame(0);
+    imageScrollSequenceState = {
+      cleanup() {
+        frameImg.removeEventListener('load', onFrameLoad);
+        frameImg.removeEventListener('error', onFrameError);
+      },
+    };
+    return imageScrollSequenceState;
+  }
+
+  const playback = { progress: 0 };
+
+  const tween = gsap.to(playback, {
+    progress: 1,
+    ease: 'none',
+    scrollTrigger: scrollTriggerConfig(pin, {
+      start: 'top top',
+      end: () => `+=${getScrollDistance()}`,
+      pin: true,
+      pinSpacing: true,
+      scrub: true,
+      invalidateOnRefresh: true,
+      anticipatePin: 0,
+      onUpdate(self) {
+        syncFrameFromProgress(self.progress);
+      },
+      onEnter(self) {
+        syncFrameFromProgress(self.progress);
+      },
+      onRefresh(self) {
+        syncFrameFromProgress(self.progress);
+      },
+    }),
+  });
+
+  applyFrame(0);
+  preloadNearby(0);
+  preloadAll();
+  ScrollTrigger.refresh();
+
+  imageScrollSequenceState = {
+    tween,
+    cleanup() {
+      frameImg.removeEventListener('load', onFrameLoad);
+      frameImg.removeEventListener('error', onFrameError);
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    },
+  };
+
+  return imageScrollSequenceState;
+}
+
 function initImageScroll() {
   const section = document.querySelector('[data-pu-image-scroll]');
   if (!section || !gsap || !ScrollTrigger) return;
@@ -78,8 +274,11 @@ function initImageScroll() {
   const orange = section.querySelector('[data-pu-scroll-orange]');
   const pin = section.querySelector('[data-pu-scroll-pin]');
   const track = section.querySelector('[data-pu-scroll-track]');
+  const hasSequence = Boolean(section.querySelector('[data-pu-scroll-sequence]'));
 
-  if (purple) {
+  if (hasSequence) {
+    initImageScrollSequence(section);
+  } else if (purple) {
     gsap.fromTo(
       purple.querySelector('.pu-image-scroll__curved-text'),
       { y: 80, opacity: 0 },
@@ -693,6 +892,7 @@ function destroyAnimations() {
   productSliderSwingTween?.kill();
   productSliderSwingTween = null;
   destroyProductSliderScroll();
+  destroyImageScrollSequence();
   document.querySelector('[data-pu-svg-grid]')?.removeAttribute('data-pu-svg-grid-init');
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;
