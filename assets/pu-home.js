@@ -81,10 +81,6 @@ function padFrameNumber(value, digits) {
   return String(value).padStart(digits, '0');
 }
 
-function padFrameNumber(value, digits) {
-  return String(value).padStart(digits, '0');
-}
-
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -106,64 +102,118 @@ function buildSequenceFrameUrl(templateUrl, basename, frameIndex, padDigits, sta
 function initImageScrollSequence(section) {
   destroyImageScrollSequence();
 
+  const stage = section.querySelector('[data-pu-scroll-stage]');
   const sequence = section.querySelector('[data-pu-scroll-sequence]');
-  const pin = section.querySelector('[data-pu-scroll-sequence-pin]');
-  const frameImg = sequence?.querySelector('[data-pu-sequence-frame]');
-  const raysFallback = pin?.querySelector('.pu-image-scroll__rays--sequence-fallback');
+  const sequenceLayer = section.querySelector('[data-pu-scroll-sequence-pin]');
+  const galleryLayer = section.querySelector('[data-pu-scroll-gallery]');
+  const layers = [...sequence?.querySelectorAll('[data-pu-sequence-frame]') || []];
+  const galleryCards = [...section.querySelectorAll('[data-pu-gallery-card]')];
 
-  if (!sequence || !pin || !frameImg || !gsap || !ScrollTrigger) return null;
+  if (!stage || !sequence || !sequenceLayer || !galleryLayer || layers.length < 2 || !gsap || !ScrollTrigger) {
+    return null;
+  }
 
-  const frameCount = Math.max(2, parseInt(sequence.dataset.sequenceFrames, 10) || 411);
   const padDigits = Math.max(2, parseInt(sequence.dataset.sequencePad, 10) || 5);
   const startIndex = parseInt(sequence.dataset.sequenceStart, 10) || 0;
+  const handoffFrame = parseInt(sequence.dataset.sequenceHandoffFrame, 10) || 380;
   const basename = sequence.dataset.sequenceBasename || '';
   const templateUrl = sequence.dataset.sequenceUrl;
-  const scrollVh = Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 120);
+  const sequenceScrollVh = Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 120);
+  const gallerySetScrollVh = Math.max(
+    30,
+    parseInt(galleryLayer.dataset.gallerySetScrollVh, 10) || 55
+  );
 
   if (!templateUrl || !basename) return null;
 
+  const handoffIndex = Math.max(0, handoffFrame - startIndex);
+  const totalSets = galleryCards.reduce(
+    (max, card) => Math.max(max, parseInt(card.dataset.set, 10) + 1),
+    0
+  );
   const frameUrl = (frameIndex) =>
     buildSequenceFrameUrl(templateUrl, basename, frameIndex, padDigits, startIndex);
+  const sequenceUrlBase = (url) => (url || '').split('?')[0];
 
   const cache = new Map();
-  let currentFrame = frameImg.complete && frameImg.naturalWidth ? 0 : -1;
+  let activeLayer = 0;
+  let displayedFrame = layers[0].complete && layers[0].naturalWidth ? 0 : -1;
+  let requestedFrame = displayedFrame >= 0 ? 0 : -1;
   let preloadCursor = 0;
   let preloadActive = false;
+  let loadToken = 0;
+
+  const getSequenceDistance = () => (sequenceScrollVh / 100) * window.innerHeight;
+  const getGalleryDistance = () =>
+    totalSets > 0 ? (gallerySetScrollVh / 100) * window.innerHeight * totalSets : 0;
+  const getTotalDistance = () => getSequenceDistance() + getGalleryDistance();
 
   const markLoaded = () => {
     sequence.classList.add('is-loaded');
-    raysFallback?.classList.add('is-hidden');
   };
 
-  if (currentFrame === 0) markLoaded();
+  if (displayedFrame === 0) markLoaded();
 
-  const getScrollDistance = () => (scrollVh / 100) * window.innerHeight;
+  const ensureCached = (frameIndex, onReady) => {
+    const clamped = Math.max(0, Math.min(handoffIndex, frameIndex));
+    const cached = cache.get(clamped);
+    if (cached) {
+      if (cached.complete && cached.naturalWidth) {
+        onReady?.(cached);
+      } else {
+        cached.addEventListener('load', () => onReady?.(cached), { once: true });
+      }
+      return;
+    }
 
-  const syncFrameFromProgress = (progress) => {
-    const frameIndex = Math.round(progress * (frameCount - 1));
-    preloadNearby(frameIndex);
-    applyFrame(frameIndex);
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = frameUrl(clamped);
+    cache.set(clamped, img);
+    img.addEventListener('load', () => onReady?.(img), { once: true });
+    img.addEventListener('error', () => cache.delete(clamped), { once: true });
   };
 
-  const sequenceUrlBase = (url) => (url || '').split('?')[0];
+  const commitFrame = (frameIndex, src) => {
+    if (frameIndex === displayedFrame) return;
+
+    const current = layers[activeLayer];
+    const next = layers[1 - activeLayer];
+    const targetSrc = sequenceUrlBase(src);
+    const token = ++loadToken;
+
+    const swap = () => {
+      if (token !== loadToken || requestedFrame !== frameIndex) return;
+      next.classList.add('is-visible');
+      current.classList.remove('is-visible');
+      activeLayer = 1 - activeLayer;
+      displayedFrame = frameIndex;
+      markLoaded();
+    };
+
+    if (sequenceUrlBase(next.getAttribute('src')) === targetSrc && next.complete && next.naturalWidth) {
+      swap();
+      return;
+    }
+
+    next.addEventListener('load', swap, { once: true });
+    next.src = src;
+  };
 
   const applyFrame = (frameIndex) => {
-    const clamped = Math.max(0, Math.min(frameCount - 1, frameIndex));
-    const url = frameUrl(clamped);
+    const clamped = Math.max(0, Math.min(handoffIndex, frameIndex));
+    requestedFrame = clamped;
+    if (clamped === displayedFrame) return;
 
-    if (clamped === currentFrame && sequenceUrlBase(frameImg.getAttribute('src')) === url) return;
-
-    currentFrame = clamped;
-    frameImg.src = url;
+    ensureCached(clamped, (img) => {
+      if (requestedFrame === clamped) commitFrame(clamped, img.src);
+    });
   };
 
-  const preloadNearby = (centerFrame, radius = 12) => {
+  const preloadNearby = (centerFrame, radius = 32) => {
     for (let i = centerFrame - radius; i <= centerFrame + radius; i += 1) {
-      if (i < 0 || i >= frameCount || cache.has(i)) continue;
-      const img = new Image();
-      img.decoding = 'async';
-      img.src = frameUrl(i);
-      cache.set(i, img);
+      if (i < 0 || i > handoffIndex) continue;
+      ensureCached(i);
     }
   };
 
@@ -171,95 +221,121 @@ function initImageScrollSequence(section) {
     if (preloadActive) return;
     preloadActive = true;
 
-    const batchSize = 8;
+    const batchSize = 16;
     const tick = () => {
-      const end = Math.min(frameCount, preloadCursor + batchSize);
+      const end = Math.min(handoffIndex + 1, preloadCursor + batchSize);
       for (; preloadCursor < end; preloadCursor += 1) {
-        if (cache.has(preloadCursor)) continue;
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = frameUrl(preloadCursor);
-        cache.set(preloadCursor, img);
+        ensureCached(preloadCursor);
       }
 
-      if (preloadCursor < frameCount) {
+      if (preloadCursor <= handoffIndex) {
         window.requestIdleCallback
           ? window.requestIdleCallback(tick, { timeout: 1200 })
-          : window.setTimeout(tick, 40);
+          : window.setTimeout(tick, 20);
       }
     };
 
     tick();
   };
 
-  const onFrameLoad = () => markLoaded();
+  const setGallerySets = (setProgress) => {
+    if (!totalSets) return;
 
-  const onFrameError = () => {
-    const failedUrl = frameImg.src;
-    const lowerUrl = failedUrl.replace(/([^/]+\.png)(\?.*)?$/i, (_, file, query = '') => {
-      const lowerFile = file.toLowerCase();
-      return lowerFile === file ? file + query : lowerFile + query;
+    const clamped = gsap.utils.clamp(0, totalSets, setProgress);
+    const activeSet = Math.min(totalSets - 1, Math.floor(clamped));
+    const blend = clamped - activeSet;
+
+    galleryCards.forEach((card) => {
+      const set = parseInt(card.dataset.set, 10);
+      let opacity = 0;
+
+      if (set === activeSet) opacity = 1 - blend;
+      else if (set === activeSet + 1) opacity = blend;
+
+      gsap.set(card, { opacity });
     });
+  };
 
-    if (lowerUrl !== failedUrl) {
-      frameImg.src = lowerUrl;
+  const showSequenceLayer = () => {
+    sequenceLayer.classList.add('is-active');
+    galleryLayer.classList.remove('is-active');
+    galleryLayer.setAttribute('aria-hidden', 'true');
+  };
+
+  const showGalleryLayer = () => {
+    sequenceLayer.classList.remove('is-active');
+    galleryLayer.classList.add('is-active');
+    galleryLayer.setAttribute('aria-hidden', 'false');
+    applyFrame(handoffIndex);
+  };
+
+  const syncFromScroll = (scrollOffset) => {
+    const sequenceDistance = getSequenceDistance();
+    const galleryDistance = getGalleryDistance();
+
+    if (scrollOffset < sequenceDistance || galleryDistance < 1) {
+      showSequenceLayer();
+      const progress =
+        sequenceDistance > 0 ? gsap.utils.clamp(0, 1, scrollOffset / sequenceDistance) : 0;
+      const frameIndex = Math.round(progress * handoffIndex);
+      preloadNearby(frameIndex);
+      applyFrame(frameIndex);
       return;
     }
 
-    console.warn('[PU] Sequence frame failed to load:', failedUrl);
+    showGalleryLayer();
+    const galleryOffset = scrollOffset - sequenceDistance;
+    const setProgress = galleryDistance > 0 ? (galleryOffset / galleryDistance) * totalSets : 0;
+    setGallerySets(setProgress);
   };
-
-  frameImg.addEventListener('load', onFrameLoad);
-  frameImg.addEventListener('error', onFrameError);
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     applyFrame(0);
-    imageScrollSequenceState = {
-      cleanup() {
-        frameImg.removeEventListener('load', onFrameLoad);
-        frameImg.removeEventListener('error', onFrameError);
-      },
-    };
+    if (totalSets) {
+      showGalleryLayer();
+      setGallerySets(0);
+    }
+    imageScrollSequenceState = { cleanup: () => {} };
     return imageScrollSequenceState;
   }
 
-  const playback = { progress: 0 };
+  const playback = { value: 0 };
 
   const tween = gsap.to(playback, {
-    progress: 1,
+    value: 1,
     ease: 'none',
-    scrollTrigger: scrollTriggerConfig(pin, {
+    scrollTrigger: scrollTriggerConfig(stage, {
       start: 'top top',
-      end: () => `+=${getScrollDistance()}`,
+      end: () => `+=${getTotalDistance()}`,
       pin: true,
       pinSpacing: true,
       scrub: true,
       invalidateOnRefresh: true,
       anticipatePin: 0,
       onUpdate(self) {
-        syncFrameFromProgress(self.progress);
+        syncFromScroll(self.scroll() - self.start);
       },
       onEnter(self) {
-        syncFrameFromProgress(self.progress);
+        syncFromScroll(self.scroll() - self.start);
       },
       onRefresh(self) {
-        syncFrameFromProgress(self.progress);
+        syncFromScroll(self.scroll() - self.start);
       },
     }),
   });
 
-  applyFrame(0);
-  preloadNearby(0);
+  preloadNearby(0, 48);
   preloadAll();
   ScrollTrigger.refresh();
 
   imageScrollSequenceState = {
     tween,
     cleanup() {
-      frameImg.removeEventListener('load', onFrameLoad);
-      frameImg.removeEventListener('error', onFrameError);
       tween.scrollTrigger?.kill();
       tween.kill();
+      galleryCards.forEach((card) => gsap.set(card, { clearProps: 'opacity' }));
+      sequenceLayer.classList.add('is-active');
+      galleryLayer.classList.remove('is-active');
     },
   };
 
@@ -270,15 +346,25 @@ function initImageScroll() {
   const section = document.querySelector('[data-pu-image-scroll]');
   if (!section || !gsap || !ScrollTrigger) return;
 
+  const hasSequence = Boolean(section.querySelector('[data-pu-scroll-stage]'));
+
+  if (hasSequence) {
+    initImageScrollSequence(section);
+
+    section.querySelectorAll('.pu-image-scroll__image').forEach((img) => {
+      if (img.complete) return;
+      img.addEventListener('load', () => ScrollTrigger?.refresh(), { once: true });
+    });
+
+    return;
+  }
+
   const purple = section.querySelector('[data-pu-scroll-purple]');
   const orange = section.querySelector('[data-pu-scroll-orange]');
   const pin = section.querySelector('[data-pu-scroll-pin]');
   const track = section.querySelector('[data-pu-scroll-track]');
-  const hasSequence = Boolean(section.querySelector('[data-pu-scroll-sequence]'));
 
-  if (hasSequence) {
-    initImageScrollSequence(section);
-  } else if (purple) {
+  if (purple) {
     gsap.fromTo(
       purple.querySelector('.pu-image-scroll__curved-text'),
       { y: 80, opacity: 0 },

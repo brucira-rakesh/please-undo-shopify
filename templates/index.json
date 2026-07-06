@@ -130,12 +130,15 @@
         "image_8xz8tn"
       ],
       "settings": {
+        "sequence_storage": "shop_files",
         "sequence_basename": "Seq_",
-        "sequence_first_frame": "00000",
-        "sequence_frame_count": 411,
+        "sequence_first_frame": "00054",
+        "sequence_frame_count": 357,
         "sequence_pad_digits": "5",
-        "sequence_start_number": 0,
+        "sequence_start_number": 54,
+        "sequence_handoff_frame": 380,
         "sequence_scroll_vh": 120,
+        "gallery_set_scroll_vh": 55,
         "curve_text_1": "Every morning",
         "curve_text_2": "comes with a fresh start"
       }

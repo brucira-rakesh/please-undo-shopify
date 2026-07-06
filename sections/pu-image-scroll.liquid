@@ -1,57 +1,143 @@
 {% liquid
   assign sequence_basename = section.settings.sequence_basename | strip
-  assign sequence_frames = section.settings.sequence_frame_count | default: 411
+  assign sequence_frames = section.settings.sequence_frame_count | default: 357
   assign sequence_pad = section.settings.sequence_pad_digits | default: 5
-  assign sequence_start = section.settings.sequence_start_number | default: 0
-  assign sequence_first_suffix = section.settings.sequence_first_frame | default: '00000' | strip
+  assign sequence_start = section.settings.sequence_start_number | default: 54
+  assign sequence_first_suffix = section.settings.sequence_first_frame | default: '00054' | strip
+  assign sequence_handoff = section.settings.sequence_handoff_frame | default: 380
+  assign sequence_storage = section.settings.sequence_storage | default: 'shop_files'
+  assign gallery_set_scroll = section.settings.gallery_set_scroll_vh | default: 55
   assign has_sequence = false
   if sequence_basename != blank
     assign has_sequence = true
     assign sequence_first_file = sequence_basename | append: sequence_first_suffix | append: '.png'
+    if sequence_storage == 'theme_assets'
+      assign sequence_first_url = sequence_first_file | asset_url
+    else
+      assign sequence_first_url = sequence_first_file | file_url
+    endif
   endif
 %}
 
-<section class="pu-image-scroll" data-pu-image-scroll>
-  <div
-    class="pu-image-scroll__purple{% if has_sequence %} pu-image-scroll__purple--sequence{% endif %}"
-    data-pu-scroll-purple
-    {% if has_sequence %}data-pu-scroll-sequence-pin{% endif %}
-  >
-    <img
-      class="pu-image-scroll__rays{% if has_sequence %} pu-image-scroll__rays--sequence-fallback{% endif %}"
-      src="{{ 'pu-purple-rays.png' | asset_url }}"
-      alt=""
-      width="1441"
-      height="927"
-      {% unless has_sequence %}loading="lazy"{% endunless %}
-      {% if has_sequence %}fetchpriority="high"{% endif %}
-    >
-    <div class="pu-image-scroll__texture pu-texture-overlay"></div>
-
-    {% if has_sequence %}
-      <div
-        class="pu-image-scroll__sequence"
-        data-pu-scroll-sequence
-        data-sequence-frames="{{ sequence_frames }}"
-        data-sequence-pad="{{ sequence_pad }}"
-        data-sequence-start="{{ sequence_start }}"
-        data-sequence-basename="{{ sequence_basename }}"
-        data-sequence-url="{{ sequence_first_file | asset_url }}"
-        data-sequence-scroll-vh="{{ section.settings.sequence_scroll_vh | default: 120 }}"
-        aria-label="{{ section.settings.sequence_alt | default: 'Every morning comes with a fresh start' }}"
-      >
-        <img
-          class="pu-image-scroll__sequence-img"
-          data-pu-sequence-frame
-          src="{{ sequence_first_file | asset_url }}"
-          alt=""
-          width="1920"
-          height="1080"
-          fetchpriority="high"
-          decoding="async"
+<section class="pu-image-scroll{% if has_sequence %} pu-image-scroll--has-sequence{% endif %}" data-pu-image-scroll>
+  {% if has_sequence %}
+    <div class="pu-image-scroll__stage" data-pu-scroll-stage>
+      <div class="pu-image-scroll__sequence-layer is-active" data-pu-scroll-sequence-pin>
+        <div
+          class="pu-image-scroll__sequence"
+          data-pu-scroll-sequence
+          data-sequence-frames="{{ sequence_frames }}"
+          data-sequence-pad="{{ sequence_pad }}"
+          data-sequence-start="{{ sequence_start }}"
+          data-sequence-basename="{{ sequence_basename }}"
+          data-sequence-url="{{ sequence_first_url }}"
+          data-sequence-storage="{{ sequence_storage }}"
+          data-sequence-handoff-frame="{{ sequence_handoff }}"
+          data-sequence-scroll-vh="{{ section.settings.sequence_scroll_vh | default: 120 }}"
+          aria-label="{{ section.settings.sequence_alt | default: 'Every morning comes with a fresh start' }}"
         >
+          <div class="pu-image-scroll__sequence-stage">
+            <img
+              class="pu-image-scroll__sequence-img is-visible"
+              data-pu-sequence-frame
+              src="{{ sequence_first_url }}"
+              alt=""
+              width="1920"
+              height="1080"
+              fetchpriority="high"
+              decoding="sync"
+            >
+            <img
+              class="pu-image-scroll__sequence-img"
+              data-pu-sequence-frame
+              alt=""
+              width="1920"
+              height="1080"
+              decoding="sync"
+            >
+          </div>
+        </div>
       </div>
-    {% else %}
+
+      <div
+        class="pu-image-scroll__gallery-layer"
+        data-pu-scroll-gallery
+        data-gallery-set-scroll-vh="{{ gallery_set_scroll }}"
+        aria-hidden="true"
+      >
+        <div class="pu-image-scroll__bg" aria-hidden="true">
+          <div class="pu-image-scroll__bg-fill"></div>
+          <img
+            class="pu-image-scroll__green-arc"
+            src="{{ 'pu-green-arc.png' | asset_url }}"
+            alt=""
+            width="1440"
+            height="629"
+            loading="lazy"
+          >
+          <div class="pu-image-scroll__texture pu-texture-overlay"></div>
+        </div>
+
+        <div class="pu-image-scroll__slots" data-pu-gallery-slots>
+          {% for slot_index in (0..2) %}
+            <div class="pu-image-scroll__slot" data-pu-gallery-slot="{{ slot_index }}">
+              {% for block in section.blocks %}
+                {% assign block_index = forloop.index0 %}
+                {% assign block_slot = block_index | modulo: 3 %}
+                {% assign block_set = block_index | divided_by: 3 %}
+                {% if block_slot == slot_index %}
+                  <article
+                    class="pu-image-scroll__card"
+                    data-pu-gallery-card
+                    data-set="{{ block_set }}"
+                    data-slot="{{ block_slot }}"
+                    {{ block.shopify_attributes }}
+                  >
+                    <div class="pu-image-scroll__frame">
+                      {% if block.settings.image != blank %}
+                        {{
+                          block.settings.image
+                          | image_url: width: 1000
+                          | image_tag: loading: 'lazy', class: 'pu-image-scroll__image', alt: block.settings.alt
+                        }}
+                      {% else %}
+                        <img
+                          class="pu-image-scroll__image"
+                          src="{{ block.settings.fallback_asset | default: 'pu-scroll-img-1.png' | asset_url }}"
+                          alt="{{ block.settings.alt | escape }}"
+                          loading="lazy"
+                          width="485"
+                          height="531"
+                        >
+                      {% endif %}
+                      {% if block.settings.overlay_text != blank %}
+                        <p
+                          class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}"
+                          style="--overlay-rotate: {{ block.settings.overlay_rotation | default: 0 }}deg"
+                        >
+                          {{- block.settings.overlay_text -}}
+                        </p>
+                      {% endif %}
+                    </div>
+                  </article>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="pu-image-scroll__purple" data-pu-scroll-purple>
+      <img
+        class="pu-image-scroll__rays"
+        src="{{ 'pu-purple-rays.png' | asset_url }}"
+        alt=""
+        width="1441"
+        height="927"
+        loading="lazy"
+      >
+      <div class="pu-image-scroll__texture pu-texture-overlay"></div>
       <div class="pu-image-scroll__curved-text">
         <svg viewBox="0 0 1440 400" class="pu-image-scroll__text-svg" aria-hidden="true">
           <defs>
@@ -70,71 +156,60 @@
           </text>
         </svg>
       </div>
-    {% endif %}
-  </div>
+    </div>
 
-  <div class="pu-image-scroll__orange" data-pu-scroll-orange>
-    <div class="pu-image-scroll__pin" data-pu-scroll-pin>
-      <div class="pu-image-scroll__bg" aria-hidden="true">
-        {% comment %}
-          <div class="pu-image-scroll__bg-orange"></div>
+    <div class="pu-image-scroll__orange" data-pu-scroll-orange>
+      <div class="pu-image-scroll__pin" data-pu-scroll-pin>
+        <div class="pu-image-scroll__bg" aria-hidden="true">
+          <div class="pu-image-scroll__bg-green"></div>
           <img
-            class="pu-image-scroll__arc"
-            src="{{ 'pu-orange-arc.png' | asset_url }}"
+            class="pu-image-scroll__green-arc"
+            src="{{ 'pu-green-arc.png' | asset_url }}"
             alt=""
             width="1440"
             height="629"
             loading="lazy"
           >
-        {% endcomment %}
-        <div class="pu-image-scroll__bg-green"></div>
-        <img
-          class="pu-image-scroll__green-arc"
-          src="{{ 'pu-green-arc.png' | asset_url }}"
-          alt=""
-          width="1440"
-          height="629"
-          loading="lazy"
-        >
-        <div class="pu-image-scroll__texture pu-texture-overlay"></div>
-      </div>
+          <div class="pu-image-scroll__texture pu-texture-overlay"></div>
+        </div>
 
-      <div class="pu-image-scroll__viewport">
-        <div class="pu-image-scroll__track" data-pu-scroll-track>
-          {% for block in section.blocks %}
-            <div class="pu-image-scroll__slide" data-pu-scroll-image {{ block.shopify_attributes }}>
-              <div class="pu-image-scroll__frame">
-                {% if block.settings.image != blank %}
-                  {{
-                    block.settings.image
-                    | image_url: width: 1000
-                    | image_tag: loading: 'lazy', class: 'pu-image-scroll__image', alt: block.settings.alt
-                  }}
-                {% else %}
-                  <img
-                    class="pu-image-scroll__image"
-                    src="{{ block.settings.fallback_asset | default: 'pu-scroll-img-1.png' | asset_url }}"
-                    alt="{{ block.settings.alt | escape }}"
-                    loading="lazy"
-                    width="485"
-                    height="531"
-                  >
-                {% endif %}
-                {% if block.settings.overlay_text != blank %}
-                  <p
-                    class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}"
-                    style="--overlay-rotate: {{ block.settings.overlay_rotation | default: 0 }}deg"
-                  >
-                    {{- block.settings.overlay_text -}}
-                  </p>
-                {% endif %}
+        <div class="pu-image-scroll__viewport">
+          <div class="pu-image-scroll__track" data-pu-scroll-track>
+            {% for block in section.blocks %}
+              <div class="pu-image-scroll__slide" data-pu-scroll-image {{ block.shopify_attributes }}>
+                <div class="pu-image-scroll__frame">
+                  {% if block.settings.image != blank %}
+                    {{
+                      block.settings.image
+                      | image_url: width: 1000
+                      | image_tag: loading: 'lazy', class: 'pu-image-scroll__image', alt: block.settings.alt
+                    }}
+                  {% else %}
+                    <img
+                      class="pu-image-scroll__image"
+                      src="{{ block.settings.fallback_asset | default: 'pu-scroll-img-1.png' | asset_url }}"
+                      alt="{{ block.settings.alt | escape }}"
+                      loading="lazy"
+                      width="485"
+                      height="531"
+                    >
+                  {% endif %}
+                  {% if block.settings.overlay_text != blank %}
+                    <p
+                      class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}"
+                      style="--overlay-rotate: {{ block.settings.overlay_rotation | default: 0 }}deg"
+                    >
+                      {{- block.settings.overlay_text -}}
+                    </p>
+                  {% endif %}
+                </div>
               </div>
-            </div>
-          {% endfor %}
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  {% endif %}
 </section>
 
 {% stylesheet %}
@@ -145,6 +220,152 @@
 
   .pu-image-scroll img {
     max-width: none !important;
+  }
+
+  .pu-image-scroll__stage {
+    position: relative;
+    min-height: 100svh;
+    background: #2d0f5c;
+  }
+
+  .pu-image-scroll__sequence-layer,
+  .pu-image-scroll__gallery-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    min-height: 100svh;
+  }
+
+  .pu-image-scroll__sequence-layer {
+    z-index: 2;
+    opacity: 1;
+    visibility: visible;
+    background: #2d0f5c;
+  }
+
+  .pu-image-scroll__gallery-layer {
+    z-index: 3;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    background: var(--pu-orange);
+    overflow: hidden;
+  }
+
+  .pu-image-scroll__sequence-layer.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .pu-image-scroll__gallery-layer.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .pu-image-scroll__sequence-layer:not(.is-active) {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .pu-image-scroll__sequence {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 100svh;
+  }
+
+  .pu-image-scroll__sequence-stage {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    background: #2d0f5c;
+  }
+
+  .pu-image-scroll__sequence-img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 100svh;
+    object-fit: cover;
+    object-position: center bottom;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pu-image-scroll__sequence-img.is-visible {
+    opacity: 1;
+  }
+
+  .pu-image-scroll__gallery-layer .pu-image-scroll__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .pu-image-scroll__gallery-layer .pu-image-scroll__bg-fill {
+    position: absolute;
+    inset: 0;
+    background: var(--pu-orange);
+    z-index: 0;
+  }
+
+  .pu-image-scroll__gallery-layer .pu-image-scroll__green-arc {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: auto;
+    transform: translateY(-50%);
+    z-index: 3;
+  }
+
+  .pu-image-scroll__gallery-layer .pu-image-scroll__texture {
+    z-index: 4;
+  }
+
+  .pu-image-scroll__slots {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6vh 4vw;
+    box-sizing: border-box;
+  }
+
+  .pu-image-scroll__slot {
+    position: relative;
+    flex: 0 0 clamp(240px, 32vw, 460px);
+    min-height: clamp(280px, 38vw, 531px);
+    filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
+  }
+
+  .pu-image-scroll__slot[data-pu-gallery-slot='0'] {
+    transform: translateY(24px) rotate(4deg);
+  }
+
+  .pu-image-scroll__slot[data-pu-gallery-slot='1'] {
+    transform: translateY(44px) rotate(-5deg);
+    margin-right: -8px;
+  }
+
+  .pu-image-scroll__slot[data-pu-gallery-slot='2'] {
+    transform: translateY(8px) rotate(-3deg);
+  }
+
+  .pu-image-scroll__card {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    will-change: opacity;
   }
 
   .pu-image-scroll__purple {
@@ -169,46 +390,6 @@
 
   .pu-image-scroll__purple > .pu-image-scroll__texture {
     z-index: 1;
-  }
-
-  .pu-image-scroll__purple--sequence {
-    min-height: 100svh;
-    align-items: stretch;
-    justify-content: stretch;
-    background: #4a1a8a;
-  }
-
-  .pu-image-scroll__purple--sequence > .pu-image-scroll__texture {
-    display: none;
-  }
-
-  .pu-image-scroll__rays--sequence-fallback {
-    z-index: 1;
-  }
-
-  .pu-image-scroll__rays--sequence-fallback.is-hidden {
-    opacity: 0;
-    visibility: hidden;
-  }
-
-  .pu-image-scroll__sequence {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    flex: 1;
-    min-height: 100svh;
-    display: flex;
-    align-items: stretch;
-    justify-content: center;
-  }
-
-  .pu-image-scroll__sequence-img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-height: 100svh;
-    object-fit: cover;
-    object-position: center bottom;
   }
 
   .pu-image-scroll__curved-text {
@@ -256,21 +437,6 @@
     inset: 0;
     z-index: 0;
     pointer-events: none;
-  }
-
-  .pu-image-scroll__bg-orange {
-    position: absolute;
-    inset: 0;
-    background: var(--pu-orange);
-  }
-
-  .pu-image-scroll__arc {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    z-index: 2;
   }
 
   .pu-image-scroll__bg-green {
@@ -363,7 +529,6 @@
     text-align: left;
     font-size: 28px;
     font-weight: 400;
-    font-size: 28px;
     line-height: 118%;
     letter-spacing: -2%;
     transform: rotate(-12deg);
@@ -396,17 +561,46 @@
   }
 
   @media (max-width: 749px) {
+    .pu-image-scroll__stage,
+    .pu-image-scroll__sequence-layer,
+    .pu-image-scroll__gallery-layer,
+    .pu-image-scroll__sequence,
+    .pu-image-scroll__sequence-stage,
+    .pu-image-scroll__sequence-img {
+      min-height: 100svh;
+    }
+
+    .pu-image-scroll__slots {
+      padding: 4vh 12px;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    .pu-image-scroll__slot {
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: clamp(180px, 42vw, 320px);
+    }
+
+    .pu-image-scroll__slot[data-pu-gallery-slot='0'] {
+      transform: translateY(12px) rotate(4deg);
+    }
+
+    .pu-image-scroll__slot[data-pu-gallery-slot='1'] {
+      transform: translateY(20px) rotate(-5deg);
+    }
+
+    .pu-image-scroll__slot[data-pu-gallery-slot='2'] {
+      transform: translateY(4px) rotate(-3deg);
+    }
+
+    .pu-image-scroll__gallery-layer .pu-image-scroll__green-arc {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
     .pu-image-scroll__purple {
       min-height: 420px;
-    }
-
-    .pu-image-scroll__purple--sequence {
-      min-height: 100svh;
-    }
-
-    .pu-image-scroll__sequence,
-    .pu-image-scroll__sequence-canvas {
-      min-height: 100svh;
     }
 
     .pu-image-scroll__curved-text {
@@ -420,37 +614,14 @@
     }
 
     .pu-image-scroll__pin {
-      position: relative;
       min-height: 100svh;
-      width: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
 
-    /* Orange arc PNG tints the top band a different shade on narrow viewports */
-    .pu-image-scroll__arc {
-      display: none;
-    }
-
-    .pu-image-scroll__bg-orange {
-      inset: 0;
-    }
-
-    .pu-image-scroll__bg-green {
-      top: 0;
-      background: var(--pu-orange);
-    }
-
-    .pu-image-scroll__green-arc {
-      top: 38%;
-    }
-
     .pu-image-scroll__viewport {
       padding: 24px 0;
-      flex: 0 0 auto;
-      position: relative;
-      z-index: 5;
     }
 
     .pu-image-scroll__track {
@@ -551,24 +722,42 @@
       "content": "PNG scroll sequence"
     },
     {
+      "type": "select",
+      "id": "sequence_storage",
+      "label": "Frame file location",
+      "default": "shop_files",
+      "options": [
+        { "value": "shop_files", "label": "Settings → Files (recommended)" },
+        { "value": "theme_assets", "label": "Theme → Edit code → Assets" }
+      ],
+      "info": "Use Settings → Files when frames are uploaded under Content in the Shopify admin."
+    },
+    {
       "type": "text",
       "id": "sequence_basename",
       "label": "Sequence image basename",
       "default": "Seq_",
-      "info": "Shared prefix before the frame number. Example: Seq_ for Seq_00000.png … Seq_00410.png. Upload all frames to Online Store → Themes → Edit code → Assets (not Settings → Files)."
+      "info": "Example: Seq_ for Seq_00054.png … Seq_00410.png."
     },
     {
       "type": "text",
       "id": "sequence_first_frame",
       "label": "First frame number",
-      "default": "00000",
-      "info": "Leading zeros included — must match your first file (e.g. 00000 for Seq_00000.png)."
+      "default": "00054",
+      "info": "Must match your first uploaded file (e.g. 00054 for Seq_00054.png)."
     },
     {
       "type": "number",
       "id": "sequence_frame_count",
-      "label": "Total frames",
-      "default": 411
+      "label": "Total frames on CDN",
+      "default": 357
+    },
+    {
+      "type": "number",
+      "id": "sequence_handoff_frame",
+      "label": "Handoff frame number",
+      "default": 380,
+      "info": "File number where the green gallery appears (e.g. 380 for Seq_00380.png)."
     },
     {
       "type": "select",
@@ -586,19 +775,30 @@
       "type": "number",
       "id": "sequence_start_number",
       "label": "First frame index",
-      "default": 0,
-      "info": "Numeric value of the first frame. Use 0 when files start at 00000."
+      "default": 54,
+      "info": "Numeric value of the first file. Use 54 when files start at Seq_00054.png."
     },
     {
       "type": "range",
       "id": "sequence_scroll_vh",
-      "label": "Scroll length",
+      "label": "Sequence scroll length",
       "min": 60,
       "max": 300,
       "step": 10,
       "unit": "vh",
       "default": 120,
-      "info": "How far to scroll while playing through all frames."
+      "info": "Scroll distance while playing frames up to the handoff frame."
+    },
+    {
+      "type": "range",
+      "id": "gallery_set_scroll_vh",
+      "label": "Gallery set scroll length",
+      "min": 30,
+      "max": 120,
+      "step": 5,
+      "unit": "vh",
+      "default": 55,
+      "info": "Scroll distance for each set of 3 images to fade in."
     },
     {
       "type": "text",
