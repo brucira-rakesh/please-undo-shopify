@@ -18,6 +18,40 @@
         "add_to_cart_label": "SHOP NOW"
       }
     },
+    "pu_product_details": {
+      "type": "pu-product-details",
+      "blocks": {
+        "accordion_ingredients": {
+          "type": "accordion",
+          "settings": {
+            "title": "Ingredients",
+            "content": "<p>See packaging for the full ingredient list.</p>",
+            "open_by_default": false
+          }
+        },
+        "accordion_shipping": {
+          "type": "accordion",
+          "settings": {
+            "title": "Shipping & returns",
+            "content": "<p>Standard shipping rates apply. Contact us if you need an undo on your order.</p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "accordion_ingredients",
+        "accordion_shipping"
+      ],
+      "settings": {
+        "heading": "The fine print",
+        "show_description": true,
+        "description_label": "Description",
+        "card_label": "Volume",
+        "card_value": "40 ML",
+        "card_label_2": "Use",
+        "card_value_2": "Daily"
+      }
+    },
     "pu_product_story": {
       "type": "pu-product-story",
       "settings": {
@@ -54,40 +88,13 @@
           }
         }
       },
-      "block_order": ["step_1", "step_2", "step_3"],
+      "block_order": [
+        "step_1",
+        "step_2",
+        "step_3"
+      ],
       "settings": {
         "heading": "How to Undo"
-      }
-    },
-    "pu_product_details": {
-      "type": "pu-product-details",
-      "blocks": {
-        "accordion_ingredients": {
-          "type": "accordion",
-          "settings": {
-            "title": "Ingredients",
-            "content": "<p>See packaging for the full ingredient list.</p>",
-            "open_by_default": false
-          }
-        },
-        "accordion_shipping": {
-          "type": "accordion",
-          "settings": {
-            "title": "Shipping & returns",
-            "content": "<p>Standard shipping rates apply. Contact us if you need an undo on your order.</p>",
-            "open_by_default": false
-          }
-        }
-      },
-      "block_order": ["accordion_ingredients", "accordion_shipping"],
-      "settings": {
-        "heading": "The fine print",
-        "show_description": true,
-        "description_label": "Description",
-        "card_label": "Volume",
-        "card_value": "40 ML",
-        "card_label_2": "Use",
-        "card_value_2": "Daily"
       }
     },
     "pu_product_marquee": {
@@ -104,7 +111,8 @@
         "collection": "all",
         "products_count": 3,
         "columns": 3,
-        "hide_current_product": true
+        "hide_current_product": true,
+        "empty_message": "Choose a collection in the theme editor."
       }
     },
     "pu_footer": {
@@ -123,9 +131,9 @@
   },
   "order": [
     "pu_product_main",
+    "pu_product_details",
     "pu_product_story",
     "pu_product_use",
-    "pu_product_details",
     "pu_product_marquee",
     "pu_product_recommendations",
     "pu_footer"
