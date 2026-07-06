@@ -108,6 +108,7 @@ function initImageScrollSequence(section) {
   const galleryLayer = section.querySelector('[data-pu-scroll-gallery]');
   const layers = [...sequence?.querySelectorAll('[data-pu-sequence-frame]') || []];
   const galleryCards = [...section.querySelectorAll('[data-pu-gallery-card]')];
+  const sequenceTexts = [...section.querySelectorAll('[data-pu-seq-text]')];
 
   if (!stage || !sequence || !sequenceLayer || !galleryLayer || layers.length < 2 || !gsap || !ScrollTrigger) {
     return null;
@@ -144,8 +145,13 @@ function initImageScrollSequence(section) {
   let loadToken = 0;
 
   const getSequenceDistance = () => (sequenceScrollVh / 100) * window.innerHeight;
-  const getGalleryDistance = () =>
-    totalSets > 0 ? (gallerySetScrollVh / 100) * window.innerHeight * totalSets : 0;
+  const getGallerySegment = () => (gallerySetScrollVh / 100) * window.innerHeight;
+  const getGalleryTransitionCount = () => Math.max(0, totalSets - 1);
+  const getGalleryDistance = () => {
+    if (!totalSets) return 0;
+    const transitions = getGalleryTransitionCount();
+    return getGallerySegment() * (transitions || 0.5);
+  };
   const getTotalDistance = () => getSequenceDistance() + getGalleryDistance();
 
   const markLoaded = () => {
@@ -238,10 +244,88 @@ function initImageScrollSequence(section) {
     tick();
   };
 
+  const fileFrameToIndex = (fileFrame) => fileFrame - startIndex;
+
+  const hideSequenceTexts = () => {
+    sequenceTexts.forEach((el) => {
+      gsap.set(el, { opacity: 0, visibility: 'hidden', x: 0, y: 0 });
+      const inner = el.querySelector('[data-pu-seq-text-inner]');
+      const left = el.querySelector('[data-pu-seq-text-left]');
+      const right = el.querySelector('[data-pu-seq-text-right]');
+      if (inner) gsap.set(inner, { x: 0, y: 0 });
+      if (left) gsap.set(left, { x: 0 });
+      if (right) gsap.set(right, { x: 0 });
+    });
+  };
+
+  const updateSequenceTexts = (frameIndex) => {
+    sequenceTexts.forEach((el) => {
+      const startFile = parseInt(el.dataset.startFrame, 10);
+      if (!Number.isFinite(startFile)) return;
+
+      const start = fileFrameToIndex(startFile);
+      const anim = el.dataset.animation;
+      const enter = Math.max(1, parseInt(el.dataset.enterFrames, 10) || 15);
+      const hold = Math.max(0, parseInt(el.dataset.holdFrames, 10) || 10);
+      const exit = Math.max(1, parseInt(el.dataset.exitFrames, 10) || 15);
+      const split = Math.max(1, parseInt(el.dataset.splitFrames, 10) || 20);
+
+      const localFrame = frameIndex - start;
+      const inner = el.querySelector('[data-pu-seq-text-inner]');
+      const left = el.querySelector('[data-pu-seq-text-left]');
+      const right = el.querySelector('[data-pu-seq-text-right]');
+
+      let visible = false;
+      let yPercent = 0;
+      let xLeft = 0;
+      let xRight = 0;
+
+      if (anim === 'hold') {
+        const total = enter + hold + exit;
+        if (localFrame >= 0 && localFrame <= total) {
+          visible = true;
+          if (localFrame < enter) {
+            yPercent = gsap.utils.mapRange(0, Math.max(1, enter - 1), 115, 0, localFrame);
+          } else if (localFrame < enter + hold) {
+            yPercent = 0;
+          } else {
+            const exitFrame = localFrame - enter - hold;
+            yPercent = gsap.utils.mapRange(0, Math.max(1, exit - 1), 0, -115, exitFrame);
+          }
+        }
+        gsap.set(el, { x: 0, y: `${yPercent}%` });
+      } else if (anim === 'split') {
+        const total = enter + split;
+        if (localFrame >= 0 && localFrame <= total) {
+          visible = true;
+          if (localFrame < enter) {
+            yPercent = gsap.utils.mapRange(0, Math.max(1, enter - 1), 115, 0, localFrame);
+          } else {
+            yPercent = 0;
+            const spread = gsap.utils.mapRange(0, Math.max(1, split - 1), 0, 42, localFrame - enter);
+            xLeft = -spread;
+            xRight = spread;
+          }
+        }
+        if (inner) gsap.set(inner, { x: 0, y: `${yPercent}%` });
+        if (left) gsap.set(left, { x: `${xLeft}vw` });
+        if (right) gsap.set(right, { x: `${xRight}vw` });
+      }
+
+      gsap.set(el, { opacity: visible ? 1 : 0, visibility: visible ? 'visible' : 'hidden' });
+    });
+  };
+
   const setGallerySets = (setProgress) => {
     if (!totalSets) return;
 
-    const clamped = gsap.utils.clamp(0, totalSets, setProgress);
+    if (totalSets === 1) {
+      galleryCards.forEach((card) => gsap.set(card, { opacity: 1 }));
+      return;
+    }
+
+    const maxSetProgress = totalSets - 1;
+    const clamped = gsap.utils.clamp(0, maxSetProgress, setProgress);
     const activeSet = Math.min(totalSets - 1, Math.floor(clamped));
     const blend = clamped - activeSet;
 
@@ -266,6 +350,7 @@ function initImageScrollSequence(section) {
     sequenceLayer.classList.remove('is-active');
     galleryLayer.classList.add('is-active');
     galleryLayer.setAttribute('aria-hidden', 'false');
+    hideSequenceTexts();
     applyFrame(handoffIndex);
   };
 
@@ -273,19 +358,28 @@ function initImageScrollSequence(section) {
     const sequenceDistance = getSequenceDistance();
     const galleryDistance = getGalleryDistance();
 
-    if (scrollOffset < sequenceDistance || galleryDistance < 1) {
+    if (scrollOffset < sequenceDistance) {
       showSequenceLayer();
       const progress =
         sequenceDistance > 0 ? gsap.utils.clamp(0, 1, scrollOffset / sequenceDistance) : 0;
       const frameIndex = Math.round(progress * handoffIndex);
       preloadNearby(frameIndex);
       applyFrame(frameIndex);
+      updateSequenceTexts(frameIndex);
       return;
     }
 
+    hideSequenceTexts();
+
+    if (!totalSets) return;
+
     showGalleryLayer();
     const galleryOffset = scrollOffset - sequenceDistance;
-    const setProgress = galleryDistance > 0 ? (galleryOffset / galleryDistance) * totalSets : 0;
+    const maxSetProgress = Math.max(0, totalSets - 1);
+    const setProgress =
+      maxSetProgress > 0
+        ? gsap.utils.clamp(0, maxSetProgress, (galleryOffset / galleryDistance) * maxSetProgress)
+        : 0;
     setGallerySets(setProgress);
   };
 
@@ -293,7 +387,7 @@ function initImageScrollSequence(section) {
     applyFrame(0);
     if (totalSets) {
       showGalleryLayer();
-      setGallerySets(0);
+      setGallerySets(Math.max(0, totalSets - 1));
     }
     imageScrollSequenceState = { cleanup: () => {} };
     return imageScrollSequenceState;
@@ -333,6 +427,7 @@ function initImageScrollSequence(section) {
     cleanup() {
       tween.scrollTrigger?.kill();
       tween.kill();
+      hideSequenceTexts();
       galleryCards.forEach((card) => gsap.set(card, { clearProps: 'opacity' }));
       sequenceLayer.classList.add('is-active');
       galleryLayer.classList.remove('is-active');
@@ -880,6 +975,22 @@ function initSvgGrid() {
   if (!section || section.dataset.puSvgGridInit === 'true') return;
 
   section.dataset.puSvgGridInit = 'true';
+
+  const titleLines = section.querySelectorAll('[data-pu-svg-grid-title-line] .pu-svg-grid__title-line-inner');
+  const titleHeader = section.querySelector('.pu-svg-grid__header');
+
+  if (titleLines.length && titleHeader && gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.from(titleLines, {
+      yPercent: 110,
+      duration: 0.85,
+      ease: 'power3.out',
+      stagger: 0.12,
+      scrollTrigger: scrollTriggerConfig(titleHeader, {
+        start: 'top 88%',
+        toggleActions: 'play none none reverse',
+      }),
+    });
+  }
 
   const btn = section.querySelector('[data-pu-svg-toggle]');
   const keyCap = btn?.querySelector('.pu-svg-grid__key-cap');

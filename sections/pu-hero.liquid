@@ -8,7 +8,7 @@
           {% for block in patch_blocks %}
             {% case forloop.index0 %}
               {% when 0 %}
-                {% assign patch_style = '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg;' %}
+                {% assign patch_style = '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg; --patch-top-mobile: -14%; --patch-left-mobile: 42%; --patch-rotate-mobile: 12deg;' %}
                 {% assign patch_parallax_y = 28 %}
                 {% assign patch_parallax_x = -6 %}
               {% when 1 %}
@@ -34,7 +34,7 @@
         {% else %}
           {% render 'pu-hero-patch',
             text: 'For every',
-            patch_style: '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg;',
+            patch_style: '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg; --patch-top-mobile: 0%; --patch-left-mobile: 48%; --patch-rotate-mobile: 12deg;',
             parallax_y: 28,
             parallax_x: -6
           %}
@@ -192,7 +192,7 @@
   .pu-hero__content {
     position: relative;
     z-index: 2;
-    max-width: 100%;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 100px 32px 200px;
     text-align: center;
@@ -283,8 +283,8 @@
   }
 
   .pu-hero__figure-wrap--1 {
-    top: 78%;
-    left: 11.5%;
+    top: 68%;
+    left: 11%;
   }
   .pu-hero__figure-wrap--2 {
     top: -30%;
@@ -405,20 +405,24 @@
   @media (max-width: 749px) {
     .pu-hero {
       min-height: auto;
-      overflow-x: clip;
+      overflow: visible;
       padding-top: calc(16px + var(--header-group-height, 64px));
     }
 
     .pu-hero__content {
       padding: 32px 16px 148px;
+      overflow: visible;
     }
 
     .pu-hero__typography {
-      min-height: auto;
+      position: relative;
+      min-height: clamp(220px, 62vw, 300px);
+      margin-bottom: 24px;
+      overflow: visible;
     }
 
     .pu-hero__title {
-      font-size: clamp(52px, 14vw, 96px);
+      font-size: clamp(72px, 24vw, 96px);
       line-height: 0.82;
     }
 
@@ -426,9 +430,51 @@
       margin-top: -8px;
     }
 
-    .pu-hero__figure-wrap,
+    .pu-hero__figure-wrap--1 {
+      top: 68%;
+      left: 10%;
+    }
+
+    .pu-hero__figure-wrap--2 {
+      top: 4%;
+      left: 26%;
+    }
+
+    .pu-hero__figure-wrap--3 {
+      top: 26%;
+      right: 16%;
+    }
+
+    .pu-hero__figure-wrap--4 {
+      top: 80%;
+      right: 14%;
+    }
+
     .pu-hero__product-wrap {
-      display: none;
+      top: 76%;
+      right: 10%;
+      z-index: 2;
+    }
+
+    .pu-hero__figure--1 {
+      width: 56px !important;
+    }
+
+    .pu-hero__figure--2 {
+      width: 64px !important;
+    }
+
+    .pu-hero__figure--3 {
+      width: 70px !important;
+    }
+
+    .pu-hero__figure--4 {
+      width: 76px !important;
+    }
+
+    .pu-hero__product {
+      width: 36px !important;
+      max-width: 36px !important;
     }
 
     .pu-hero__patches {

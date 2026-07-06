@@ -22,6 +22,7 @@
 }
 
 @media (max-width: 749px) {
+
   .pu-page,
   .pu-page .page-wrapper,
   .pu-page .content-for-layout {
@@ -172,6 +173,10 @@
 @media (max-width: 749px) {
   .pu-svg-grid img.pu-svg-grid__spark {
     width: 18px !important;
+  }
+
+  .pu-sticker {
+    padding: 8px;
   }
 }
 

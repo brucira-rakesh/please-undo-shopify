@@ -126,8 +126,8 @@
             "image": "shopify://shop_images/image_146_1.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "you have become one \nwith laptop",
-            "overlay_position": "bottom-left",
+            "overlay_text": "You said 'I'll fix my posture\ntomorrow' three years ago",
+            "overlay_position": "top-left",
             "overlay_rotation": 0
           }
         },
@@ -148,8 +148,8 @@
             "image": "shopify://shop_images/image_145.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "Overthinking an argument that ended four hours ago. You finally remembered the perfect comeback.",
-            "overlay_position": "top-right",
+            "overlay_text": "You said 'one episode'\nfour episodes ago",
+            "overlay_position": "bottom-right",
             "overlay_rotation": 0
           }
         },
@@ -185,9 +185,43 @@
             "overlay_position": "top-right",
             "overlay_rotation": 0
           }
+        },
+        "seq_text_morning": {
+          "type": "sequence_text_hold",
+          "settings": {
+            "start_frame": 54,
+            "line_1": "Every morning",
+            "line_2": "comes with a fresh start",
+            "enter_frames": 18,
+            "hold_frames": 10,
+            "exit_frames": 18
+          }
+        },
+        "seq_text_turns": {
+          "type": "sequence_text_split",
+          "settings": {
+            "start_frame": 200,
+            "line_1": "TURNS",
+            "line_2": "OUT",
+            "enter_frames": 20,
+            "split_frames": 22
+          }
+        },
+        "seq_text_habit": {
+          "type": "sequence_text_curve",
+          "settings": {
+            "start_frame": 245,
+            "line": "You're your own worst habit.",
+            "enter_frames": 18,
+            "hold_frames": 24,
+            "exit_frames": 18
+          }
         }
       },
       "block_order": [
+        "seq_text_morning",
+        "seq_text_turns",
+        "seq_text_habit",
         "img_1",
         "img_2",
         "img_3",

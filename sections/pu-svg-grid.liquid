@@ -2,12 +2,16 @@
   <div class="pu-svg-grid__inner">
     <header class="pu-svg-grid__header">
       <h2 class="pu-svg-grid__title">
-        <span class="pu-svg-grid__title-line">
-          {{- section.settings.title_line_1 | default: 'we are the OFFICIAL' -}}
+        <span class="pu-svg-grid__title-line" data-pu-svg-grid-title-line>
+          <span class="pu-svg-grid__title-line-inner">
+            {{- section.settings.title_line_1 | default: 'we are the OFFICIAL' -}}
+          </span>
         </span>
-        <span class="pu-svg-grid__title-line">{{ section.settings.title_line_2 | default: 'SPONSORS for those' }}</span>
-        <span class="pu-svg-grid__title-line pu-svg-grid__title-line--accent">
-          {{ section.settings.title_line_3 | default: 'who never learn' }}
+        <span class="pu-svg-grid__title-line" data-pu-svg-grid-title-line>
+          <span class="pu-svg-grid__title-line-inner">{{ section.settings.title_line_2 | default: 'SPONSORS for those' }}</span>
+        </span>
+        <span class="pu-svg-grid__title-line pu-svg-grid__title-line--accent" data-pu-svg-grid-title-line>
+          <span class="pu-svg-grid__title-line-inner">{{ section.settings.title_line_3 | default: 'who never learn' }}</span>
         </span>
       </h2>
     </header>
@@ -74,7 +78,7 @@
     max-width: 900px;
     font-family: var(--pu-font-display);
     font-weight: 700;
-    font-size: clamp(36px, 6.67vw, 96px);
+    font-size: clamp(42px, 6.67vw, 96px);
     line-height: 0.8;
     letter-spacing: -0.04em;
     text-transform: uppercase;
@@ -83,6 +87,12 @@
 
   .pu-svg-grid__title-line {
     display: block;
+    overflow: hidden;
+  }
+
+  .pu-svg-grid__title-line-inner {
+    display: block;
+    will-change: transform;
   }
 
   .pu-svg-grid__title-line--accent {
@@ -309,6 +319,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .pu-svg-grid__title-line-inner {
+      will-change: auto;
+    }
+
     .pu-svg-grid__key-cap {
       transition: none;
     }
@@ -347,27 +361,27 @@
     }
 
     .pu-svg-grid__card[data-stage-placement='top_left'] {
-      left: 0;
-      top: 6%;
+      left: 16px;
+      top: 24%;
     }
 
     .pu-svg-grid__card[data-stage-placement='top_right'] {
-      right: 0;
-      top: 6%;
+      right: 16px;
+      top: 24%;
     }
 
     .pu-svg-grid__card[data-stage-placement='bottom_left'] {
-      left: 0;
-      bottom: 18%;
+      left: 6px;
+      bottom: 16%;
     }
 
     .pu-svg-grid__card[data-stage-placement='bottom_right'] {
-      right: 0;
-      bottom: 18%;
+      right: 6px;
+      bottom: 16%;
     }
 
     .pu-svg-grid__center {
-      top: 44%;
+      top: 12%;
       gap: 6px;
     }
 
