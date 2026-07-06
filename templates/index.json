@@ -93,7 +93,7 @@
             "image": "shopify://shop_images/4.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "you have become one \nwith laptop",
+            "overlay_text": "You were just resting your eyes. You neck was not consulted.",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
@@ -119,6 +119,67 @@
             "overlay_position": "top-right",
             "overlay_rotation": 0
           }
+        },
+        "image_V8AKj9": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/image_146_1.png",
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "you have become one \nwith laptop",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_xBpamF": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_R93RVb": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_8mb7Rh": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_pYYNU7": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
+        },
+        "image_AQDABM": {
+          "type": "image",
+          "settings": {
+            "fallback_asset": "pu-scroll-img-1.png",
+            "alt": "",
+            "overlay_text": "",
+            "overlay_position": "bottom-left",
+            "overlay_rotation": 0
+          }
         }
       },
       "block_order": [
@@ -127,18 +188,25 @@
         "img_3",
         "image_HRyCLt",
         "image_zGFWcK",
-        "image_8xz8tn"
+        "image_8xz8tn",
+        "image_V8AKj9",
+        "image_xBpamF",
+        "image_R93RVb",
+        "image_8mb7Rh",
+        "image_pYYNU7",
+        "image_AQDABM"
       ],
       "settings": {
         "sequence_storage": "shop_files",
         "sequence_basename": "Seq_",
         "sequence_first_frame": "00054",
         "sequence_frame_count": 357,
+        "sequence_handoff_frame": 380,
         "sequence_pad_digits": "5",
         "sequence_start_number": 54,
-        "sequence_handoff_frame": 380,
         "sequence_scroll_vh": 120,
         "gallery_set_scroll_vh": 55,
+        "sequence_alt": "Every morning comes with a fresh start",
         "curve_text_1": "Every morning",
         "curve_text_2": "comes with a fresh start"
       }
