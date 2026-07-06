@@ -182,7 +182,7 @@
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "Lunch break: 4 minutes. Back pain Indefinite.",
-            "overlay_position": "bottom-left",
+            "overlay_position": "top-right",
             "overlay_rotation": 0
           }
         }
