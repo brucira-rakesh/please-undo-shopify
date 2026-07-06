@@ -225,13 +225,13 @@
             "text": "Life isn't ALL FUN and Frolic"
           }
         },
-        "video_1": {
+        "video_2": {
           "type": "scramble_video",
           "settings": {
-            "video": "shopify://files/videos/02_a9244aea-6933-4bec-b042-7c8083e5c652.mp4",
+            "video": "shopify://files/videos/01_532679c0-adc1-4465-ba1b-3da46d27c002.mp4",
             "alt": "",
             "play_delay": 0,
-            "rotation": -4
+            "rotation": 3
           }
         },
         "text_2": {
@@ -240,13 +240,13 @@
             "text": "It has many"
           }
         },
-        "video_2": {
+        "video_1": {
           "type": "scramble_video",
           "settings": {
-            "video": "shopify://files/videos/01_532679c0-adc1-4465-ba1b-3da46d27c002.mp4",
+            "video": "shopify://files/videos/02_a9244aea-6933-4bec-b042-7c8083e5c652.mp4",
             "alt": "",
             "play_delay": 0,
-            "rotation": 3
+            "rotation": -4
           }
         },
         "text_3": {
@@ -298,9 +298,9 @@
       },
       "block_order": [
         "text_1",
-        "video_1",
-        "text_2",
         "video_2",
+        "text_2",
+        "video_1",
         "text_3",
         "ticker_1",
         "ticker_2",
