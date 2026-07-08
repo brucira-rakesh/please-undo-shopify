@@ -411,6 +411,18 @@
             "shop_now_url": "shopify://products/tired-achy-everything"
           }
         },
+        "product_FgW9qB": {
+          "type": "product",
+          "settings": {
+            "product_image": "shopify://shop_images/Primary-Mockup_18_1.png",
+            "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2_1.png",
+            "figure_right": -100,
+            "subtext": "LAPTOP NECK",
+            "title": "Brain Overload",
+            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
+            "shop_now_url": "shopify://products/brain-overload"
+          }
+        },
         "product_PC8jBa": {
           "type": "product",
           "settings": {
@@ -420,19 +432,7 @@
             "subtext": "LAPTOP NECK",
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
-            "shop_now_url": ""
-          }
-        },
-        "product_FgW9qB": {
-          "type": "product",
-          "settings": {
-            "product_image": "shopify://shop_images/Primary-Mockup_18_1.png",
-            "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2_1.png",
-            "figure_right": -100,
-            "subtext": "LAPTOP NECK",
-            "title": "Pain-relief Roll On",
-            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
-            "shop_now_url": ""
+            "shop_now_url": "shopify://products/laptop-neck-pain-relief-roll-on"
           }
         }
       },
@@ -440,8 +440,8 @@
         "product_1",
         "product_QLzQQ7",
         "product_rBqddp",
-        "product_PC8jBa",
-        "product_FgW9qB"
+        "product_FgW9qB",
+        "product_PC8jBa"
       ],
       "settings": {
         "title": "Pick your Undo.",
