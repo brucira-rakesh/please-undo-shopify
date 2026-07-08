@@ -8,7 +8,7 @@
           {% for block in patch_blocks %}
             {% case forloop.index0 %}
               {% when 0 %}
-                {% assign patch_style = '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg; --patch-top-mobile: -14%; --patch-left-mobile: 42%; --patch-rotate-mobile: 12deg;' %}
+                {% assign patch_style = '--patch-top: -12%; --patch-left: 16%; --patch-rotate: -20deg; --patch-top-mobile: -14%; --patch-left-mobile: 42%; --patch-rotate-mobile: 12deg;' %}
                 {% assign patch_parallax_y = 28 %}
                 {% assign patch_parallax_x = -6 %}
               {% when 1 %}
@@ -288,7 +288,7 @@
   }
   .pu-hero__figure-wrap--2 {
     top: -30%;
-    left: 31%;
+    left: 47%;
   }
   .pu-hero__figure-wrap--3 {
     top: -34%;
@@ -346,7 +346,7 @@
   .pu-hero__tickers {
     --ticker-bleed: 140vw;
     position: absolute;
-    bottom: 0;
+    bottom: -12px;
     left: 50%;
     z-index: 5;
     width: var(--ticker-bleed);
@@ -382,9 +382,9 @@
   }
 
   .pu-hero__ticker--white {
-    background: var(--pu-white);
+    background: #fceb00;
     color: var(--pu-navy-text);
-    transform: rotate(-6deg) skew(1deg);
+    transform: rotate(-5deg) skew(1deg);
     margin-bottom: -12px;
     position: relative;
     z-index: 2;
@@ -393,8 +393,8 @@
   }
 
   .pu-hero__ticker--orange {
-    background: var(--pu-orange);
-    color: var(--pu-navy-text);
+    background: #ff2300;
+    color: #000;
     transform: rotate(1.12deg) skewX(-1deg);
     position: relative;
     z-index: 3;

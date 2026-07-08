@@ -63,10 +63,10 @@
           <button type="button" class="pu-header__icon-btn" aria-label="Search" data-pu-search-open>
             <img src="{{ 'pu-icon-search.png' | asset_url }}" alt="" width="19" height="19">
           </button>
-          <a href="{{ routes.account_url }}" class="pu-header__icon-btn" aria-label="Account">
+          <a href="/" class="pu-header__icon-btn" aria-label="Account">
             <img src="{{ 'pu-icon-heart.png' | asset_url }}" alt="" width="18" height="18">
           </a>
-          <a href="{{ routes.cart_url }}" class="pu-header__icon-btn" aria-label="Cart">
+          <a href="/" class="pu-header__icon-btn" aria-label="Cart">
             <img src="{{ 'pu-icon-cart.png' | asset_url }}" alt="" width="18" height="18">
             {% if cart.item_count > 0 %}
               <span class="pu-header__cart-count">{{ cart.item_count }}</span>

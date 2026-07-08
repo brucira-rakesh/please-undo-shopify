@@ -22,6 +22,17 @@
                   {{- block.settings.text -}}
                 </span>
                 {% assign scramble_prev_content = true %}
+              {% when 'scramble_patch' %}
+                {% if scramble_prev_content %} {% endif %}
+                <span
+                  class="pu-scramble__patch"
+                  data-pu-scramble-patch
+                  style="--patch-rotate: {{ block.settings.rotation | default: -6 }}deg;"
+                  {{ block.shopify_attributes }}
+                >
+                  {{- block.settings.text -}}
+                </span>
+                {% assign scramble_prev_content = true %}
               {% when 'scramble_video' %}
                 {% assign scramble_video_index = scramble_video_index | plus: 1 %}
                 {% if scramble_prev_content %} {% endif %}
@@ -135,6 +146,26 @@
 
   .pu-scramble__word {
     display: inline-block;
+    will-change: transform, opacity;
+  }
+
+  .pu-scramble__patch {
+    display: inline-block;
+    vertical-align: middle;
+    font-family: var(--pu-font-body);
+    font-size: 0.28em;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--pu-navy);
+    background: #fff;
+    border: 2px solid var(--pu-navy);
+    border-radius: 6px;
+    padding: 0.5em 0.9em;
+    margin: 0 0.08em;
+    transform: rotate(var(--patch-rotate));
+    transform-origin: center center;
     will-change: transform, opacity;
   }
 
@@ -256,6 +287,11 @@
       height: 0.62em;
     }
 
+    .pu-scramble__patch {
+      font-size: 0.34em;
+      padding: 0.4em 0.7em;
+    }
+
     .pu-scramble__ticker {
       width: calc(100% - 32px);
       height: 96px;
@@ -282,6 +318,32 @@
           "id": "text",
           "label": "Text",
           "default": "Life isn't ALL FUN"
+        }
+      ]
+    },
+    {
+      "type": "scramble_patch",
+      "name": "Word patch",
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "A small rotated sticker-style word inserted inline, e.g. \"LITTLE\" or \"HAVE\"."
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "LITTLE"
+        },
+        {
+          "type": "range",
+          "id": "rotation",
+          "label": "Rotation",
+          "min": -20,
+          "max": 20,
+          "step": 1,
+          "unit": "deg",
+          "default": -6
         }
       ]
     },
@@ -402,7 +464,7 @@
         {
           "type": "scramble_text",
           "settings": {
-            "text": "and frolic. It has many annoying"
+            "text": "and frolic. It has many"
           }
         },
         {
@@ -415,7 +477,33 @@
         {
           "type": "scramble_text",
           "settings": {
-            "text": "pains. Good thing we have a HACK TO UNDO THEM."
+            "text": "pains."
+          }
+        },
+        {
+          "type": "scramble_patch",
+          "settings": {
+            "text": "LITTLE",
+            "rotation": -6
+          }
+        },
+        {
+          "type": "scramble_text",
+          "settings": {
+            "text": "annoying ones. Good thing we"
+          }
+        },
+        {
+          "type": "scramble_patch",
+          "settings": {
+            "text": "HAVE",
+            "rotation": 5
+          }
+        },
+        {
+          "type": "scramble_text",
+          "settings": {
+            "text": "a HACK TO UNDO THEM."
           }
         },
         {
