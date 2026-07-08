@@ -1,0 +1,19 @@
+{% doc %}
+  Single card for the PU product slider "features" popup.
+
+  @param {object} [icon] - Image object for the card icon
+  @param {string} label - Card label text
+  @param {string} [tag_color] - purple | green | navy | orange
+  @param {string} [shopify_attributes] - Theme editor block attributes
+{% enddoc %}
+
+<div class="pu-features-card" data-pu-features-card {{ shopify_attributes }}>
+  <div class="pu-features-card__icon">
+    {% if icon != blank %}
+      {{ icon | image_url: width: 200 | image_tag: loading: 'lazy', alt: '', class: 'pu-features-card__icon-img' }}
+    {% endif %}
+  </div>
+  <div class="pu-features-card__tag pu-features-card__tag--{{ tag_color | default: 'purple' }}">
+    {{ label }}
+  </div>
+</div>

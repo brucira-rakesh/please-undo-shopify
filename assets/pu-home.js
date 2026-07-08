@@ -706,11 +706,49 @@ function initProductSliderSignSwing(section) {
   swing.classList.add('is-css-swing');
 }
 
+function initProductFeaturesModal(section) {
+  const modal = section.querySelector('[data-pu-features-modal]');
+  if (!modal || modal.dataset.puFeaturesInit === 'true') return;
+
+  modal.dataset.puFeaturesInit = 'true';
+
+  const closeBtn = modal.querySelector('[data-pu-features-close]');
+  const backdrop = modal.querySelector('[data-pu-features-backdrop]');
+  const openButtons = section.querySelectorAll('[data-pu-features-open]');
+  let lastFocused = null;
+
+  const onKeydown = (event) => {
+    if (event.key === 'Escape') closeModal();
+  };
+
+  function openModal() {
+    lastFocused = document.activeElement;
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeydown);
+    closeBtn?.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKeydown);
+    lastFocused?.focus?.();
+  }
+
+  openButtons.forEach((btn) => btn.addEventListener('click', openModal));
+  closeBtn?.addEventListener('click', closeModal);
+  backdrop?.addEventListener('click', closeModal);
+}
+
 function initProductSlider() {
   const section = document.querySelector('[data-pu-product-slider]');
   if (!section) return;
 
   initProductSliderSignSwing(section);
+  initProductFeaturesModal(section);
 
   if (!gsap || !ScrollTrigger) return;
 

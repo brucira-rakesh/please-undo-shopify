@@ -24,7 +24,12 @@
       <h3 class="pu-product-slider__product-title">{{ title }}</h3>
       <div class="pu-product-slider__features">
         {% assign bullet_count = 0 %}
-        {% assign bullets_stripped = bullets_html | replace: '<ol>', '' | replace: '</ol>', '' | replace: '<ul>', '' | replace: '</ul>', '' %}
+        {% assign bullets_stripped = bullets_html
+          | replace: '<ol>', ''
+          | replace: '</ol>', ''
+          | replace: '<ul>', ''
+          | replace: '</ul>', ''
+        %}
         {% if bullets_stripped contains '<li>' %}
           {% assign bullet_parts = bullets_stripped | split: '<li>' %}
           {% for part in bullet_parts %}
@@ -67,6 +72,11 @@
           </div>
         {% endif %}
       </div>
+      {% comment %}
+        <button type="button" class="pu-btn pu-btn--transparent" data-pu-features-open aria-haspopup="dialog">
+          VIEW FEATURES
+        </button>
+      {% endcomment %}
       <a href="{{ shop_url }}" class="pu-btn pu-btn--yellow">SHOP NOW</a>
     </div>
 

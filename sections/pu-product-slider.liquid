@@ -1,5 +1,6 @@
 {% liquid
   assign product_blocks = section.blocks | where: 'type', 'product'
+  assign feature_card_blocks = section.blocks | where: 'type', 'feature_card'
   assign slider_collection = section.settings.collection
   assign products_limit = section.settings.products_limit | default: 6
   assign default_bullets = section.settings.default_bullets
@@ -113,6 +114,44 @@
         {% endfor %}
       </div>
     {% endif %}
+  </div>
+
+  <div class="pu-features-modal" data-pu-features-modal aria-hidden="true">
+    <div class="pu-features-modal__backdrop" data-pu-features-backdrop></div>
+    <div
+      class="pu-features-modal__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pu-features-modal-title-{{ section.id }}"
+    >
+      <button
+        type="button"
+        class="pu-features-modal__close"
+        data-pu-features-close
+        aria-label="Close"
+      >
+        {{ 'icon-close.svg' | inline_asset_content }}
+      </button>
+
+      <div class="pu-features-modal__sign">
+        <h3 id="pu-features-modal-title-{{ section.id }}" class="pu-features-modal__title">
+          {{ section.settings.features_modal_title | default: 'Pick your Undo.' }}
+        </h3>
+      </div>
+
+      <div class="pu-features-modal__grid">
+        {% if feature_card_blocks.size > 0 %}
+          {% for block in feature_card_blocks %}
+            {% render 'pu-product-feature-card',
+              icon: block.settings.icon,
+              label: block.settings.label,
+              tag_color: block.settings.tag_color,
+              shopify_attributes: block.shopify_attributes
+            %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
   </div>
 </section>
 
@@ -266,7 +305,7 @@
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    padding: 40px 46px 80px;
+    padding: 40px 120px 80px;
     align-items: center;
     flex: 1;
     box-sizing: border-box;
@@ -275,6 +314,10 @@
   .pu-product-slider__content .pu-product-slider__info,
   .pu-product-slider__content .pu-product-slider__stage {
     min-width: 33.33%;
+  }
+
+  .pu-product-slider__info .pu-btn {
+    min-width: 440px;
   }
 
   .pu-product-slider__category {
@@ -359,7 +402,7 @@
     position: relative;
     z-index: 2;
     object-fit: contain;
-    width: 291px;
+    width: 100%;
     height: 744px;
     aspect-ratio: 88 / 225;
   }
@@ -508,18 +551,193 @@
       max-height: 100px;
     }
   }
+
+  /* ─── Features popup ─── */
+  .pu-features-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+  }
+
+  .pu-features-modal.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .pu-features-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 32, 0.78);
+  }
+
+  .pu-features-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: min(960px, 94vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: var(--pu-blue);
+    border-radius: 24px;
+    padding: 64px 40px 40px;
+    transform: scale(0.96);
+    transition: transform 0.25s ease;
+  }
+
+  .pu-features-modal.is-open .pu-features-modal__panel {
+    transform: scale(1);
+  }
+
+  .pu-features-modal__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--pu-white);
+    color: var(--pu-navy);
+    cursor: pointer;
+  }
+
+  .pu-features-modal__close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pu-features-modal__sign {
+    display: inline-block;
+    background: var(--pu-navy);
+    padding: 16px 32px;
+    margin: 0 0 32px;
+    rotate: -3deg;
+  }
+
+  .pu-features-modal__title {
+    margin: 0;
+    font-family: var(--pu-font-display);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    color: var(--pu-gray);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.95;
+  }
+
+  .pu-features-modal__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+
+  .pu-features-card {
+    display: flex;
+    flex-direction: column;
+    background: #f1eff4;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .pu-features-card__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-height: 110px;
+    padding: 20px;
+  }
+
+  .pu-features-card__icon-img {
+    width: 100%;
+    max-width: 72px !important;
+    height: auto !important;
+    object-fit: contain;
+  }
+
+  .pu-features-card__tag {
+    padding: 10px 8px;
+    text-align: center;
+    font-family: var(--pu-font-body);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--pu-white);
+  }
+
+  .pu-features-card__tag--purple {
+    background: #6e36b9;
+  }
+
+  .pu-features-card__tag--green {
+    background: var(--pu-green, #00973a);
+  }
+
+  .pu-features-card__tag--navy {
+    background: var(--pu-navy);
+  }
+
+  .pu-features-card__tag--orange {
+    background: var(--pu-orange);
+  }
+
+  @media (max-width: 989px) {
+    .pu-features-modal__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .pu-features-modal__panel {
+      padding: 56px 20px 24px;
+      border-radius: 16px;
+    }
+
+    .pu-features-modal__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pu-features-modal__sign {
+      padding: 12px 20px;
+      margin-bottom: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pu-features-modal,
+    .pu-features-modal__panel {
+      transition: none;
+    }
+  }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "PU Product Slider",
   "class": "pu-product-slider-section",
-  "max_blocks": 12,
+  "max_blocks": 24,
   "settings": [
     {
       "type": "text",
       "id": "title",
       "label": "Section title",
+      "default": "Pick your Undo."
+    },
+    {
+      "type": "text",
+      "id": "features_modal_title",
+      "label": "Features popup title",
       "default": "Pick your Undo."
     },
     {
@@ -628,6 +846,40 @@
           "label": "Shop now button link"
         }
       ]
+    },
+    {
+      "type": "feature_card",
+      "name": "Feature card (popup)",
+      "limit": 10,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Cards shown in the \"View features\" popup. Add up to 10 — the popup is shared across every product slide."
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Head Pushed Forward"
+        },
+        {
+          "type": "select",
+          "id": "tag_color",
+          "label": "Tag color",
+          "options": [
+            { "value": "purple", "label": "Purple" },
+            { "value": "green", "label": "Green" },
+            { "value": "navy", "label": "Navy" },
+            { "value": "orange", "label": "Orange" }
+          ],
+          "default": "purple"
+        }
+      ]
     }
   ],
   "presets": [
@@ -641,6 +893,46 @@
             "title": "Pain-relief Roll On",
             "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"
           }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Head Pushed Forward", "tag_color": "purple" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Muscles stay switched on for hours", "tag_color": "purple" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Reduced circulation", "tag_color": "purple" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Tension accumulates all day", "tag_color": "purple" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Tension accumulates all day", "tag_color": "purple" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Magnesium", "tag_color": "green" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Caffeine", "tag_color": "green" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Arnica", "tag_color": "green" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Rhodiola", "tag_color": "green" }
+        },
+        {
+          "type": "feature_card",
+          "settings": { "label": "Boswellia", "tag_color": "green" }
         }
       ]
     }

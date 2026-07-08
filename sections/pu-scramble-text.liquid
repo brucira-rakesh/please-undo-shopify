@@ -25,7 +25,11 @@
               {% when 'scramble_patch' %}
                 {% if scramble_prev_content %} {% endif %}
                 {% assign patch_positioned = false %}
-                {% if block.settings.position_top != blank or block.settings.position_left != blank or block.settings.position_bottom != blank or block.settings.position_right != blank %}
+                {% if block.settings.position_top != blank
+                  or block.settings.position_left != blank
+                  or block.settings.position_bottom != blank
+                  or block.settings.position_right != blank
+                %}
                   {% assign patch_positioned = true %}
                 {% endif %}
                 <span
@@ -167,7 +171,7 @@
     display: inline-block;
     vertical-align: middle;
     font-family: var(--pu-font-body);
-    font-size: 0.28em;
+    font-size: 42px;
     font-weight: 700;
     letter-spacing: 0;
     line-height: 1;
@@ -176,7 +180,7 @@
     background: #fff;
     border: 2px solid var(--pu-navy);
     border-radius: 6px;
-    padding: 0.5em 0.9em;
+    padding: 14px 20px;
     margin: 0 0.08em;
     transform: rotate(var(--patch-rotate));
     transform-origin: center center;
