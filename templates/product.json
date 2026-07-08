@@ -25,7 +25,7 @@
           "type": "accordion",
           "settings": {
             "title": "Ingredients",
-            "content": "<p>See packaging for the full ingredient list.</p>",
+            "content": "<p>Menthol, PepperMint, Eucalyptus, MgCl2, Caffeine, Rosemary, Rhindola, Arnica, MSM, Bosewellia, Ginger, Methyl Lactate</p>",
             "open_by_default": false
           }
         },
@@ -97,6 +97,13 @@
         "heading": "How to Undo"
       }
     },
+    "pu_product_marquee": {
+      "type": "pu-product-marquee",
+      "settings": {
+        "phrase_1": "",
+        "phrase_2": "we JUST UNDO"
+      }
+    },
     "pu_product_recommendations": {
       "type": "pu-product-recommendations",
       "settings": {
@@ -106,13 +113,6 @@
         "columns": 3,
         "hide_current_product": true,
         "empty_message": "Choose a collection in the theme editor."
-      }
-    },
-    "pu_product_marquee": {
-      "type": "pu-product-marquee",
-      "settings": {
-        "phrase_1": "",
-        "phrase_2": "we JUST UNDO"
       }
     },
     "pu_footer": {
