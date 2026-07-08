@@ -100,8 +100,8 @@
     "pu_product_marquee": {
       "type": "pu-product-marquee",
       "settings": {
-        "phrase_1": "",
-        "phrase_2": "we JUST UNDO"
+        "phrase_1": "You do you",
+        "phrase_2": "We just Undo"
       }
     },
     "pu_product_recommendations": {
