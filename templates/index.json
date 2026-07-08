@@ -296,8 +296,8 @@
           "settings": {
             "text": "LITTLE",
             "rotation": -6,
-            "position_top": "",
-            "position_left": "",
+            "position_top": "44%",
+            "position_left": "2%",
             "position_bottom": "",
             "position_right": ""
           }
@@ -307,8 +307,8 @@
           "settings": {
             "text": "Have",
             "rotation": -6,
-            "position_top": "",
-            "position_left": "",
+            "position_top": "75%",
+            "position_left": "3%",
             "position_bottom": "",
             "position_right": ""
           }
@@ -445,6 +445,7 @@
       ],
       "settings": {
         "title": "Pick your Undo.",
+        "features_modal_title": "Pick your Undo.",
         "slide_scroll_vh": 60,
         "slide_last_transition_scroll_vh": 80,
         "pin_hold_scroll_vh": 45,
