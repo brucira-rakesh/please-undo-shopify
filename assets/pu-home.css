@@ -84,6 +84,7 @@
   color: var(--pu-white);
   border: 1.5px solid var(--pu-white);
   transition: background 0.2s ease, transform 0.2s ease;
+  margin-bottom: 14px;
 }
 
 .pu-btn--transparent:hover {

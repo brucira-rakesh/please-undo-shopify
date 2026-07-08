@@ -130,26 +130,41 @@
         data-pu-features-close
         aria-label="Close"
       >
-        {{ 'icon-close.svg' | inline_asset_content }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <path d="M26 2L2 26M2 2L26 26" stroke="#060623" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </button>
 
-      <div class="pu-features-modal__sign">
-        <h3 id="pu-features-modal-title-{{ section.id }}" class="pu-features-modal__title">
-          {{ section.settings.features_modal_title | default: 'Pick your Undo.' }}
-        </h3>
-      </div>
+      {% comment %}
+        <div class="pu-features-modal__sign">
+          <h3 id="pu-features-modal-title-{{ section.id }}" class="pu-features-modal__title">
+            {{ section.settings.features_modal_title | default: 'Pick your Undo.' }}
+          </h3>
+        </div>
+      {% endcomment %}
 
-      <div class="pu-features-modal__grid">
-        {% if feature_card_blocks.size > 0 %}
-          {% for block in feature_card_blocks %}
-            {% render 'pu-product-feature-card',
-              icon: block.settings.icon,
-              label: block.settings.label,
-              tag_color: block.settings.tag_color,
-              shopify_attributes: block.shopify_attributes
-            %}
-          {% endfor %}
-        {% endif %}
+      <div class="pu-features-modal__stage">
+        <img
+          class="pu-features-modal__bottle"
+          src="{{ 'image.png' | asset_url }}"
+          alt=""
+          width="200"
+          height="520"
+          loading="lazy"
+        >
+
+        <div class="pu-features-modal__grid">
+          {% if feature_card_blocks.size > 0 %}
+            {% for block in feature_card_blocks %}
+              {% render 'pu-product-feature-card',
+                icon: block.settings.icon,
+                label: block.settings.label,
+                tag_color: block.settings.tag_color,
+                shopify_attributes: block.shopify_attributes
+              %}
+            {% endfor %}
+          {% endif %}
+        </div>
       </div>
     </div>
   </div>
@@ -580,10 +595,10 @@
   .pu-features-modal__panel {
     position: relative;
     z-index: 1;
-    width: min(960px, 94vw);
-    max-height: 88vh;
+    width: min(1080px, 94vw);
+    height: 100%;
+    max-height: 85vh;
     overflow-y: auto;
-    background: var(--pu-blue);
     border-radius: 24px;
     padding: 64px 40px 40px;
     transform: scale(0.96);
@@ -636,7 +651,25 @@
     line-height: 0.95;
   }
 
+  .pu-features-modal__stage {
+    position: relative;
+    height: 100%;
+  }
+
+  .pu-features-modal__bottle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
   .pu-features-modal__grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 16px;
@@ -706,6 +739,10 @@
 
     .pu-features-modal__grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+
+    .pu-features-modal__bottle {
+      width: 90px;
     }
 
     .pu-features-modal__sign {
