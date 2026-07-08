@@ -54,6 +54,37 @@
     "pu_image_scroll": {
       "type": "pu-image-scroll",
       "blocks": {
+        "seq_text_morning": {
+          "type": "sequence_text_hold",
+          "settings": {
+            "start_frame": 54,
+            "line_1": "Every morning",
+            "line_2": "comes with a fresh start",
+            "enter_frames": 18,
+            "hold_frames": 10,
+            "exit_frames": 18
+          }
+        },
+        "seq_text_turns": {
+          "type": "sequence_text_split",
+          "settings": {
+            "start_frame": 200,
+            "line_1": "TURNS",
+            "line_2": "OUT",
+            "enter_frames": 20,
+            "split_frames": 22
+          }
+        },
+        "seq_text_habit": {
+          "type": "sequence_text_curve",
+          "settings": {
+            "start_frame": 245,
+            "line": "You're your own worst habit.",
+            "enter_frames": 18,
+            "hold_frames": 24,
+            "exit_frames": 18
+          }
+        },
         "img_1": {
           "type": "image",
           "settings": {
@@ -185,37 +216,6 @@
             "overlay_position": "top-right",
             "overlay_rotation": 0
           }
-        },
-        "seq_text_morning": {
-          "type": "sequence_text_hold",
-          "settings": {
-            "start_frame": 54,
-            "line_1": "Every morning",
-            "line_2": "comes with a fresh start",
-            "enter_frames": 18,
-            "hold_frames": 10,
-            "exit_frames": 18
-          }
-        },
-        "seq_text_turns": {
-          "type": "sequence_text_split",
-          "settings": {
-            "start_frame": 200,
-            "line_1": "TURNS",
-            "line_2": "OUT",
-            "enter_frames": 20,
-            "split_frames": 22
-          }
-        },
-        "seq_text_habit": {
-          "type": "sequence_text_curve",
-          "settings": {
-            "start_frame": 245,
-            "line": "You're your own worst habit.",
-            "enter_frames": 18,
-            "hold_frames": 24,
-            "exit_frames": 18
-          }
         }
       },
       "block_order": [
@@ -245,8 +245,8 @@
         "sequence_start_number": 54,
         "sequence_scroll_vh": 220,
         "gallery_set_scroll_vh": 60,
-        "gallery_hold_scroll_vh": 45,
         "gallery_last_transition_scroll_vh": 80,
+        "gallery_hold_scroll_vh": 45,
         "sequence_alt": "Every morning comes with a fresh start",
         "curve_text_1": "Every morning",
         "curve_text_2": "comes with a fresh start"
@@ -289,6 +289,20 @@
           "type": "scramble_text",
           "settings": {
             "text": "pains annoying ones Good thing we have a HACK TO UNDO THEM."
+          }
+        },
+        "scramble_patch_AGp39h": {
+          "type": "scramble_patch",
+          "settings": {
+            "text": "LITTLE",
+            "rotation": -6
+          }
+        },
+        "scramble_patch_LGiHfQ": {
+          "type": "scramble_patch",
+          "settings": {
+            "text": "Have",
+            "rotation": -6
           }
         },
         "ticker_1": {
@@ -338,6 +352,8 @@
         "text_2",
         "video_1",
         "text_3",
+        "scramble_patch_AGp39h",
+        "scramble_patch_LGiHfQ",
         "ticker_1",
         "ticker_2",
         "ticker_3",
