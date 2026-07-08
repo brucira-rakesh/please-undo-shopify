@@ -295,14 +295,22 @@
           "type": "scramble_patch",
           "settings": {
             "text": "LITTLE",
-            "rotation": -6
+            "rotation": -6,
+            "position_top": "",
+            "position_left": "",
+            "position_bottom": "",
+            "position_right": ""
           }
         },
         "scramble_patch_LGiHfQ": {
           "type": "scramble_patch",
           "settings": {
             "text": "Have",
-            "rotation": -6
+            "rotation": -6,
+            "position_top": "",
+            "position_left": "",
+            "position_bottom": "",
+            "position_right": ""
           }
         },
         "ticker_1": {
@@ -370,7 +378,7 @@
         "product_1": {
           "type": "product",
           "settings": {
-            "product_image": "shopify://shop_images/Primary-Mockup_12_3.png",
+            "product_image": "shopify://shop_images/Primary-Mockup_12_1.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2.png",
             "figure_right": -100,
             "subtext": "LAPTOP NECK",
