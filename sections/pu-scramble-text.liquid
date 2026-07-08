@@ -24,10 +24,20 @@
                 {% assign scramble_prev_content = true %}
               {% when 'scramble_patch' %}
                 {% if scramble_prev_content %} {% endif %}
+                {% assign patch_positioned = false %}
+                {% if block.settings.position_top != blank or block.settings.position_left != blank or block.settings.position_bottom != blank or block.settings.position_right != blank %}
+                  {% assign patch_positioned = true %}
+                {% endif %}
                 <span
-                  class="pu-scramble__patch"
+                  class="pu-scramble__patch{% if patch_positioned %} pu-scramble__patch--positioned{% endif %}"
                   data-pu-scramble-patch
-                  style="--patch-rotate: {{ block.settings.rotation | default: -6 }}deg;"
+                  style="
+                    --patch-rotate: {{ block.settings.rotation | default: -6 }}deg;
+                    {%- if block.settings.position_top != blank %} top: {{ block.settings.position_top }};{% endif %}
+                    {%- if block.settings.position_left != blank %} left: {{ block.settings.position_left }};{% endif %}
+                    {%- if block.settings.position_bottom != blank %} bottom: {{ block.settings.position_bottom }};{% endif %}
+                    {%- if block.settings.position_right != blank %} right: {{ block.settings.position_right }};{% endif %}
+                  "
                   {{ block.shopify_attributes }}
                 >
                   {{- block.settings.text -}}
@@ -127,6 +137,10 @@
     z-index: 10;
   }
 
+  .pu-scramble__text-wrap {
+    position: relative;
+  }
+
   .pu-scramble__text {
     font-family: var(--pu-font-display);
     font-size: clamp(48px, 10vw, 142px);
@@ -167,6 +181,12 @@
     transform: rotate(var(--patch-rotate));
     transform-origin: center center;
     will-change: transform, opacity;
+  }
+
+  .pu-scramble__patch--positioned {
+    position: absolute;
+    z-index: 5;
+    margin: 0;
   }
 
   .pu-scramble__video {
@@ -327,7 +347,7 @@
       "settings": [
         {
           "type": "paragraph",
-          "content": "A small rotated sticker-style word inserted inline, e.g. \"LITTLE\" or \"HAVE\"."
+          "content": "A small rotated sticker-style word, e.g. \"LITTLE\" or \"HAVE\". Leave position fields blank to place it inline with the text; fill any of them in to pin it on top of the text instead."
         },
         {
           "type": "text",
@@ -344,6 +364,34 @@
           "step": 1,
           "unit": "deg",
           "default": -6
+        },
+        {
+          "type": "header",
+          "content": "Position (optional)"
+        },
+        {
+          "type": "paragraph",
+          "content": "Set any combination of Top, Left, Bottom, Right (e.g. \"12%\" or \"20px\") to pin the patch to a fixed spot over the text."
+        },
+        {
+          "type": "text",
+          "id": "position_top",
+          "label": "Top"
+        },
+        {
+          "type": "text",
+          "id": "position_left",
+          "label": "Left"
+        },
+        {
+          "type": "text",
+          "id": "position_bottom",
+          "label": "Bottom"
+        },
+        {
+          "type": "text",
+          "id": "position_right",
+          "label": "Right"
         }
       ]
     },
@@ -484,7 +532,9 @@
           "type": "scramble_patch",
           "settings": {
             "text": "LITTLE",
-            "rotation": -6
+            "rotation": -6,
+            "position_top": "44%",
+            "position_left": "0%"
           }
         },
         {
@@ -497,7 +547,9 @@
           "type": "scramble_patch",
           "settings": {
             "text": "HAVE",
-            "rotation": 5
+            "rotation": 5,
+            "position_top": "66%",
+            "position_left": "10%"
           }
         },
         {

@@ -46,7 +46,7 @@
   z-index: 2;
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr minmax(280px, 438px);
+  grid-template-columns: 1fr minmax(400px, 560px);
   gap: clamp(24px, 5vw, 64px);
   align-items: center;
   max-width: 1348px;
@@ -231,14 +231,14 @@
 .pu-pdp-hero__product {
   position: relative;
   z-index: 2;
-  width: min(291px, 42vw);
+  width: 360px;
 }
 
 .pu-pdp-hero__product img {
   display: block;
   width: 100% !important;
   max-width: none !important;
-  height: auto !important;
+  height: 500px !important;
   object-fit: contain;
 }
 
@@ -913,15 +913,15 @@
 }
 
 .pu-showcase-card--tone-1 {
-  background: #8fa882;
+  background: #0064E7;
 }
 
 .pu-showcase-card--tone-2 {
-  background: #8fa8d4;
+  background: #6E36B9;
 }
 
 .pu-showcase-card--tone-3 {
-  background: #c98f72;
+  background: #F46300;
 }
 
 .pu-showcase-card__head {
@@ -1010,7 +1010,7 @@
   right: 0;
   bottom: 0;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   min-height: 56px;
   z-index: 3;
 }
@@ -1064,8 +1064,8 @@
 .pu-showcase-card__buy {
   display: flex;
   align-items: stretch;
-  background: var(--pu-navy);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  padding: 8px;
 }
 
 .pu-showcase-card__form {
@@ -1075,43 +1075,33 @@
   margin: 0;
 }
 
-.pu-showcase-card__buy-price {
-  flex: 1;
-  display: flex;
-  align-items: center;
+.pu-showcase-card__buy-btn {
+  width: 100%;
+  min-height: 48px;
   padding: 0 16px;
+  border: none;
+  border-bottom: 4px solid #000000;
+  border-right: 4px solid #000000;
+  border-radius: 8px;
+  background: #fceb00;
   font-family: var(--pu-font-display);
   font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--pu-white);
-  white-space: nowrap;
-}
-
-.pu-showcase-card__buy-btn {
-  flex: 1;
-  min-height: 56px;
-  padding: 0 16px;
-  border: none;
-  border-left: 1px solid rgba(255, 255, 255, 0.15);
-  background: transparent;
-  font-family: var(--pu-font-display);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: .06em;
   text-transform: uppercase;
-  color: var(--pu-white);
+  color: #000000;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: transform .2s ease;
 }
 
 .pu-showcase-card__buy-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
 }
 
 .pu-showcase-card__buy-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* ─── Responsive ─── */

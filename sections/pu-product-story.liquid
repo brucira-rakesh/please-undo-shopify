@@ -1,13 +1,22 @@
 <section class="pu-pdp-story" id="pu-pdp-story">
   <div class="pu-pdp-story__rays-wrap" aria-hidden="true">
-    <img class="pu-pdp-story__rays" src="{{ 'pu-purple-rays.png' | asset_url }}" alt="" width="1441" height="927" loading="lazy">
+    <img
+      class="pu-pdp-story__rays"
+      src="{{ 'pu-purple-rays.png' | asset_url }}"
+      alt=""
+      width="1441"
+      height="927"
+      loading="lazy"
+    >
   </div>
 
   <div class="pu-pdp-story__inner">
     <div class="pu-pdp-story__content">
-      {% if section.settings.patch_1 != blank %}
-        <span class="pu-sticker pu-pdp-story__patch pu-pdp-story__patch--1">{{ section.settings.patch_1 }}</span>
-      {% endif %}
+      {% comment %}
+        {% if section.settings.patch_1 != blank %}
+          <span class="pu-sticker pu-pdp-story__patch pu-pdp-story__patch--1">{{ section.settings.patch_1 }}</span>
+        {% endif %}
+      {% endcomment %}
 
       <h2 class="pu-pdp-story__headline">
         {{ section.settings.headline_before }}
@@ -20,7 +29,10 @@
         {% elsif product.description != blank %}
           {{ product.description | strip_html | truncate: 280 }}
         {% else %}
-          <p>Life isn't all fun and frolic. Some pains need a quick reset — this roll-on targets the silly ones you collect at your desk.</p>
+          <p>
+            Life isn't all fun and frolic. Some pains need a quick reset — this roll-on targets the silly ones you
+            collect at your desk.
+          </p>
         {% endif %}
       </div>
     </div>

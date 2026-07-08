@@ -119,19 +119,19 @@ function initImageScrollSequence(section) {
   const handoffFrame = parseInt(sequence.dataset.sequenceHandoffFrame, 10) || 380;
   const basename = sequence.dataset.sequenceBasename || '';
   const templateUrl = sequence.dataset.sequenceUrl;
-  const sequenceScrollVh = Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 170);
-  const gallerySetScrollVh = Math.max(
-    50,
-    parseInt(galleryLayer.dataset.gallerySetScrollVh, 10) || 60
-  );
-  const galleryHoldScrollVh = Math.max(
-    40,
-    parseInt(galleryLayer.dataset.galleryHoldScrollVh, 10) || 45
-  );
-  const galleryLastTransitionScrollVh = Math.max(
-    50,
-    parseInt(galleryLayer.dataset.galleryLastTransitionScrollVh, 10) || 80
-  );
+  // Stretches the pinned scroll distance so the sequence/gallery play back slower than their configured speed.
+  const SCROLL_SPEED_MULTIPLIER = 4 / 1.1;
+  const sequenceScrollVh =
+    Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 170) * SCROLL_SPEED_MULTIPLIER;
+  const gallerySetScrollVh =
+    Math.max(50, parseInt(galleryLayer.dataset.gallerySetScrollVh, 10) || 60) *
+    SCROLL_SPEED_MULTIPLIER;
+  const galleryHoldScrollVh =
+    Math.max(40, parseInt(galleryLayer.dataset.galleryHoldScrollVh, 10) || 45) *
+    SCROLL_SPEED_MULTIPLIER;
+  const galleryLastTransitionScrollVh =
+    Math.max(50, parseInt(galleryLayer.dataset.galleryLastTransitionScrollVh, 10) || 80) *
+    SCROLL_SPEED_MULTIPLIER;
 
   if (!templateUrl || !basename) return null;
 
@@ -185,7 +185,8 @@ function initImageScrollSequence(section) {
   let currentGalleryTransitionOffset = 0;
   let lastSettledTransitionOffset = 0;
   const galleryFadeDuration = 0.72;
-  const getGalleryScrollArm = () => Math.max(24, getGallerySegment() * 0.12);
+  // Scroll "deadzone" past a set's threshold before its fade-in fires; reduced 15% so less scrolling is needed to trigger it.
+  const getGalleryScrollArm = () => Math.max(24, getGallerySegment() * 0.12) * 0.85;
 
   const markLoaded = () => {
     sequence.classList.add('is-loaded');
@@ -911,6 +912,7 @@ function initProductSlider() {
 let heroParallaxCleanup = null;
 let scrambleVideoCleanup = null;
 let scrambleTickerCleanup = null;
+let svgGridRevertTimer = null;
 
 function initScrambleTicker() {
   const root = document.querySelector('[data-pu-product-ticker]');
@@ -1220,36 +1222,51 @@ function initSvgGrid() {
   const keyCap = btn?.querySelector('.pu-svg-grid__key-cap');
   const cards = section.querySelectorAll('[data-pu-svg-card]');
   let swapped = false;
+  const SWAP_REVERT_DELAY = 5000;
 
+  const reducedMotionActive = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // GSAP owns the key-cap transform for the whole press/release/swap gesture — mixing
+  // it with the CSS transition on the same property caused the two to fight and jerk.
+  // Every tween below animates from wherever the cap actually is, never a hardcoded snap.
   const setKeyPressed = (pressed) => {
     btn?.classList.toggle('is-pressing', pressed);
+
+    if (!keyCap || !gsap || reducedMotionActive()) return;
+
+    gsap.killTweensOf(keyCap);
+    gsap.to(keyCap, {
+      y: pressed ? (swapped ? 11 : 10) : swapped ? 8 : 0,
+      scale: pressed ? (swapped ? 0.98 : 0.985) : swapped ? 0.99 : 1,
+      duration: pressed ? 0.07 : 0.18,
+      ease: pressed ? 'power2.in' : 'power2.out',
+      onComplete: () => {
+        if (!pressed) gsap.set(keyCap, { clearProps: 'transform' });
+      },
+    });
   };
 
   const animateKeyPress = () => {
-    if (!keyCap || !gsap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!keyCap || !gsap || reducedMotionActive()) return;
 
     gsap.killTweensOf(keyCap);
-    gsap.fromTo(
-      keyCap,
-      { y: swapped ? 8 : 0, scale: swapped ? 0.99 : 1 },
-      {
+    gsap
+      .timeline()
+      .to(keyCap, {
         y: swapped ? 11 : 10,
-        scale: 0.985,
+        scale: swapped ? 0.98 : 0.985,
         duration: 0.07,
         ease: 'power2.in',
+      })
+      .to(keyCap, {
+        y: swapped ? 8 : 0,
+        scale: swapped ? 0.99 : 1,
+        duration: swapped ? 0.18 : 0.38,
+        ease: swapped ? 'power2.out' : 'back.out(2.4)',
         onComplete: () => {
-          gsap.to(keyCap, {
-            y: swapped ? 8 : 0,
-            scale: swapped ? 0.99 : 1,
-            duration: swapped ? 0.18 : 0.38,
-            ease: swapped ? 'power2.out' : 'back.out(2.4)',
-            onComplete: () => {
-              gsap.set(keyCap, { clearProps: 'transform' });
-            },
-          });
+          gsap.set(keyCap, { clearProps: 'transform' });
         },
-      }
-    );
+      });
   };
 
   btn?.addEventListener('pointerdown', () => setKeyPressed(true));
@@ -1273,8 +1290,8 @@ function initSvgGrid() {
 
   cards.forEach((card) => setCardTileColor(card, swapped));
 
-  btn?.addEventListener('click', () => {
-    swapped = !swapped;
+  const applySwap = (nextSwapped) => {
+    swapped = nextSwapped;
     btn.classList.toggle('is-active', swapped);
     btn.setAttribute('aria-pressed', swapped ? 'true' : 'false');
     section.classList.toggle('is-swapped', swapped);
@@ -1293,6 +1310,22 @@ function initSvgGrid() {
         );
       }
     });
+  };
+
+  btn?.addEventListener('click', () => {
+    if (svgGridRevertTimer) {
+      clearTimeout(svgGridRevertTimer);
+      svgGridRevertTimer = null;
+    }
+
+    applySwap(!swapped);
+
+    if (swapped) {
+      svgGridRevertTimer = setTimeout(() => {
+        svgGridRevertTimer = null;
+        applySwap(false);
+      }, SWAP_REVERT_DELAY);
+    }
   });
 }
 
@@ -1314,6 +1347,8 @@ function destroyAnimations() {
   productSliderSwingTween = null;
   destroyProductSliderScroll();
   destroyImageScrollSequence();
+  clearTimeout(svgGridRevertTimer);
+  svgGridRevertTimer = null;
   document.querySelector('[data-pu-svg-grid]')?.removeAttribute('data-pu-svg-grid-init');
   ScrollTrigger?.getAll().forEach((st) => st.kill());
   gsap = null;

@@ -72,43 +72,45 @@
   </a>
 
   <div class="pu-showcase-card__bar">
-    {% if has_variants %}
-      <div class="pu-showcase-card__option">
-        <label class="visually-hidden" for="{{ form_id }}-select">Select option</label>
-        <select id="{{ form_id }}-select" class="pu-showcase-card__select" data-pu-showcase-select>
-          {% for variant in card_product.variants %}
-            <option
-              value="{{ variant.id }}"
-              data-price="{{ variant.price | money }}"
-              {% unless variant.available %}disabled{% endunless %}
-            >
-              {{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}
-            </option>
-          {% endfor %}
-        </select>
-        <span class="pu-showcase-card__option-label">Select option</span>
-        <img
-          class="pu-showcase-card__chevron"
-          src="{{ 'pu-icon-chevron.png' | asset_url }}"
-          alt=""
-          width="12"
-          height="12"
-          loading="lazy"
-        >
-      </div>
-    {% else %}
-      <a href="{{ card_product.url }}" class="pu-showcase-card__option pu-showcase-card__option--link">
-        <span class="pu-showcase-card__option-label">View product</span>
-        <img
-          class="pu-showcase-card__chevron"
-          src="{{ 'pu-icon-chevron.png' | asset_url }}"
-          alt=""
-          width="12"
-          height="12"
-          loading="lazy"
-        >
-      </a>
-    {% endif %}
+    {% comment %}
+      {% if has_variants %}
+        <div class="pu-showcase-card__option">
+          <label class="visually-hidden" for="{{ form_id }}-select">Select option</label>
+          <select id="{{ form_id }}-select" class="pu-showcase-card__select" data-pu-showcase-select>
+            {% for variant in card_product.variants %}
+              <option
+                value="{{ variant.id }}"
+                data-price="{{ variant.price | money }}"
+                {% unless variant.available %}disabled{% endunless %}
+              >
+                {{ variant.title }}{% unless variant.available %} — Sold out{% endunless %}
+              </option>
+            {% endfor %}
+          </select>
+          <span class="pu-showcase-card__option-label">Select option</span>
+          <img
+            class="pu-showcase-card__chevron"
+            src="{{ 'pu-icon-chevron.png' | asset_url }}"
+            alt=""
+            width="12"
+            height="12"
+            loading="lazy"
+          >
+        </div>
+      {% else %}
+        <a href="{{ card_product.url }}" class="pu-showcase-card__option pu-showcase-card__option--link">
+          <span class="pu-showcase-card__option-label">View product</span>
+          <img
+            class="pu-showcase-card__chevron"
+            src="{{ 'pu-icon-chevron.png' | asset_url }}"
+            alt=""
+            width="12"
+            height="12"
+            loading="lazy"
+          >
+        </a>
+      {% endif %}
+    {% endcomment %}
 
     <product-form-component
       class="pu-showcase-card__buy"
@@ -120,13 +122,14 @@
       <div class="visually-hidden" aria-live="polite" role="status" aria-atomic="true" ref="liveRegion"></div>
       {%- form 'product', card_product, id: form_id, class: 'pu-showcase-card__form', data-type: 'add-to-cart-form' -%}
         <input type="hidden" name="id" ref="variantId" value="{{ card_variant.id }}" data-pu-showcase-variant-input>
-        <span class="pu-showcase-card__buy-price" data-pu-showcase-price>{{ card_variant.price | money }}</span>
         <button
           type="submit"
           name="add"
           class="pu-showcase-card__buy-btn"
           ref="addToCartButton"
-          {% unless card_variant.available %}disabled{% endunless %}
+          {% unless card_variant.available %}
+            disabled
+          {% endunless %}
         >
           {% if card_variant.available %}
             Add to cart

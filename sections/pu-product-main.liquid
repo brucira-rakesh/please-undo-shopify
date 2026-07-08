@@ -49,24 +49,26 @@
         </div>
         <div class="pu-pdp-hero__shadow" aria-hidden="true"></div>
 
-        <div class="pu-pdp-hero__figure" aria-hidden="true">
-          {% if section.settings.figure_image != blank %}
-            {{
-              section.settings.figure_image
-              | image_url: width: 600
-              | image_tag: loading: 'lazy', alt: '', class: 'pu-pdp-hero__figure-img'
-            }}
-          {% else %}
-            <img
-              class="pu-pdp-hero__figure-img"
-              src="{{ 'pu-stick-figure-2.png' | asset_url }}"
-              alt=""
-              width="274"
-              height="332"
-              loading="lazy"
-            >
-          {% endif %}
-        </div>
+        {% comment %}
+          <div class="pu-pdp-hero__figure" aria-hidden="true">
+            {% if section.settings.figure_image != blank %}
+              {{
+                section.settings.figure_image
+                | image_url: width: 600
+                | image_tag: loading: 'lazy', alt: '', class: 'pu-pdp-hero__figure-img'
+              }}
+            {% else %}
+              <img
+                class="pu-pdp-hero__figure-img"
+                src="{{ 'laptop-pain.svg' | asset_url }}"
+                alt=""
+                width="274"
+                height="332"
+                loading="lazy"
+              >
+            {% endif %}
+          </div>
+        {% endcomment %}
       </div>
 
       <div class="pu-pdp-hero__gallery-grid" data-pu-gallery-grid>
@@ -145,7 +147,9 @@
               type="button"
               class="pu-pdp-hero__variant{% if variant.id == current_variant.id %} is-active{% endif %}"
               data-pu-variant-id="{{ variant.id }}"
-              {% unless variant.available %}disabled{% endunless %}
+              {% unless variant.available %}
+                disabled
+              {% endunless %}
             >
               {{ variant.title }}
             </button>
@@ -154,11 +158,13 @@
       {% endif %}
 
       <div class="pu-pdp-hero__cta">
-        {% if section.settings.features_label != blank %}
-          <a href="#pu-pdp-details" class="pu-pdp-hero__btn-outline" data-pu-scroll-features>
-            {{ section.settings.features_label }}
-          </a>
-        {% endif %}
+        {% comment %}
+          {% if section.settings.features_label != blank %}
+            <a href="#pu-pdp-details" class="pu-pdp-hero__btn-outline" data-pu-scroll-features>
+              {{ section.settings.features_label }}
+            </a>
+          {% endif %}
+        {% endcomment %}
 
         <product-form-component
           class="pu-pdp-hero__form"
@@ -177,7 +183,9 @@
               class="pu-btn pu-btn--yellow pu-pdp-hero__btn-buy"
               ref="addToCartButton"
               data-label-available="{{ section.settings.add_to_cart_label | default: 'SHOP NOW' }}"
-              {% unless current_variant.available %}disabled{% endunless %}
+              {% unless current_variant.available %}
+                disabled
+              {% endunless %}
             >
               {% if current_variant.available %}
                 {{ section.settings.add_to_cart_label | default: 'SHOP NOW' }}
@@ -206,7 +214,9 @@
     {% endfor %}
   </nav>
 
-  <script type="application/json" data-pu-product-json>{{ product | json }}</script>
+  <script type="application/json" data-pu-product-json>
+    {{ product | json }}
+  </script>
 </section>
 
 <div class="pu-pdp-sticky" data-pu-pdp-sticky hidden>
