@@ -243,8 +243,10 @@
         "sequence_handoff_frame": 380,
         "sequence_pad_digits": "5",
         "sequence_start_number": 54,
-        "sequence_scroll_vh": 120,
-        "gallery_set_scroll_vh": 55,
+        "sequence_scroll_vh": 220,
+        "gallery_set_scroll_vh": 60,
+        "gallery_hold_scroll_vh": 45,
+        "gallery_last_transition_scroll_vh": 80,
         "sequence_alt": "Every morning comes with a fresh start",
         "curve_text_1": "Every morning",
         "curve_text_2": "comes with a fresh start"
@@ -419,6 +421,9 @@
       ],
       "settings": {
         "title": "Pick your Undo.",
+        "slide_scroll_vh": 60,
+        "slide_last_transition_scroll_vh": 80,
+        "pin_hold_scroll_vh": 45,
         "collection": "",
         "products_limit": 6,
         "default_bullets": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>"

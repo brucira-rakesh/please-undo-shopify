@@ -194,7 +194,7 @@
   position: absolute;
   inset: 0;
   background-image: url('pu-texture.png');
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   mix-blend-mode: multiply;
   opacity: 0.36;

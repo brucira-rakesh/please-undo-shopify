@@ -6,7 +6,9 @@
   assign sequence_first_suffix = section.settings.sequence_first_frame | default: '00054' | strip
   assign sequence_handoff = section.settings.sequence_handoff_frame | default: 380
   assign sequence_storage = section.settings.sequence_storage | default: 'shop_files'
-  assign gallery_set_scroll = section.settings.gallery_set_scroll_vh | default: 55
+  assign gallery_set_scroll = section.settings.gallery_set_scroll_vh | default: 60
+  assign gallery_hold_scroll = section.settings.gallery_hold_scroll_vh | default: 45
+  assign gallery_last_transition_scroll = section.settings.gallery_last_transition_scroll_vh | default: 80
   assign has_sequence = false
   if sequence_basename != blank
     assign has_sequence = true
@@ -33,7 +35,7 @@
           data-sequence-url="{{ sequence_first_url }}"
           data-sequence-storage="{{ sequence_storage }}"
           data-sequence-handoff-frame="{{ sequence_handoff }}"
-          data-sequence-scroll-vh="{{ section.settings.sequence_scroll_vh | default: 120 }}"
+          data-sequence-scroll-vh="{{ section.settings.sequence_scroll_vh | default: 140 }}"
           aria-label="{{ section.settings.sequence_alt | default: 'Every morning comes with a fresh start' }}"
         >
           <div class="pu-image-scroll__sequence-stage">
@@ -149,6 +151,8 @@
         class="pu-image-scroll__gallery-layer"
         data-pu-scroll-gallery
         data-gallery-set-scroll-vh="{{ gallery_set_scroll }}"
+        data-gallery-hold-scroll-vh="{{ gallery_hold_scroll }}"
+        data-gallery-last-transition-scroll-vh="{{ gallery_last_transition_scroll }}"
         aria-hidden="true"
       >
         <div class="pu-image-scroll__bg" aria-hidden="true">
@@ -435,6 +439,7 @@
 
   .pu-image-scroll__seq-text-path--lower {
     font-size: clamp(44px, 5.5vw, 64px);
+    transform: translateY(16px);
   }
 
   .pu-image-scroll__seq-text--curve .pu-image-scroll__seq-text-path {
@@ -688,7 +693,7 @@
     max-width: 100%;
     font-family: 'Homemade Apple', cursive;
     font-size: clamp(22px, 2.8vw, 36px);
-    font-weight: 600;
+    /* font-weight: 600; */
     line-height: 1.15;
     color: var(--pu-white);
     text-shadow: 0 0 12px rgba(255, 255, 255, 0.35), 0 1px 3px rgba(0, 0, 0, 0.45);
@@ -1178,19 +1183,41 @@
       "max": 300,
       "step": 10,
       "unit": "vh",
-      "default": 120,
-      "info": "Scroll distance while playing frames up to the handoff frame."
+      "default": 170,
+      "info": "Scroll distance while playing frames up to the handoff frame. Higher values slow the sequence."
     },
     {
       "type": "range",
       "id": "gallery_set_scroll_vh",
       "label": "Gallery set scroll length",
-      "min": 30,
-      "max": 120,
+      "min": 50,
+      "max": 180,
       "step": 5,
       "unit": "vh",
-      "default": 55,
-      "info": "Scroll distance for each set of 3 images to fade in."
+      "default": 60,
+      "info": "Scroll distance for each group transition except the final one."
+    },
+    {
+      "type": "range",
+      "id": "gallery_last_transition_scroll_vh",
+      "label": "Gallery last transition scroll",
+      "min": 50,
+      "max": 180,
+      "step": 5,
+      "unit": "vh",
+      "default": 80,
+      "info": "Extra scroll for the transition into the final image group."
+    },
+    {
+      "type": "range",
+      "id": "gallery_hold_scroll_vh",
+      "label": "Gallery hold scroll (first & last group)",
+      "min": 40,
+      "max": 160,
+      "step": 5,
+      "unit": "vh",
+      "default": 45,
+      "info": "Extra scroll on the first image group before advancing, and on the last group before unpinning."
     },
     {
       "type": "text",

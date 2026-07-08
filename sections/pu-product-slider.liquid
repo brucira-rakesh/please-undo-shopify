@@ -19,20 +19,29 @@
   endif
 %}
 
-<section class="pu-product-slider" data-pu-product-slider data-pu-product-count="{{ slide_count }}">
-  <div class="pu-product-slider__pin" data-pu-product-pin>
-    <div class="pu-product-slider__texture pu-texture-overlay" aria-hidden="true"></div>
+<section
+  class="pu-product-slider"
+  data-pu-product-slider
+  data-pu-product-count="{{ slide_count }}"
+  data-slide-scroll-vh="{{ section.settings.slide_scroll_vh | default: 60 }}"
+  data-pin-hold-scroll-vh="{{ section.settings.pin_hold_scroll_vh | default: 45 }}"
+  data-slide-last-transition-scroll-vh="{{ section.settings.slide_last_transition_scroll_vh | default: 80 }}"
+>
+  <div class="pu-product-slider__texture pu-texture-overlay" aria-hidden="true"></div>
 
-    <div class="pu-product-slider__hang" data-pu-hanging-title>
-      <div class="pu-product-slider__swing">
-        {% comment %} data-pu-hang-swing {% endcomment %}
-        <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
-        <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
-        <div class="pu-product-slider__sign">
-          <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
-        </div>
+  <div class="pu-product-slider__hang" data-pu-hanging-title>
+    <div class="pu-product-slider__swing">
+      {% comment %} data-pu-hang-swing {% endcomment %}
+      <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
+      <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
+      <div class="pu-product-slider__sign">
+        <h2 class="pu-product-slider__title">{{ section.settings.title | default: 'Pick your Undo.' }}</h2>
       </div>
     </div>
+  </div>
+
+  <div class="pu-product-slider__pin" data-pu-product-pin>
+    <div class="pu-product-slider__texture pu-texture-overlay" aria-hidden="true"></div>
 
     <div class="pu-product-slider__viewport" data-pu-product-viewport>
       <div class="pu-product-slider__track" data-pu-product-track>
@@ -112,44 +121,42 @@
     position: relative;
     background: var(--pu-blue);
     overflow: visible;
+    padding-top: 8px;
+  }
+
+  .pu-product-slider > .pu-product-slider__texture {
+    z-index: 0;
+  }
+
+  .pu-product-slider__hang {
+    position: relative;
+    z-index: 2;
+    width: min(870px, 90vw);
+    margin: 0 auto 56px;
+    pointer-events: none;
+    transform-origin: top center;
   }
 
   .pu-product-slider__pin {
     position: relative;
     z-index: 1;
-    min-height: min(70vh, 760px);
+    min-height: min(56vh, 620px);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 8px 0 80px;
+    padding: 0 0 80px;
     background: var(--pu-blue);
-    overflow: visible;
+    overflow-x: clip;
   }
 
   .pu-product-slider__pin > .pu-product-slider__texture {
     z-index: 0;
   }
 
-  .pu-product-slider__hang,
   .pu-product-slider__viewport,
   .pu-product-slider__progress {
     position: relative;
     z-index: 1;
-  }
-
-  .pu-product-slider__hang {
-    position: relative;
-    z-index: 10;
-    width: min(870px, 90vw);
-    margin: 0 auto 56px;
-    pointer-events: none;
-    transform-origin: top center;
-    transition: transform 0.45s ease, margin-bottom 0.45s ease;
-  }
-
-  .pu-product-slider.is-pinned .pu-product-slider__hang {
-    transform: scale(0.65);
-    margin-bottom: 12px;
   }
 
   .pu-product-slider__swing {
@@ -223,18 +230,28 @@
     position: relative;
     width: 100%;
     overflow: hidden;
+    overflow-x: clip;
+    touch-action: pan-y;
+    isolation: isolate;
+    container-type: inline-size;
+    container-name: product-slider;
   }
 
   .pu-product-slider__track {
-    display: grid;
-    grid-template-columns: 1fr;
-    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    min-height: 1px;
+    will-change: transform;
   }
 
   .pu-product-slider__slide {
-    grid-area: 1 / 1;
-    width: 100%;
-    will-change: transform;
+    flex: 0 0 100cqw;
+    width: 100cqw;
+    min-width: 100cqw;
+    max-width: 100cqw;
+    box-sizing: border-box;
+    overflow: hidden;
     pointer-events: none;
   }
 
@@ -246,10 +263,13 @@
     position: relative;
     display: flex;
     gap: 40px;
+    width: 100%;
+    max-width: 100%;
     margin: 0 auto;
     padding: 40px 46px 80px;
     align-items: center;
     flex: 1;
+    box-sizing: border-box;
   }
 
   .pu-product-slider__content .pu-product-slider__info,
@@ -329,8 +349,9 @@
 
   .pu-product-slider__image-wrap {
     position: relative;
-    width: 240px;
-    height: 480px;
+    min-width: 160px;
+    width: 100%;
+    height: auto;
     overflow: visible;
   }
 
@@ -348,7 +369,7 @@
     right: var(--figure-right, -60px);
     bottom: 0;
     z-index: 2;
-    width: 160px;
+    width: 320px;
     height: auto;
     max-width: none !important;
     object-fit: contain;
@@ -409,10 +430,6 @@
     .pu-product-slider__hang {
       width: calc(100% - 32px);
       margin-bottom: 24px;
-    }
-
-    .pu-product-slider.is-pinned .pu-product-slider__hang {
-      margin-bottom: 16px;
     }
 
     .pu-product-slider__sign {
@@ -504,6 +521,39 @@
       "id": "title",
       "label": "Section title",
       "default": "Pick your Undo."
+    },
+    {
+      "type": "range",
+      "id": "slide_scroll_vh",
+      "label": "Scroll distance per product",
+      "min": 50,
+      "max": 180,
+      "step": 5,
+      "unit": "vh",
+      "default": 60,
+      "info": "Scroll distance for each product transition except the final one."
+    },
+    {
+      "type": "range",
+      "id": "slide_last_transition_scroll_vh",
+      "label": "Last product transition scroll",
+      "min": 50,
+      "max": 180,
+      "step": 5,
+      "unit": "vh",
+      "default": 80,
+      "info": "Extra scroll for the transition into the final product."
+    },
+    {
+      "type": "range",
+      "id": "pin_hold_scroll_vh",
+      "label": "Pin hold scroll (first & last product)",
+      "min": 40,
+      "max": 160,
+      "step": 5,
+      "unit": "vh",
+      "default": 45,
+      "info": "Extra scroll on the first product before advancing, and on the last product before unpinning."
     },
     {
       "type": "collection",

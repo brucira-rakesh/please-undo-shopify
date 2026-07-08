@@ -119,10 +119,18 @@ function initImageScrollSequence(section) {
   const handoffFrame = parseInt(sequence.dataset.sequenceHandoffFrame, 10) || 380;
   const basename = sequence.dataset.sequenceBasename || '';
   const templateUrl = sequence.dataset.sequenceUrl;
-  const sequenceScrollVh = Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 120);
+  const sequenceScrollVh = Math.max(60, parseInt(sequence.dataset.sequenceScrollVh, 10) || 170);
   const gallerySetScrollVh = Math.max(
-    30,
-    parseInt(galleryLayer.dataset.gallerySetScrollVh, 10) || 55
+    50,
+    parseInt(galleryLayer.dataset.gallerySetScrollVh, 10) || 60
+  );
+  const galleryHoldScrollVh = Math.max(
+    40,
+    parseInt(galleryLayer.dataset.galleryHoldScrollVh, 10) || 45
+  );
+  const galleryLastTransitionScrollVh = Math.max(
+    50,
+    parseInt(galleryLayer.dataset.galleryLastTransitionScrollVh, 10) || 80
   );
 
   if (!templateUrl || !basename) return null;
@@ -146,13 +154,38 @@ function initImageScrollSequence(section) {
 
   const getSequenceDistance = () => (sequenceScrollVh / 100) * window.innerHeight;
   const getGallerySegment = () => (gallerySetScrollVh / 100) * window.innerHeight;
-  const getGalleryTransitionCount = () => Math.max(0, totalSets - 1);
+  const getGalleryLastTransition = () => (galleryLastTransitionScrollVh / 100) * window.innerHeight;
+  const getGalleryHold = () => (galleryHoldScrollVh / 100) * window.innerHeight;
+  const getTransitionScroll = (transitionIndex) => {
+    if (transitionIndex >= totalSets - 2) return getGalleryLastTransition();
+    return getGallerySegment();
+  };
+  const getOffsetForSet = (setIndex) => {
+    let offset = 0;
+    for (let i = 0; i < setIndex; i += 1) {
+      offset += getTransitionScroll(i);
+    }
+    return offset;
+  };
+  const getGallerySetDistance = () => {
+    if (!totalSets || totalSets <= 1) return 0;
+    return getOffsetForSet(totalSets - 1);
+  };
   const getGalleryDistance = () => {
     if (!totalSets) return 0;
-    const transitions = getGalleryTransitionCount();
-    return getGallerySegment() * (transitions || 0.5);
+    if (totalSets === 1) return getGalleryHold();
+    return getGalleryHold() + getGallerySetDistance() + getGalleryHold();
   };
   const getTotalDistance = () => getSequenceDistance() + getGalleryDistance();
+
+  let activeGallerySet = 0;
+  let galleryFadeTween = null;
+  let galleryReady = false;
+  let galleryFadeLocked = false;
+  let currentGalleryTransitionOffset = 0;
+  let lastSettledTransitionOffset = 0;
+  const galleryFadeDuration = 0.72;
+  const getGalleryScrollArm = () => Math.max(24, getGallerySegment() * 0.12);
 
   const markLoaded = () => {
     sequence.classList.add('is-loaded');
@@ -316,28 +349,108 @@ function initImageScrollSequence(section) {
     });
   };
 
-  const setGallerySets = (setProgress) => {
+  const showGallerySet = (setIndex, { immediate = false } = {}) => {
     if (!totalSets) return;
+
+    const nextSet = Math.min(totalSets - 1, Math.max(0, setIndex));
+    activeGallerySet = nextSet;
+
+    galleryFadeTween?.kill();
+    galleryFadeTween = null;
 
     if (totalSets === 1) {
       galleryCards.forEach((card) => gsap.set(card, { opacity: 1 }));
       return;
     }
 
-    const maxSetProgress = totalSets - 1;
-    const clamped = gsap.utils.clamp(0, maxSetProgress, setProgress);
-    const activeSet = Math.min(totalSets - 1, Math.floor(clamped));
-    const blend = clamped - activeSet;
+    if (immediate) {
+      galleryFadeLocked = false;
+      galleryCards.forEach((card) => {
+        const set = parseInt(card.dataset.set, 10);
+        gsap.set(card, { opacity: set === nextSet ? 1 : 0 });
+      });
+      return;
+    }
 
+    galleryFadeLocked = true;
+    lastSettledTransitionOffset = currentGalleryTransitionOffset;
+
+    const timeline = gsap.timeline({
+      onComplete: () => {
+        galleryFadeLocked = false;
+        lastSettledTransitionOffset = currentGalleryTransitionOffset;
+      },
+    });
     galleryCards.forEach((card) => {
       const set = parseInt(card.dataset.set, 10);
-      let opacity = 0;
-
-      if (set === activeSet) opacity = 1 - blend;
-      else if (set === activeSet + 1) opacity = blend;
-
-      gsap.set(card, { opacity });
+      timeline.to(
+        card,
+        {
+          opacity: set === nextSet ? 1 : 0,
+          duration: galleryFadeDuration,
+          ease: 'power2.inOut',
+          overwrite: true,
+        },
+        0
+      );
     });
+    galleryFadeTween = timeline;
+  };
+
+  const stepGalleryFromOffset = (transitionOffset) => {
+    if (totalSets <= 1) return;
+
+    currentGalleryTransitionOffset = transitionOffset;
+    if (galleryFadeLocked) return;
+
+    const forwardThreshold = getOffsetForSet(activeGallerySet + 1);
+    const backwardThreshold = getOffsetForSet(activeGallerySet);
+    const scrollArm = getGalleryScrollArm();
+
+    if (
+      transitionOffset >= forwardThreshold &&
+      activeGallerySet < totalSets - 1 &&
+      transitionOffset >= lastSettledTransitionOffset + scrollArm
+    ) {
+      showGallerySet(activeGallerySet + 1);
+      return;
+    }
+
+    if (
+      transitionOffset < backwardThreshold &&
+      activeGallerySet > 0 &&
+      transitionOffset <= lastSettledTransitionOffset - scrollArm
+    ) {
+      showGallerySet(activeGallerySet - 1);
+    }
+  };
+
+  const syncGalleryFromOffset = (galleryOffset) => {
+    if (!totalSets) return;
+
+    showGalleryLayer();
+
+    if (!galleryReady) {
+      showGallerySet(0, { immediate: true });
+      galleryReady = true;
+    }
+
+    if (totalSets === 1) {
+      return;
+    }
+
+    const galleryHold = getGalleryHold();
+
+    if (galleryOffset < galleryHold) {
+      currentGalleryTransitionOffset = 0;
+      lastSettledTransitionOffset = 0;
+      if (activeGallerySet !== 0) showGallerySet(0);
+      return;
+    }
+
+    const transitionOffset = galleryOffset - galleryHold;
+
+    stepGalleryFromOffset(transitionOffset);
   };
 
   const showSequenceLayer = () => {
@@ -356,7 +469,6 @@ function initImageScrollSequence(section) {
 
   const syncFromScroll = (scrollOffset) => {
     const sequenceDistance = getSequenceDistance();
-    const galleryDistance = getGalleryDistance();
 
     if (scrollOffset < sequenceDistance) {
       showSequenceLayer();
@@ -373,21 +485,14 @@ function initImageScrollSequence(section) {
 
     if (!totalSets) return;
 
-    showGalleryLayer();
-    const galleryOffset = scrollOffset - sequenceDistance;
-    const maxSetProgress = Math.max(0, totalSets - 1);
-    const setProgress =
-      maxSetProgress > 0
-        ? gsap.utils.clamp(0, maxSetProgress, (galleryOffset / galleryDistance) * maxSetProgress)
-        : 0;
-    setGallerySets(setProgress);
+    syncGalleryFromOffset(scrollOffset - sequenceDistance);
   };
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     applyFrame(0);
     if (totalSets) {
       showGalleryLayer();
-      setGallerySets(Math.max(0, totalSets - 1));
+      showGallerySet(Math.max(0, totalSets - 1), { immediate: true });
     }
     imageScrollSequenceState = { cleanup: () => {} };
     return imageScrollSequenceState;
@@ -427,10 +532,17 @@ function initImageScrollSequence(section) {
     cleanup() {
       tween.scrollTrigger?.kill();
       tween.kill();
+      galleryFadeTween?.kill();
+      galleryFadeTween = null;
       hideSequenceTexts();
       galleryCards.forEach((card) => gsap.set(card, { clearProps: 'opacity' }));
       sequenceLayer.classList.add('is-active');
       galleryLayer.classList.remove('is-active');
+      activeGallerySet = 0;
+      galleryReady = false;
+      galleryFadeLocked = false;
+      currentGalleryTransitionOffset = 0;
+      lastSettledTransitionOffset = 0;
     },
   };
 
@@ -602,52 +714,158 @@ function initProductSlider() {
   if (!gsap || !ScrollTrigger) return;
 
   const pin = section.querySelector('[data-pu-product-pin]');
+  const viewport = section.querySelector('[data-pu-product-viewport]');
   const track = section.querySelector('[data-pu-product-track]');
   const slides = section.querySelectorAll('[data-pu-product-slide]');
   const segments = section.querySelectorAll('[data-pu-progress-segment]');
-
-  const setSlidePositions = (rawIndex) => {
-    const activeIndex = Math.round(rawIndex);
-    slides.forEach((slide, i) => {
-      const offset = i - rawIndex;
-      gsap.set(slide, {
-        xPercent: offset * 100,
-        opacity: Math.abs(offset) <= 1 ? 1 : 0,
-        zIndex: i === activeIndex ? 2 : 1,
-      });
-      slide.classList.toggle('is-active', i === activeIndex);
-    });
-  };
 
   const setProgress = (index, total) => {
     if (!segments.length || total <= 1) return;
     segments.forEach((seg, i) => seg.classList.toggle('is-active', i === index));
   };
 
-  if (!pin || !track || slides.length === 0) return;
+  const getViewportWidth = () => {
+    if (!viewport) return 0;
+    return Math.round(viewport.getBoundingClientRect().width);
+  };
+
+  let activeIndex = 0;
+
+  const getScrollOffset = (self) => self.scroll() - self.start;
+
+  const goToSlide = (index, { immediate = false, duration = 0.5 } = {}) => {
+    const viewportWidth = getViewportWidth();
+    if (!viewportWidth || !track) return;
+
+    const nextIndex = Math.min(slides.length - 1, Math.max(0, index));
+    activeIndex = nextIndex;
+
+    productSliderSlideTween?.kill();
+    productSliderSlideTween = null;
+
+    const x = -nextIndex * viewportWidth;
+    if (immediate) {
+      gsap.set(track, { x });
+    } else {
+      productSliderSlideTween = gsap.to(track, {
+        x,
+        duration,
+        ease: 'power3.inOut',
+        overwrite: true,
+      });
+    }
+
+    slides.forEach((slide, i) => slide.classList.toggle('is-active', i === nextIndex));
+    setProgress(nextIndex, slides.length);
+  };
+
+  if (!pin || !viewport || !track || slides.length === 0) return;
 
   section.classList.remove('is-pinned');
 
-  slides.forEach((slide) => gsap.set(slide, { clearProps: 'transform,opacity,zIndex' }));
-
-  setSlidePositions(0);
-  setProgress(0, slides.length);
+  gsap.set(track, { clearProps: 'transform' });
+  slides.forEach((slide) => slide.classList.remove('is-active'));
+  activeIndex = 0;
+  goToSlide(0, { immediate: true });
 
   if (slides.length <= 1) return;
 
   destroyProductSliderScroll();
 
   const total = slides.length;
-  const getScrollPerSlide = () => Math.max(window.innerHeight * 0.75, 520);
-  const getPinLeadIn = () => Math.max(window.innerHeight * 0.4, 320);
+  const slideScrollVh = Math.max(50, parseInt(section.dataset.slideScrollVh, 10) || 60);
+  const pinHoldScrollVh = Math.max(40, parseInt(section.dataset.pinHoldScrollVh, 10) || 45);
+  const slideLastTransitionScrollVh = Math.max(
+    50,
+    parseInt(section.dataset.slideLastTransitionScrollVh, 10) || 80
+  );
+  const getSlideSegment = () => (slideScrollVh / 100) * window.innerHeight;
+  const getSlideLastTransition = () => (slideLastTransitionScrollVh / 100) * window.innerHeight;
+  const getPinHold = () => (pinHoldScrollVh / 100) * window.innerHeight;
+  const getTransitionScroll = (transitionIndex) => {
+    if (transitionIndex >= total - 2) return getSlideLastTransition();
+    return getSlideSegment();
+  };
+  const getOffsetForSlide = (slideIndex) => {
+    let offset = 0;
+    for (let i = 0; i < slideIndex; i += 1) {
+      offset += getTransitionScroll(i);
+    }
+    return offset;
+  };
+  const getSlideDistance = () => {
+    if (total <= 1) return 0;
+    return getOffsetForSlide(total - 1);
+  };
+  const getTotalDistance = () => getPinHold() + getSlideDistance() + getPinHold();
 
-  const getSlideProgress = (scrollProgress) => {
-    const leadIn = getPinLeadIn();
-    const slideDistance = Math.max((total - 1) * getScrollPerSlide(), 1);
-    const leadInRatio = leadIn / (leadIn + slideDistance);
+  const stepSlideFromOffset = (slideOffset) => {
+    const forwardThreshold = getOffsetForSlide(activeIndex + 1);
+    const backwardThreshold = getOffsetForSlide(activeIndex);
 
-    if (scrollProgress <= leadInRatio) return 0;
-    return (scrollProgress - leadInRatio) / (1 - leadInRatio);
+    if (slideOffset >= forwardThreshold && activeIndex < total - 1) {
+      goToSlide(activeIndex + 1);
+      return;
+    }
+
+    if (slideOffset < backwardThreshold && activeIndex > 0) {
+      goToSlide(activeIndex - 1);
+    }
+  };
+
+  const getIndexForSlideOffset = (slideOffset) => {
+    let index = 0;
+    for (let i = 0; i < total; i += 1) {
+      if (slideOffset >= getOffsetForSlide(i)) index = i;
+    }
+    return index;
+  };
+
+  const getOffsetForSlideIndex = (slideIndex) => getPinHold() + getOffsetForSlide(slideIndex);
+
+  const getSnapProgress = (progress) => {
+    const totalDistance = getTotalDistance();
+    const scrollOffset = progress * totalDistance;
+    const pinHold = getPinHold();
+    const slideDistance = getSlideDistance();
+    const slideEnd = pinHold + slideDistance;
+
+    if (scrollOffset <= pinHold * 0.5) return 0;
+    if (scrollOffset < pinHold) return pinHold / totalDistance;
+
+    if (scrollOffset >= slideEnd + getPinHold() * 0.5) return 1;
+    if (scrollOffset > slideEnd) return slideEnd / totalDistance;
+
+    const candidates = [getOffsetForSlideIndex(activeIndex)];
+    if (activeIndex > 0) candidates.push(getOffsetForSlideIndex(activeIndex - 1));
+    if (activeIndex < total - 1) candidates.push(getOffsetForSlideIndex(activeIndex + 1));
+
+    const snappedOffset = candidates.reduce((closest, candidate) =>
+      Math.abs(candidate - scrollOffset) < Math.abs(closest - scrollOffset) ? candidate : closest
+    );
+
+    return snappedOffset / totalDistance;
+  };
+
+  const syncFromScroll = (scrollOffset) => {
+    const pinHold = getPinHold();
+    const slideDistance = getSlideDistance();
+
+    if (scrollOffset < pinHold) {
+      if (activeIndex !== 0) goToSlide(0);
+      return;
+    }
+
+    const slideOffset = scrollOffset - pinHold;
+
+    if (slideOffset > slideDistance) {
+      if (activeIndex < total - 1) {
+        goToSlide(activeIndex + 1);
+      }
+      return;
+    }
+
+    stepSlideFromOffset(slideOffset);
   };
 
   const setProductSliderPinned = (pinned) => {
@@ -655,26 +873,32 @@ function initProductSlider() {
   };
 
   productSliderScrollTrigger = ScrollTrigger.create(
-    scrollTriggerConfig(section, {
+    scrollTriggerConfig(pin, {
       id: 'pu-product-slider',
       start: 'top top',
-      end: () => {
-        const leadIn = getPinLeadIn();
-        const slideDistance = Math.max((total - 1) * getScrollPerSlide(), 1);
-        return `+=${leadIn + slideDistance}`;
-      },
-      pin: pin,
+      end: () => `+=${getTotalDistance()}`,
+      pin,
       pinSpacing: true,
       anticipatePin: 1,
       invalidateOnRefresh: true,
+      snap: {
+        snapTo: (progress) => getSnapProgress(progress),
+        duration: { min: 0.2, max: 0.55 },
+        delay: 0.04,
+        ease: 'power3.inOut',
+      },
       onEnter: () => setProductSliderPinned(true),
       onEnterBack: () => setProductSliderPinned(true),
       onLeave: () => setProductSliderPinned(false),
       onLeaveBack: () => setProductSliderPinned(false),
-      onUpdate: (self) => {
-        const rawIndex = getSlideProgress(self.progress) * (total - 1);
-        setSlidePositions(rawIndex);
-        setProgress(Math.round(rawIndex), total);
+      onUpdate(self) {
+        syncFromScroll(getScrollOffset(self));
+      },
+      onRefresh(self) {
+        const scrollOffset = getScrollOffset(self);
+        const slideOffset = Math.max(0, scrollOffset - getPinHold());
+        activeIndex = getIndexForSlideOffset(slideOffset);
+        goToSlide(activeIndex, { immediate: true });
       },
     })
   );
