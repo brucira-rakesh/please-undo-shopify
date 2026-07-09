@@ -19,6 +19,23 @@
       assign sequence_first_url = sequence_first_file | file_url
     endif
   endif
+
+  assign sequence_basename_mobile = section.settings.sequence_basename_mobile | strip
+  assign sequence_frames_mobile = section.settings.sequence_frame_count_mobile | default: 378
+  assign sequence_pad_mobile = section.settings.sequence_pad_digits_mobile | default: 5
+  assign sequence_start_mobile = section.settings.sequence_start_number_mobile | default: 1
+  assign sequence_first_suffix_mobile = section.settings.sequence_first_frame_mobile | default: '00001' | strip
+  assign sequence_handoff_mobile = section.settings.sequence_handoff_frame_mobile | default: 378
+  assign has_sequence_mobile = false
+  if sequence_basename_mobile != blank
+    assign has_sequence_mobile = true
+    assign sequence_first_file_mobile = sequence_basename_mobile | append: sequence_first_suffix_mobile | append: '.png'
+    if sequence_storage == 'theme_assets'
+      assign sequence_first_url_mobile = sequence_first_file_mobile | asset_url
+    else
+      assign sequence_first_url_mobile = sequence_first_file_mobile | file_url
+    endif
+  endif
 %}
 
 <section class="pu-image-scroll{% if has_sequence %} pu-image-scroll--has-sequence{% endif %}" data-pu-image-scroll>
@@ -36,6 +53,13 @@
           data-sequence-storage="{{ sequence_storage }}"
           data-sequence-handoff-frame="{{ sequence_handoff }}"
           data-sequence-scroll-vh="{{ section.settings.sequence_scroll_vh | default: 140 }}"
+          {% if has_sequence_mobile %}
+            data-sequence-mobile-basename="{{ sequence_basename_mobile }}"
+            data-sequence-mobile-url="{{ sequence_first_url_mobile }}"
+            data-sequence-mobile-pad="{{ sequence_pad_mobile }}"
+            data-sequence-mobile-start="{{ sequence_start_mobile }}"
+            data-sequence-mobile-handoff-frame="{{ sequence_handoff_mobile }}"
+          {% endif %}
           aria-label="{{ section.settings.sequence_alt | default: 'Every morning comes with a fresh start' }}"
         >
           <div class="pu-image-scroll__sequence-stage">
@@ -49,6 +73,16 @@
               fetchpriority="high"
               decoding="sync"
             >
+            {% if has_sequence_mobile %}
+              <script>
+                (function () {
+                  var img = document.currentScript.previousElementSibling;
+                  if (img && window.matchMedia('(max-width: 749px)').matches) {
+                    img.src = {{ sequence_first_url_mobile | json }};
+                  }
+                })();
+              </script>
+            {% endif %}
             <img
               class="pu-image-scroll__sequence-img"
               data-pu-sequence-frame
@@ -203,7 +237,7 @@
                       {% endif %}
                       {% if block.settings.overlay_text != blank %}
                         <p
-                          class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}"
+                          class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}{% if block.settings.overlay_position_mobile != blank %} pu-image-scroll__overlay--has-mobile-position pu-image-scroll__overlay--mobile-{{ block.settings.overlay_position_mobile }}{% endif %}"
                           style="--overlay-rotate: {{ block.settings.overlay_rotation | default: 0 }}deg"
                         >
                           {{- block.settings.overlay_text -}}
@@ -288,7 +322,7 @@
                   {% endif %}
                   {% if block.settings.overlay_text != blank %}
                     <p
-                      class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}"
+                      class="pu-image-scroll__overlay pu-image-scroll__overlay--{{ block.settings.overlay_position | default: 'bottom-left' }}{% if block.settings.overlay_position_mobile != blank %} pu-image-scroll__overlay--has-mobile-position pu-image-scroll__overlay--mobile-{{ block.settings.overlay_position_mobile }}{% endif %}"
                       style="--overlay-rotate: {{ block.settings.overlay_rotation | default: 0 }}deg"
                     >
                       {{- block.settings.overlay_text -}}
@@ -386,6 +420,7 @@
     object-position: center bottom;
     opacity: 0;
     pointer-events: none;
+    will-change: opacity;
   }
 
   .pu-image-scroll__sequence-img.is-visible {
@@ -690,9 +725,9 @@
     position: absolute;
     z-index: 2;
     margin: 0;
-    max-width: 100%;
+    max-width: 374px;
     font-family: 'Homemade Apple', cursive;
-    font-size: clamp(22px, 2.8vw, 36px);
+    font-size: 28px;
     /* font-weight: 600; */
     line-height: 1.15;
     color: var(--pu-white);
@@ -738,10 +773,35 @@
     text-align: left;
   }
 
+  .pu-image-scroll__overlay--center {
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%) rotate(var(--overlay-rotate, 0deg));
+  }
+
   @media (max-width: 749px) {
-    .pu-image-scroll__seq-text-path,
-    .pu-image-scroll__seq-text-path--lower,
-    .pu-image-scroll__seq-text--curve .pu-image-scroll__seq-text-path,
+    /*
+      These font-sizes are SVG user units, not screen pixels: the <text> lives
+      inside a viewBox="0 0 1440 400" svg that's scaled down to the (much
+      narrower) mobile viewport width, so the value must be inflated by
+      roughly (1440 / viewport width) to still render legibly on screen.
+    */
+    .pu-image-scroll__seq-text-path {
+      font-size: 118px;
+      letter-spacing: -0.03em;
+    }
+
+    .pu-image-scroll__seq-text-path--lower {
+      font-size: 103px;
+      letter-spacing: -0.03em;
+    }
+
+    .pu-image-scroll__seq-text--curve .pu-image-scroll__seq-text-path {
+      font-size: 96px;
+      letter-spacing: -0.03em;
+    }
+
     .pu-image-scroll__seq-text-line {
       font-size: 24px;
       letter-spacing: -0.03em;
@@ -754,6 +814,11 @@
     .pu-image-scroll__sequence-stage,
     .pu-image-scroll__sequence-img {
       min-height: 100svh;
+    }
+
+    .pu-image-scroll__sequence-img {
+      object-fit: cover;
+      object-position: center center;
     }
 
     .pu-image-scroll__gallery-layer {
@@ -859,7 +924,9 @@
       white-space: pre-line;
     }
 
-    .pu-image-scroll__gallery-layer .pu-image-scroll__slot[data-pu-gallery-slot='0'] .pu-image-scroll__overlay {
+    .pu-image-scroll__gallery-layer
+      .pu-image-scroll__slot[data-pu-gallery-slot='0']
+      .pu-image-scroll__overlay:not(.pu-image-scroll__overlay--has-mobile-position) {
       position: absolute;
       top: auto;
       bottom: calc(100% + 18px);
@@ -869,7 +936,9 @@
       text-align: left;
     }
 
-    .pu-image-scroll__gallery-layer .pu-image-scroll__slot[data-pu-gallery-slot='2'] .pu-image-scroll__overlay {
+    .pu-image-scroll__gallery-layer
+      .pu-image-scroll__slot[data-pu-gallery-slot='2']
+      .pu-image-scroll__overlay:not(.pu-image-scroll__overlay--has-mobile-position) {
       position: absolute;
       top: calc(100% + 18px);
       bottom: auto;
@@ -879,12 +948,66 @@
       text-align: right;
     }
 
+    .pu-image-scroll__overlay--mobile-bottom-left {
+      top: auto;
+      bottom: 8%;
+      left: 5%;
+      right: auto;
+      text-align: left;
+      transform: rotate(calc(-12deg + var(--overlay-rotate, 0deg)));
+    }
+
+    .pu-image-scroll__overlay--mobile-top-right {
+      top: -4%;
+      bottom: auto;
+      left: auto;
+      right: 4%;
+      text-align: right;
+      transform: rotate(calc(8deg + var(--overlay-rotate, 0deg)));
+    }
+
+    .pu-image-scroll__overlay--mobile-bottom-right {
+      top: auto;
+      bottom: 8%;
+      left: auto;
+      right: 5%;
+      text-align: right;
+      transform: rotate(calc(3deg + var(--overlay-rotate, 0deg)));
+    }
+
+    .pu-image-scroll__overlay--mobile-top-left {
+      top: 6%;
+      bottom: auto;
+      left: 5%;
+      right: auto;
+      text-align: left;
+      transform: rotate(calc(-3deg + var(--overlay-rotate, 0deg)));
+    }
+
+    .pu-image-scroll__overlay--mobile-center {
+      top: 50%;
+      bottom: auto;
+      left: 50%;
+      right: auto;
+      text-align: center;
+      transform: translate(-50%, -50%) rotate(var(--overlay-rotate, 0deg));
+    }
+
     .pu-image-scroll__purple {
       min-height: 420px;
     }
 
     .pu-image-scroll__curved-text {
       padding: 32px 0 72px;
+    }
+
+    /* Same SVG user-unit vs. screen-pixel scaling correction as .pu-image-scroll__seq-text-path above. */
+    .pu-image-scroll__svg-text {
+      font-size: 118px;
+    }
+
+    .pu-image-scroll__svg-text--lower {
+      font-size: 103px;
     }
 
     .pu-image-scroll__orange {
@@ -1096,9 +1219,25 @@
             { "value": "bottom-left", "label": "Bottom left" },
             { "value": "top-right", "label": "Top right" },
             { "value": "bottom-right", "label": "Bottom right" },
-            { "value": "top-left", "label": "Top left" }
+            { "value": "top-left", "label": "Top left" },
+            { "value": "center", "label": "Center" }
           ],
           "default": "bottom-left"
+        },
+        {
+          "type": "select",
+          "id": "overlay_position_mobile",
+          "label": "Text position (mobile)",
+          "info": "Optional override for the stacked mobile gallery. Leave on Default to use the standard mobile layout (caption tucked above the first image, below the last).",
+          "options": [
+            { "value": "", "label": "Default (auto)" },
+            { "value": "bottom-left", "label": "Bottom left" },
+            { "value": "top-right", "label": "Top right" },
+            { "value": "bottom-right", "label": "Bottom right" },
+            { "value": "top-left", "label": "Top left" },
+            { "value": "center", "label": "Center" }
+          ],
+          "default": ""
         },
         {
           "type": "range",
@@ -1174,6 +1313,60 @@
       "label": "First frame index",
       "default": 54,
       "info": "Numeric value of the first file. Use 54 when files start at Seq_00054.png."
+    },
+    {
+      "type": "header",
+      "content": "Mobile PNG scroll sequence"
+    },
+    {
+      "type": "paragraph",
+      "content": "Optional. Upload a separate frame set for mobile (e.g. Comp_3_00001.png … Comp_3_00378.png) using the same file location as above. Leave the basename blank to reuse the desktop sequence on mobile."
+    },
+    {
+      "type": "text",
+      "id": "sequence_basename_mobile",
+      "label": "Mobile sequence image basename",
+      "default": "Comp_3_",
+      "info": "Example: Comp_3_ for Comp_3_00001.png … Comp_3_00378.png."
+    },
+    {
+      "type": "text",
+      "id": "sequence_first_frame_mobile",
+      "label": "Mobile first frame number",
+      "default": "00001",
+      "info": "Must match your first uploaded file (e.g. 00001 for Comp_3_00001.png)."
+    },
+    {
+      "type": "number",
+      "id": "sequence_frame_count_mobile",
+      "label": "Mobile total frames on CDN",
+      "default": 378
+    },
+    {
+      "type": "number",
+      "id": "sequence_handoff_frame_mobile",
+      "label": "Mobile handoff frame number",
+      "default": 378,
+      "info": "File number where the green gallery appears on mobile (e.g. 378 for Comp_3_00378.png)."
+    },
+    {
+      "type": "select",
+      "id": "sequence_pad_digits_mobile",
+      "label": "Mobile frame number digits",
+      "default": "5",
+      "options": [
+        { "value": "3", "label": "3 (001)" },
+        { "value": "4", "label": "4 (0001)" },
+        { "value": "5", "label": "5 (00000)" },
+        { "value": "6", "label": "6 (000000)" }
+      ]
+    },
+    {
+      "type": "number",
+      "id": "sequence_start_number_mobile",
+      "label": "Mobile first frame index",
+      "default": 1,
+      "info": "Numeric value of the first file. Use 1 when files start at Comp_3_00001.png."
     },
     {
       "type": "range",

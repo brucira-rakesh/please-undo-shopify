@@ -352,7 +352,7 @@
 
     .pu-svg-grid__stage {
       aspect-ratio: auto;
-      min-height: 680px;
+      min-height: 80vh;
       max-width: 400px;
       overflow: visible;
       padding-top: 32px;
@@ -369,31 +369,35 @@
 
     .pu-svg-grid__card[data-stage-placement='top_left'] {
       left: 16px;
-      top: 24%;
+      top: 48%;
     }
 
     .pu-svg-grid__card[data-stage-placement='top_right'] {
       right: 16px;
-      top: 24%;
+      top: 48%;
     }
 
     .pu-svg-grid__card[data-stage-placement='bottom_left'] {
       left: 6px;
-      bottom: 16%;
+      bottom: 0;
     }
 
     .pu-svg-grid__card[data-stage-placement='bottom_right'] {
       right: 6px;
-      bottom: 16%;
+      bottom: 0;
     }
 
     .pu-svg-grid__center {
-      top: 12%;
+      top: 38%;
       gap: 6px;
     }
 
     .pu-svg-grid__spark {
       width: 18px !important;
+    }
+
+    .pu-footer__brand {
+      --brand-size: clamp(60px, 10vw, 120px);
     }
 
     .pu-svg-grid__card-inner--standard,

@@ -114,11 +114,22 @@ function initImageScrollSequence(section) {
     return null;
   }
 
-  const padDigits = Math.max(2, parseInt(sequence.dataset.sequencePad, 10) || 5);
-  const startIndex = parseInt(sequence.dataset.sequenceStart, 10) || 0;
-  const handoffFrame = parseInt(sequence.dataset.sequenceHandoffFrame, 10) || 380;
-  const basename = sequence.dataset.sequenceBasename || '';
-  const templateUrl = sequence.dataset.sequenceUrl;
+  const useMobileSequence =
+    window.matchMedia('(max-width: 749px)').matches && Boolean(sequence.dataset.sequenceMobileBasename);
+
+  const padDigits = Math.max(
+    2,
+    parseInt(useMobileSequence ? sequence.dataset.sequenceMobilePad : sequence.dataset.sequencePad, 10) || 5
+  );
+  const startIndex =
+    parseInt(useMobileSequence ? sequence.dataset.sequenceMobileStart : sequence.dataset.sequenceStart, 10) || 0;
+  const handoffFrame =
+    parseInt(
+      useMobileSequence ? sequence.dataset.sequenceMobileHandoffFrame : sequence.dataset.sequenceHandoffFrame,
+      10
+    ) || 380;
+  const basename = (useMobileSequence ? sequence.dataset.sequenceMobileBasename : sequence.dataset.sequenceBasename) || '';
+  const templateUrl = useMobileSequence ? sequence.dataset.sequenceMobileUrl : sequence.dataset.sequenceUrl;
   // Stretches the pinned scroll distance so the sequence/gallery play back slower than their configured speed.
   const SCROLL_SPEED_MULTIPLIER = 1;
   // Image group (gallery) plays back faster than the frame sequence — smaller multiplier = less scroll needed.
@@ -233,13 +244,21 @@ function initImageScrollSequence(section) {
       markLoaded();
     };
 
+    const decodeThenSwap = () => {
+      if (typeof next.decode === 'function') {
+        next.decode().then(swap).catch(swap);
+      } else {
+        swap();
+      }
+    };
+
     if (sequenceUrlBase(next.getAttribute('src')) === targetSrc && next.complete && next.naturalWidth) {
-      swap();
+      decodeThenSwap();
       return;
     }
 
-    next.addEventListener('load', swap, { once: true });
     next.src = src;
+    decodeThenSwap();
   };
 
   const applyFrame = (frameIndex) => {
@@ -511,7 +530,7 @@ function initImageScrollSequence(section) {
       end: () => `+=${getTotalDistance()}`,
       pin: true,
       pinSpacing: true,
-      scrub: true,
+      scrub: 0.3,
       invalidateOnRefresh: true,
       anticipatePin: 0,
       onUpdate(self) {
