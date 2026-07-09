@@ -417,9 +417,9 @@
             "product_image": "shopify://shop_images/Primary-Mockup_18_1.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_2_1.png",
             "figure_right": -100,
-            "subtext": "LAPTOP NECK",
-            "title": "Brain Overload",
-            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
+            "subtext": "Screen Hangover",
+            "title": "Under Eye Recovery Serum",
+            "bullet_points": "<p>Cooling relief</p><p>Lightweight, non-sticky</p><p>De-puffs Tired Eyes</p><p>Daily use brightens under-eyes</p><p>Deeply Hydrates</p>",
             "shop_now_url": "shopify://products/brain-overload"
           }
         },
@@ -429,9 +429,9 @@
             "product_image": "shopify://shop_images/Primary-Mockup_16_2.png",
             "svg_icon": "shopify://shop_images/Please-Undo-BrandAssets_25Jun26_1_2.png",
             "figure_right": -60,
-            "subtext": "LAPTOP NECK",
-            "title": "Pain-relief Roll On",
-            "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
+            "subtext": "Brain Overload",
+            "title": "Dual Action Headache Roll On",
+            "bullet_points": "<p>Treat the source of pain</p><p>Cooling for temples</p><p>Warming for neck stiffness</p><p>Pocket-sized relief</p>",
             "shop_now_url": "shopify://products/laptop-neck-pain-relief-roll-on"
           }
         }
