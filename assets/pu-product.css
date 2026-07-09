@@ -117,8 +117,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 29px;
-  min-height: 28px;
+  width: 32px;
+  min-height: 24px;
   padding: 4px 8px;
   border-radius: 65px;
   background: var(--pu-navy);
