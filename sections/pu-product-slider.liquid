@@ -31,7 +31,7 @@
   <div class="pu-product-slider__texture pu-texture-overlay" aria-hidden="true"></div>
 
   <div class="pu-product-slider__hang" data-pu-hanging-title>
-    <div class="pu-product-slider__swing">
+    <div class="pu-product-slider__swing is-css-swing">
       {% comment %} data-pu-hang-swing {% endcomment %}
       <div class="pu-product-slider__rope pu-product-slider__rope--left"></div>
       <div class="pu-product-slider__rope pu-product-slider__rope--right"></div>
@@ -180,6 +180,12 @@
 
   .pu-product-slider > .pu-product-slider__texture {
     z-index: 0;
+  }
+
+  .pu-product-slider__texture {
+    background-size: 2400px auto;
+    background-position: top center;
+    background-repeat: no-repeat;
   }
 
   .pu-product-slider__hang {
