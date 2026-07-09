@@ -124,9 +124,22 @@
       </div>
 
       {% if section.settings.bullet_points != blank %}
+        {%- comment -%}
+          bullet_points can come from a richtext setting (<p> items) or a
+          dynamic source bound to a list metafield (<ul><li> items) —
+          normalize both to <p> so the numbering below always lines up.
+        {%- endcomment -%}
+        {% assign bullet_html = section.settings.bullet_points
+          | replace: '<li>', '<p>'
+          | replace: '</li>', '</p>'
+          | replace: '<ul>', ''
+          | replace: '</ul>', ''
+          | replace: '<ol>', ''
+          | replace: '</ol>', ''
+        %}
         <div class="pu-pdp-hero__bullets">
           <div class="pu-pdp-hero__bullet-nums" aria-hidden="true">
-            {% assign bullet_parts = section.settings.bullet_points | split: '<p>' %}
+            {% assign bullet_parts = bullet_html | split: '<p>' %}
             {% assign bullet_index = 0 %}
             {% for part in bullet_parts %}
               {% assign part_text = part | strip_html | strip %}
@@ -136,7 +149,7 @@
               {% endif %}
             {% endfor %}
           </div>
-          <div class="pu-pdp-hero__bullet-text rte">{{ section.settings.bullet_points }}</div>
+          <div class="pu-pdp-hero__bullet-text rte">{{ bullet_html }}</div>
         </div>
       {% endif %}
 
