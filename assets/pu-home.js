@@ -1234,6 +1234,10 @@ function initScrambleText() {
   section.querySelectorAll('[data-pu-scramble-video]').forEach((video) => {
     animateScrambleReveal(video);
   });
+
+  section.querySelectorAll('[data-pu-scramble-patch]').forEach((patch) => {
+    animateScrambleReveal(patch);
+  });
 }
 
 function initSvgGrid() {
