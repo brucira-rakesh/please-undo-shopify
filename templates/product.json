@@ -12,7 +12,7 @@
     "pu_product_main": {
       "type": "pu-product-main",
       "settings": {
-        "category_label": "LAPTOP NECK",
+        "category_label": "{{ product.metafields.custom.sub_text.value }}",
         "bullet_points": "<p>Low smell</p><p>0 Stain</p><p>Daily use</p>",
         "features_label": "VIEW FEATURES",
         "add_to_cart_label": "SHOP NOW"
