@@ -88,10 +88,10 @@
         "img_1": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/1.png",
+            "image": "shopify://shop_images/Vector_45.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "Lifestyle",
-            "overlay_text": "I have a 9 am meeting\nShould I have the 5th drink?",
+            "overlay_text": "You said \"I'll fix my posture tomorrow\n\"three years ago“",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
@@ -99,10 +99,10 @@
         "img_2": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/2.png",
+            "image": "shopify://shop_images/image_197.png",
             "fallback_asset": "pu-scroll-img-3.png",
             "alt": "Skateboard",
-            "overlay_text": "",
+            "overlay_text": "You forgot  Wednesday isn't Friday",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
@@ -110,10 +110,10 @@
         "img_3": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/3.png",
+            "image": "shopify://shop_images/image_145_fb323922-d80f-48f9-aaf6-e12885c863cf.png",
             "fallback_asset": "pu-scroll-img-2.png",
             "alt": "Concert",
-            "overlay_text": "The concert ended.\nThe ache got an encore.",
+            "overlay_text": "You said \"one episode\" four episodes ago",
             "overlay_position": "top-right",
             "overlay_rotation": 0
           }
@@ -121,10 +121,10 @@
         "image_HRyCLt": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/4.png",
+            "image": "shopify://shop_images/image_146_85dd4f0a-55c4-4f25-b568-5cc14a098f6f.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "You were just resting your eyes. You neck was not consulted.",
+            "overlay_text": "you have become one with laptop",
             "overlay_position": "bottom-left",
             "overlay_rotation": 0
           }
@@ -132,7 +132,7 @@
         "image_zGFWcK": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/5.png",
+            "image": "shopify://shop_images/image_197_1.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "",
@@ -143,7 +143,7 @@
         "image_8xz8tn": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/6.png",
+            "image": "shopify://shop_images/image_145_1_bde901a1-6fc9-49ae-9505-e3143f5eeb11.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "You don't have back pain. You have calendar pain.",
@@ -154,10 +154,10 @@
         "image_V8AKj9": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/image_146_1.png",
+            "image": "shopify://shop_images/image_146_1_905555af-f8cf-41a4-92c0-339242c49903.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "You said 'I'll fix my posture\ntomorrow' three years ago",
+            "overlay_text": "You were just resting your eyes. You neck was not consulted.",
             "overlay_position": "top-left",
             "overlay_rotation": 0
           }
@@ -165,7 +165,7 @@
         "image_xBpamF": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/image_198.png",
+            "image": "shopify://shop_images/image_198_df2a2346-3d11-46db-b1bc-7d30858aeeed.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "",
@@ -176,10 +176,10 @@
         "image_R93RVb": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/image_145.png",
+            "image": "shopify://shop_images/image_145_2.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
-            "overlay_text": "You said 'one episode'\nfour episodes ago",
+            "overlay_text": "Overthinking an argument that ended four hours ago. You finally remembered the perfect comeback.",
             "overlay_position": "bottom-right",
             "overlay_rotation": 0
           }
@@ -187,7 +187,7 @@
         "image_8mb7Rh": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/image_146_2.png",
+            "image": "shopify://shop_images/image_146_2_859f7e87-c41c-42bf-81e4-c9ecf1fe676c.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "Spent the whole weekend on the couch. You called it self-care. Your smartwatch called 0 steps today.",
@@ -198,7 +198,7 @@
         "image_pYYNU7": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/image_198_1.png",
+            "image": "shopify://shop_images/image_198_1_9c1cecc9-29dd-4413-b54e-d70ab5f63a12.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "",
@@ -209,7 +209,7 @@
         "image_AQDABM": {
           "type": "image",
           "settings": {
-            "image": "shopify://shop_images/image_145_1.png",
+            "image": "shopify://shop_images/image_145_3.png",
             "fallback_asset": "pu-scroll-img-1.png",
             "alt": "",
             "overlay_text": "Lunch break: 4 minutes. Back pain Indefinite.",
