@@ -103,7 +103,7 @@
             "fallback_asset": "pu-scroll-img-3.png",
             "alt": "Skateboard",
             "overlay_text": "You forgot  Wednesday isn't Friday",
-            "overlay_position": "bottom-left",
+            "overlay_position": "top-left",
             "overlay_rotation": 0
           }
         },
