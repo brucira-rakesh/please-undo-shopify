@@ -120,7 +120,7 @@ function initImageScrollSequence(section) {
   const basename = sequence.dataset.sequenceBasename || '';
   const templateUrl = sequence.dataset.sequenceUrl;
   // Stretches the pinned scroll distance so the sequence/gallery play back slower than their configured speed.
-  const SCROLL_SPEED_MULTIPLIER = 4 / 1.1;
+  const SCROLL_SPEED_MULTIPLIER = 1;
   // Image group (gallery) plays back faster than the frame sequence — smaller multiplier = less scroll needed.
   const GALLERY_SCROLL_SPEED_MULTIPLIER = SCROLL_SPEED_MULTIPLIER / 2;
   const sequenceScrollVh =
