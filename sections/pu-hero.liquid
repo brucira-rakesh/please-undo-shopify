@@ -12,15 +12,15 @@
                 {% assign patch_parallax_y = 28 %}
                 {% assign patch_parallax_x = -6 %}
               {% when 1 %}
-                {% assign patch_style = '--patch-top: 60%; --patch-left: 9%; --patch-rotate: -14deg;' %}
+                {% assign patch_style = '--patch-top: 60%; --patch-left: 9%; --patch-rotate: -14deg; --patch-top-mobile: 58%; --patch-left-mobile: 6%; --patch-rotate-mobile: -10deg;' %}
                 {% assign patch_parallax_y = 42 %}
                 {% assign patch_parallax_x = 8 %}
               {% when 2 %}
-                {% assign patch_style = '--patch-top: 30%; --patch-right: 12%; --patch-rotate: -6deg;' %}
+                {% assign patch_style = '--patch-top: 30%; --patch-right: 12%; --patch-rotate: -6deg; --patch-top-mobile: 20%; --patch-right-mobile: 6%; --patch-rotate-mobile: 8deg;' %}
                 {% assign patch_parallax_y = 36 %}
                 {% assign patch_parallax_x = -10 %}
               {% else %}
-                {% assign patch_style = '--patch-top: 50%; --patch-left: 50%; --patch-rotate: 0deg;' %}
+                {% assign patch_style = '--patch-top: 50%; --patch-left: 50%; --patch-rotate: 0deg; --patch-top-mobile: 50%; --patch-left-mobile: 50%; --patch-rotate-mobile: 0deg;' %}
                 {% assign patch_parallax_y = 30 %}
                 {% assign patch_parallax_x = 0 %}
             {% endcase %}
@@ -34,19 +34,19 @@
         {% else %}
           {% render 'pu-hero-patch',
             text: 'For every',
-            patch_style: '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg; --patch-top-mobile: 0%; --patch-left-mobile: 48%; --patch-rotate-mobile: 12deg;',
+            patch_style: '--patch-top: -14%; --patch-left: 42%; --patch-rotate: 12deg; --patch-top-mobile: 14%; --patch-left-mobile: 50%; --patch-rotate-mobile: 20deg;',
             parallax_y: 28,
             parallax_x: -6
           %}
           {% render 'pu-hero-patch',
             text: "There's a",
-            patch_style: '--patch-top: 60%; --patch-left: 9%; --patch-rotate: -14deg;',
+            patch_style: '--patch-top: 60%; --patch-left: 9%; --patch-rotate: -14deg; --patch-top-mobile: 58%; --patch-left-mobile: 6%; --patch-rotate-mobile: -10deg;',
             parallax_y: 42,
             parallax_x: 8
           %}
           {% render 'pu-hero-patch',
             text: 'you do',
-            patch_style: '--patch-top: 30%; --patch-right: 12%; --patch-rotate: -6deg;',
+            patch_style: '--patch-top: 30%; --patch-right: 12%; --patch-rotate: -6deg; --patch-top-mobile: 20%; --patch-right-mobile: 6%; --patch-rotate-mobile: 8deg;',
             parallax_y: 36,
             parallax_x: -10
           %}
@@ -409,6 +409,13 @@
       padding-top: calc(16px + var(--header-group-height, 64px));
     }
 
+    .pu-hero__patch {
+      top: var(--patch-top-mobile, 50%);
+      left: var(--patch-left-mobile, auto);
+      right: var(--patch-right-mobile, auto);
+      transform: rotate(var(--patch-rotate-mobile, 0deg));
+    }
+
     .pu-hero__content {
       padding: 120px 16px 140px;
       overflow: visible;
@@ -436,17 +443,17 @@
     }
 
     .pu-hero__figure-wrap--2 {
-      top: 4%;
+      top: 28%;
       left: 26%;
     }
 
     .pu-hero__figure-wrap--3 {
-      top: 26%;
+      top: 11%;
       right: 16%;
     }
 
     .pu-hero__figure-wrap--4 {
-      top: 80%;
+      top: 100%;
       right: 14%;
     }
 
@@ -475,20 +482,6 @@
     .pu-hero__product {
       width: 36px !important;
       max-width: 36px !important;
-    }
-
-    .pu-hero__patches {
-      position: static;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .pu-hero__patch {
-      position: static;
-      transform: rotate(var(--patch-rotate, 0deg)) !important;
     }
 
     .pu-hero__tickers {
